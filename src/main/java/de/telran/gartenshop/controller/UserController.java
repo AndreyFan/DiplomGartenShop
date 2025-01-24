@@ -10,6 +10,6 @@ public class UserController {
 
     @GetMapping
     public String getTest(){
-        return "test String";
+        return "Test Task_2";
     }
 }
