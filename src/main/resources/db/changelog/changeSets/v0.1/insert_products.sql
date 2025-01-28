@@ -3,7 +3,7 @@
 -- changeset konstantin:insert_products
 INSERT INTO Products (Name, Description, Price, Quantity, CategoryId, ImageURL, DiscountPrice,  CreatedAt, UpdatedAt)
 VALUES
-    ('Garden Shovel', 'Heavy duty garden shovel for digging', 15.99, 15,1, 'images/garden_shovel.jpg', 13.99, '2025-01-01', '2025-01-01'),
+    ('Garden Shovel', 'Heavy duty garden shovel for digging', 15.99, 16,1, 'images/garden_shovel.jpg', 13.99, '2025-01-01', '2025-01-01'),
     ('Garden Rake', 'Durable garden rake for cleaning up leaves', 12.99, 100, 1, 'images/garden_rake.jpg', 10.99, '2025-01-01', '2025-01-01'),
     ('Watering Can', 'Large capacity watering can for plants', 9.99,28, 1, 'images/watering_can.jpg', 8.49, '2025-01-01', '2025-01-01'),
     ('Garden Hoe', 'Sturdy garden hoe for weeding', 11.99,35, 1, 'images/garden_hoe.jpg', 9.99, '2025-01-01', '2025-01-01'),
