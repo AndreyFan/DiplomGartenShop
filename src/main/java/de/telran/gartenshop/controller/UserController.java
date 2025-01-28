@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -31,17 +33,22 @@ public class UserController {
         userService.registerUser(userRequestDto);
     }
 
+    @PostMapping("/registerAdmin")
+    public void registerAdmin(@RequestBody UserRequestDto userRequestDto) {
+        userService.registerAdmin(userRequestDto);
+    }
+
     @PutMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void updateUser(@RequestBody UserRequestDto userRequestDto){
+    public void updateUser(@RequestBody UserRequestDto userRequestDto) {
         userService.updateUser(userRequestDto);
     }
 
+
     @DeleteMapping("/{userId}")
-@ResponseStatus(value = HttpStatus.OK)
-    public void deleteUser(@PathVariable Long userId){
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
     }
-
 
 }
