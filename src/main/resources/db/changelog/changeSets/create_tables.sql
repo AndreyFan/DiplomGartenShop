@@ -39,6 +39,68 @@ CREATE TABLE Users
 );
 
 
--- changeset Konstantin:REFERENCES_PRODUCTS_CATEGORIES
-ALTER TABLE Products ADD CONSTRAINT FK_PRODUCTS_CATEGORYID_REFERENCES FOREIGN KEY (CategoryID)
+-- changeset Konstantin:create_table_favorites
+CREATE TABLE Favorites
+(
+    FavoriteID INT AUTO_INCREMENT NOT NULL,
+    ProductID  INT                    NULL,
+    UserID     INT                    NULL,
+    CONSTRAINT PK_FAVORITES PRIMARY KEY (FavoriteID)
+);
+
+
+-- changeset Konstantin:create_table_orders
+CREATE TABLE Orders
+(
+    OrderID         INT AUTO_INCREMENT                                                             NOT NULL,
+    UserID          INT                                                                                NULL,
+    CreatedAt       TIMESTAMP DEFAULT CURRENT_TIMESTAMP                                            NOT NULL,
+    DeliveryAddress VARCHAR(255)                                                                       NULL,
+    ContactPhone    VARCHAR(255)                                                                       NULL,
+    DeliveryMethod  ENUM ('SELF_DELIVERY' ,'DEPARTMENT_DELIVERY')                                      NULL,
+    Status          ENUM ('CREATED','CANCELED', 'AWAITING_PAYMENT', 'PAID', 'ON_THE_WAY', 'DELIVERED') NULL,
+    UpdatedAt       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT PK_ORDERS PRIMARY KEY (OrderID)
+);
+
+
+-- changeset Konstantin:create_table_orderItems
+CREATE TABLE OrderItems
+(
+    OrderItemID     INT AUTO_INCREMENT NOT NULL,
+    OrderID         INT                    NULL,
+    ProductID       INT                    NULL,
+    Quantity        INT                    NULL,
+    PriceAtPurchase DECIMAL(10, 2)         NULL,
+    CONSTRAINT PK_ORDERITEMS PRIMARY KEY (OrderItemID)
+);
+
+
+-- changeset Konstantin:create_foreign_key_products_categories
+ALTER TABLE Products ADD CONSTRAINT foreign_key_products_categories FOREIGN KEY (CategoryID)
     REFERENCES Categories (CategoryID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+-- changeset Konstantin:create_foreign_key_favorites_products
+ALTER TABLE Favorites
+    ADD CONSTRAINT foreign_key_favorites_products FOREIGN KEY (ProductID) REFERENCES
+        Products (ProductID) ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- changeset Konstantin:create_foreign_key_favorites_users
+ALTER TABLE Favorites
+    ADD CONSTRAINT foreign_key_favorites_users FOREIGN KEY (UserID) REFERENCES
+        Users (UserID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+-- changeset Konstantin:create_foreign_key_orders_users
+ALTER TABLE Orders
+    ADD CONSTRAINT foreign_key_orders_users FOREIGN KEY (UserID) REFERENCES
+        Users (UserID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+-- changeset Konstantin:create_foreign_key_orderItems_orders
+ALTER TABLE OrderItems
+    ADD CONSTRAINT foreign_key_orderItems_orders FOREIGN KEY (OrderID) REFERENCES
+        Orders (OrderID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+-- changeset Konstantin:create_foreign_key_orderItems_products
+ALTER TABLE OrderItems
+    ADD CONSTRAINT foreign_key_orderItems_products FOREIGN KEY (ProductID) REFERENCES
+        Products (ProductID) ON UPDATE CASCADE ON DELETE SET NULL;
