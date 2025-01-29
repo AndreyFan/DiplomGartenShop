@@ -76,6 +76,29 @@ CREATE TABLE OrderItems
 );
 
 
+-- changeset Konstantin:create_table_cart
+CREATE TABLE Cart
+(
+    CartID INT AUTO_INCREMENT NOT NULL,
+    UserID INT                    NULL,
+    CONSTRAINT PK_CART PRIMARY KEY (CartID),
+    UNIQUE (UserID)
+);
+
+
+-- changeset Konstantin:create_table_cartItems
+CREATE TABLE CartItems
+(
+    CartItemID INT AUTO_INCREMENT NOT NULL,
+    CartID     INT                    NULL,
+    ProductID  INT                    NULL,
+    Quantity   INT                    NULL,
+    CONSTRAINT PK_CARTITEMS PRIMARY KEY (CartItemID)
+);
+
+
+
+
 -- changeset Konstantin:create_foreign_key_products_categories
 ALTER TABLE Products ADD CONSTRAINT foreign_key_products_categories FOREIGN KEY (CategoryID)
     REFERENCES Categories (CategoryID) ON UPDATE RESTRICT ON DELETE RESTRICT;
@@ -103,4 +126,19 @@ ALTER TABLE OrderItems
 -- changeset Konstantin:create_foreign_key_orderItems_products
 ALTER TABLE OrderItems
     ADD CONSTRAINT foreign_key_orderItems_products FOREIGN KEY (ProductID) REFERENCES
+        Products (ProductID) ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- changeset Konstantin:create_foreign_key_cart_users
+ALTER TABLE Cart
+    ADD CONSTRAINT foreign_key_cart_users FOREIGN KEY (UserID) REFERENCES
+        Users (UserID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+-- changeset Konstantin:create_foreign_key_cartItems_cart
+ALTER TABLE CartItems
+    ADD CONSTRAINT foreign_key_cartItems_cart FOREIGN KEY (CartID) REFERENCES
+        Cart (CartID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+-- changeset Konstantin:create_foreign_key_cartItems_products
+ALTER TABLE CartItems
+    ADD CONSTRAINT foreign_key_cartItems_products FOREIGN KEY (ProductID) REFERENCES
         Products (ProductID) ON UPDATE CASCADE ON DELETE SET NULL;
