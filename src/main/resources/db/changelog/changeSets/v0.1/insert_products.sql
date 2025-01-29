@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset konstantin:insert_products
+-- changeset Konstantin:insert_products
 INSERT INTO Products (Name, Description, Price, Quantity, CategoryId, ImageURL, DiscountPrice,  CreatedAt, UpdatedAt)
 VALUES
     ('Garden Shovel', 'Heavy duty garden shovel for digging', 15.99, 16,1, 'images/garden_shovel.jpg', 13.99, '2025-01-01', '2025-01-01'),

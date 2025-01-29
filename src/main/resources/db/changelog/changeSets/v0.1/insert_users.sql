@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset konstantin:insert_users
+-- changeset Konstantin:insert_users
 insert into Users (Name, Email, PhoneNumber, PasswordHash, Role)
 values
     ('Alice Smith', 'alice.smith@example.com', '1234567890', 'hashpassword1',  'CLIENT'),
