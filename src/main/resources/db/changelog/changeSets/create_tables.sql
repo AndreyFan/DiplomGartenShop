@@ -16,7 +16,6 @@ CREATE TABLE Products
     Name          VARCHAR(255)           NULL,
     Description   VARCHAR(255)           NULL,
     Price         DECIMAL(10, 2)         NULL,
-    Quantity      INT                    NULL,
     CategoryID    INT                    NULL,
     ImageURL      VARCHAR(255)           NULL,
     DiscountPrice DECIMAL(10, 2)         NULL,
