@@ -33,6 +33,13 @@ public class UserController {
         userService.registerUser(userRequestDto);
     }
 
+    @GetMapping(value = "/{userId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public UserRequestDto getUserById(@PathVariable Long userId){
+       return  userService.getUserById(userId);
+    }
+
+
     @PostMapping("/registerAdmin")
     public void registerAdmin(@RequestBody UserRequestDto userRequestDto) {
         userService.registerAdmin(userRequestDto);

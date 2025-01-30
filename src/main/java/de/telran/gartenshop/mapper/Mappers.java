@@ -1,8 +1,11 @@
 package de.telran.gartenshop.mapper;
 
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
+import de.telran.gartenshop.dto.requestDto.UserRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
+import de.telran.gartenshop.dto.responseDto.UserResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
+import de.telran.gartenshop.entity.UserEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -21,5 +24,9 @@ public class Mappers {
 
     public CategoryEntity convertToCategoryEntity(CategoryRequestDto categoryRequestDto) {
         return modelMapper.map(categoryRequestDto, CategoryEntity.class);
+    }
+
+    public UserRequestDto convertToUserResponseDto(UserEntity user) {
+        return modelMapper.map(user, UserRequestDto.class);
     }
 }
