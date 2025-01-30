@@ -11,8 +11,8 @@
     <include file="db/changelog/changeSets/v0.1/insert_products.sql"/>
     <include file="db/changelog/changeSets/v0.1/insert_users.sql"/>
     <include file="db/changelog/changeSets/v0.1/insert_favorites.sql"/>
-<!--    <include file="db/changelog/changeSets/v0.1/insert_cart.sql"/>-->
-<!--    <include file="db/changelog/changeSets/v0.1/insert_cartItems.sql"/>-->
+    <include file="db/changelog/changeSets/v0.1/insert_cart.sql"/>
+    <include file="db/changelog/changeSets/v0.1/insert_cartItems.sql"/>
     <include file="db/changelog/changeSets/v0.1/insert_orders.sql"/>
     <include file="db/changelog/changeSets/v0.1/insert_orderItems.sql"/>
 <!--    <include file="db/changelog/changeSets/v0.2/create_schedlock.sql"/>-->

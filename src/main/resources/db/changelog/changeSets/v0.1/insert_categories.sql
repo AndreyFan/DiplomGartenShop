@@ -1,7 +1,6 @@
 -- liquibase formatted sql
 
 -- changeset Konstantin:insert_categories
-
 INSERT INTO Categories (Name)
 VALUES ('Garden Furniture'),
        ('Fertilizer'),
