@@ -8,10 +8,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Categories")
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Getter
+//@Setter
 @EqualsAndHashCode
 @ToString
 public class CategoryEntity {
@@ -25,4 +25,28 @@ public class CategoryEntity {
 
     @OneToMany(mappedBy = "category")
     private Set<ProductEntity> products = new HashSet<>();
+
+    public CategoryEntity() {
+    }
+
+    public CategoryEntity(Long categoryId, String name) {
+        this.categoryId = categoryId;
+        this.name = name;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
