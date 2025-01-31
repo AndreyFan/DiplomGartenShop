@@ -33,9 +33,12 @@ public class CategoryService {
     }
 
     public CategoryResponseDto updateCategory(CategoryRequestDto categoryRequestDto, Long categoryId) {
-
         CategoryEntity updateCategoryEntity = new CategoryEntity(categoryId, categoryRequestDto.getName());
         CategoryEntity returnCategoryEntity = categoryRepository.save(updateCategoryEntity);
         return new CategoryResponseDto(returnCategoryEntity.getCategoryId(), returnCategoryEntity.getName());
+    }
+
+    public void deleteCategory(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
     }
 }

@@ -43,4 +43,11 @@ public class CategoryController {
     public CategoryResponseDto updateCategory(@RequestBody CategoryRequestDto categoryRequestDto, @PathVariable Long categoryId) {
         return categoryService.updateCategory(categoryRequestDto, categoryId);
     }
+
+    @DeleteMapping(value = "/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCategories(@PathVariable Long categoryId) { //delete
+        categoryService.deleteCategory(categoryId);
+    }
 }
+
