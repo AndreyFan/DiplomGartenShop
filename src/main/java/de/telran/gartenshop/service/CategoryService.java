@@ -6,6 +6,7 @@ import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CategoryRepository;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,16 +30,30 @@ public class CategoryService {
     public boolean createCategory(CategoryRequestDto categoryRequestDto) {
         CategoryEntity createCategoryEntity = mappers.convertToCategoryEntity(categoryRequestDto);
         CategoryEntity savedCategoryEntity = categoryRepository.save(createCategoryEntity);
-        return createCategoryEntity.getCategoryId() != null;
+        if (savedCategoryEntity == null) {
+            throw new HttpMessageConversionException("Category " + categoryRequestDto.getName() + " not created");
+        }
+        return savedCategoryEntity.getCategoryId() != null;
     }
 
     public CategoryResponseDto updateCategory(CategoryRequestDto categoryRequestDto, Long categoryId) {
-        CategoryEntity updateCategoryEntity = new CategoryEntity(categoryId, categoryRequestDto.getName());
-        CategoryEntity returnCategoryEntity = categoryRepository.save(updateCategoryEntity);
-        return new CategoryResponseDto(returnCategoryEntity.getCategoryId(), returnCategoryEntity.getName());
+        CategoryEntity updateCategoryEntity = categoryRepository.findById(categoryId).orElse(null);
+
+        if (updateCategoryEntity != null) {
+            updateCategoryEntity.setName(categoryRequestDto.getName());
+            categoryRepository.save(updateCategoryEntity);
+        } else {
+            throw new NullPointerException("Category not found with Id: " + categoryId);
+        }
+        return mappers.convertToCategoryResponseDto(updateCategoryEntity);
     }
 
     public void deleteCategory(Long categoryId) {
-        categoryRepository.deleteById(categoryId);
+        CategoryEntity deleteCategoryEntity = categoryRepository.findById(categoryId).orElse(null);
+        if (deleteCategoryEntity != null) {
+            categoryRepository.delete(deleteCategoryEntity);
+        } else {
+            throw new NullPointerException("Category not found with Id: " + categoryId);
+        }
     }
 }

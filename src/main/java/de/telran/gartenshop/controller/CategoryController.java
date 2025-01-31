@@ -2,16 +2,16 @@ package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.service.CategoryService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Parameter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
@@ -46,8 +46,24 @@ public class CategoryController {
 
     @DeleteMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategories(@PathVariable Long categoryId) { //delete
+    public void deleteCategory(@PathVariable Long categoryId) { //delete
         categoryService.deleteCategory(categoryId);
+    }
+
+    // альтернативная обработка ошибочной ситуации Exception
+    @ExceptionHandler({IllegalArgumentException.class, FileNotFoundException.class, NullPointerException.class})
+    public ResponseEntity handleTwoExceptionNotFound(Exception exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
+
+    // альтернативная обработка ошибочной ситуации Exception
+    @ExceptionHandler({HttpMessageConversionException.class, MethodArgumentNotValidException.class})
+    public ResponseEntity handleTwoExceptionBadRequest(Exception exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(exception.getMessage());
     }
 }
 
