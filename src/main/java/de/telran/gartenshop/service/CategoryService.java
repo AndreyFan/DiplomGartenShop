@@ -23,8 +23,8 @@ public class CategoryService {
     }
 
     public List<CategoryResponseDto> getAllCategories() {
-        List<CategoryEntity> categoriesEntityList = categoryRepository.findAll();
-        return MapperUtil.convertList(categoriesEntityList, mappers::convertToCategoryResponseDto);
+        List<CategoryEntity> categoryEntityList = categoryRepository.findAll();
+        return MapperUtil.convertList(categoryEntityList, mappers::convertToCategoryResponseDto);
     }
 
     public boolean createCategory(CategoryRequestDto categoryRequestDto) {

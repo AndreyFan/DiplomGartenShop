@@ -49,21 +49,5 @@ public class CategoryController {
     public void deleteCategory(@PathVariable Long categoryId) { //delete
         categoryService.deleteCategory(categoryId);
     }
-
-    // альтернативная обработка ошибочной ситуации Exception
-    @ExceptionHandler({IllegalArgumentException.class, FileNotFoundException.class, NullPointerException.class})
-    public ResponseEntity handleTwoExceptionNotFound(Exception exception) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
-    }
-
-    // альтернативная обработка ошибочной ситуации Exception
-    @ExceptionHandler({HttpMessageConversionException.class, MethodArgumentNotValidException.class})
-    public ResponseEntity handleTwoExceptionBadRequest(Exception exception) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(exception.getMessage());
-    }
 }
 
