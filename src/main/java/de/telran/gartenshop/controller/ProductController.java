@@ -3,6 +3,7 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,32 +15,26 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/products")
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
 
-    @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductResponseDto> getAllProducts() {
+        return productService.getAllProducts();
     }
 
-//    @GetMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<ProductResponseDto> getAllProducts() {
-//        return productService.getAllProducts();
-//    }
-
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    //?category=1&min_price=1&max_price=10&is_discount=true&sort=price,desc
+    @GetMapping(value = "/filter")
+    //пример строки фильтра:    ?category=1&min_price=1&max_price=10&is_discount=true&sort=price,desc
     public List<ProductResponseDto> getProductsWithQuery(
             @RequestParam(value = "category", required = false) Long categoryId,
-            @RequestParam(value = "min_price", required = false)  Double minPrice,
-            @RequestParam(value = "max_price", required = false)  Double maxPrice,
-            @RequestParam(value = "is_discount", required = false, defaultValue = "false")  Boolean isDiscount,
-            @RequestParam(value = "sort", required = false)  String sort)
-    {
+            @RequestParam(value = "min_price", required = false) Double minPrice,
+            @RequestParam(value = "max_price", required = false) Double maxPrice,
+            @RequestParam(value = "is_discount", required = false, defaultValue = "false") Boolean isDiscount,
+            @RequestParam(value = "sort", required = false) String sort) {
         List<ProductResponseDto> productList = productService.getProducts(
                 categoryId,
                 minPrice,

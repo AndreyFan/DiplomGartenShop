@@ -6,21 +6,17 @@ import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class CategoryService {
-    private CategoryRepository categoryRepository;
-    private Mappers mappers;
-
-    public CategoryService(CategoryRepository categoryRepository, Mappers mappers) {
-        this.categoryRepository = categoryRepository;
-        this.mappers = mappers;
-    }
+    private final CategoryRepository categoryRepository;
+    private final Mappers mappers;
 
     public List<CategoryResponseDto> getAllCategories() {
         List<CategoryEntity> categoryEntityList = categoryRepository.findAll();
