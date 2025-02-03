@@ -1,6 +1,7 @@
 package de.telran.gartenshop.entity.enums;
 
 public enum OrderStatus {
+
     CREATED("Создан"),
     CANCEL("Отменено"),
     WAIT_PAYMENT("Ожидает оплаты"),
