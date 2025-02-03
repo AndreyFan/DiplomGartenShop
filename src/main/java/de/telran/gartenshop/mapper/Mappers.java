@@ -37,7 +37,7 @@ public class Mappers {
         ProductResponseDto productResponseDto = modelMapper.map(productEntity, ProductResponseDto.class);
 
         CategoryResponseDto categoryResponseDto = convertToCategoryResponseDto(productEntity.getCategory()); // второй связанный объект
-        productResponseDto.setCategoryResponseDto(categoryResponseDto);
+        productResponseDto.setCategory(categoryResponseDto);
 
         return productResponseDto;
     }
