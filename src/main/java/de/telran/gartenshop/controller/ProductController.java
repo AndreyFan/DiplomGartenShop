@@ -24,10 +24,30 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping
+//    @GetMapping
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<ProductResponseDto> getAllProducts() {
+//        return productService.getAllProducts();
+//    }
+
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponseDto> getAllProducts() {
-        return productService.getAllProducts();
+    @GetMapping
+    //?category=1&min_price=1&max_price=10&is_discount=true&sort=price,desc
+    public List<ProductResponseDto> getProductsWithQuery(
+            @RequestParam(value = "category", required = false) Long categoryId,
+            @RequestParam(value = "min_price", required = false)  Double minPrice,
+            @RequestParam(value = "max_price", required = false)  Double maxPrice,
+            @RequestParam(value = "is_discount", required = false, defaultValue = "false")  Boolean isDiscount,
+            @RequestParam(value = "sort", required = false)  String sort)
+    {
+        List<ProductResponseDto> productList = productService.getProducts(
+                categoryId,
+                minPrice,
+                maxPrice,
+                isDiscount,
+                sort
+        );
+        return productList;
     }
 
     @PostMapping
