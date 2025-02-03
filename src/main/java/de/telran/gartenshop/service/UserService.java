@@ -1,6 +1,7 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.dto.requestDto.UserRequestDto;
+import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
 import de.telran.gartenshop.entity.CartEntity;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.entity.enums.Role;
@@ -51,8 +52,25 @@ public class UserService {
     public void registerAdmin(UserRequestDto userRequestDto) {
     }
 
-    public Boolean updateUser(UserRequestDto userRequestDto) {
-        return true;
+    public Boolean updateUser(UserUpdateDto userUpdateDto, Long userId) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("This User not found ");
+        }
+
+        user.setName(userUpdateDto.getName());
+        user.setPhone(userUpdateDto.getPhone());
+
+        UserEntity userUpdate ;
+
+        try {
+            userUpdate = userRepository.save(user);
+        } catch (Exception exception){
+            throw new RuntimeException("Error update user");
+        }
+
+
+        return userUpdate != null;
     }
 
     public void deleteUser(Long userId) {

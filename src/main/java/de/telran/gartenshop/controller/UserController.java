@@ -1,6 +1,7 @@
 package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestDto.UserRequestDto;
+import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
 import de.telran.gartenshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +52,9 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public Boolean updateUser(@RequestBody UserRequestDto userRequestDto) {
+    public Boolean updateUser(@RequestBody UserUpdateDto userUpdateDto, @PathVariable Long userId) {
 
-        return  userService.updateUser(userRequestDto);
+        return  userService.updateUser(userUpdateDto, userId);
     }
 
 
