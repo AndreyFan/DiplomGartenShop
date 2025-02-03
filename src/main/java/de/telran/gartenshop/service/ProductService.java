@@ -8,6 +8,7 @@ import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CategoryRepository;
 import de.telran.gartenshop.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +17,11 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class ProductService {
-    private ProductRepository productRepository;
-    private CategoryRepository categoryRepository;
-    private Mappers mappers;
-
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, Mappers mappers) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.mappers = mappers;
-    }
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final Mappers mappers;
 
     public List<ProductResponseDto> getAllProducts() {
         List<ProductEntity> productEntityList = productRepository.findAll();
@@ -76,6 +71,7 @@ public class ProductService {
             updateProductEntity.setPrice(productRequestDto.getPrice());
             updateProductEntity.setCategory(categoryEntity);
             updateProductEntity.setImageUrl(productRequestDto.getImageUrl());
+            updateProductEntity.setDiscountPrice(productRequestDto.getDiscountPrice());
             updateProductEntity.setUpdatedAt(timestamp);
             productRepository.save(updateProductEntity);
         } else {
