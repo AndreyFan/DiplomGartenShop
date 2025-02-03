@@ -1,11 +1,13 @@
 package de.telran.gartenshop.mapper;
 
+import de.telran.gartenshop.dto.requestDto.CartRequestDto;
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.requestDto.UserRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.dto.responseDto.UserResponseDto;
+import de.telran.gartenshop.entity.CartEntity;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.UserEntity;
@@ -29,8 +31,12 @@ public class Mappers {
         return modelMapper.map(categoryRequestDto, CategoryEntity.class);
     }
 
-    public UserRequestDto convertToUserResponseDto(UserEntity user) {
-        return modelMapper.map(user, UserRequestDto.class);
+    public UserEntity convertToUserEntity(UserRequestDto userRequestDto) {
+        return modelMapper.map(userRequestDto, UserEntity.class);
+    }
+
+    public CartEntity convertToCartEntity(CartRequestDto cartRequestDto){
+        return modelMapper.map(cartRequestDto, CartEntity.class);
     }
 
     public ProductResponseDto convertToProductResponseDto(ProductEntity productEntity) {

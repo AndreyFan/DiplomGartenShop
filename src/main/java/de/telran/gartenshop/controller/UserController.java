@@ -30,8 +30,8 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void registerUser(@RequestBody UserRequestDto userRequestDto) {
-        userService.registerUser(userRequestDto);
+    public boolean registerUser(@RequestBody UserRequestDto userRequestDto) {
+        return userService.registerUser(userRequestDto);
     }
 
     @GetMapping(value = "/{userId}")
