@@ -33,6 +33,17 @@ public class ProductService {
         return MapperUtil.convertList(productEntityList, mappers::convertToProductResponseDto);
     }
 
+    public List<ProductResponseDto> getProducts(Long categoryId, Double minPrice, Double maxPrice,
+                                                Boolean isDiscount, String sort) {
+        CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+
+        List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
+                isDiscount, sort);
+        List<ProductResponseDto> productResponseDtoList = MapperUtil.convertList(productEntity, mappers::convertToProductResponseDto);
+        return productResponseDtoList;
+
+    }
+
     public boolean createProduct(ProductRequestDto productRequestDto) {
         ProductEntity createProductEntity = mappers.convertToProductEntity(productRequestDto);
         CategoryEntity categoryEntity = categoryRepository.findById(productRequestDto.getCategoryId()).orElse(null);
