@@ -5,6 +5,8 @@ import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
 import de.telran.gartenshop.entity.CartEntity;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.entity.enums.Role;
+import de.telran.gartenshop.mapper.Mappers;
+import de.telran.gartenshop.repository.CartRepository;
 import de.telran.gartenshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +20,21 @@ import java.util.List;
 public class UserService {
 
     private UserRepository userRepository;
+    private CartRepository cartRepository;
+    private Mappers mappers;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, CartRepository cartRepository, Mappers mappers) {
         this.userRepository = userRepository;
+        this.cartRepository = cartRepository;
+        this.mappers = mappers;
     }
 
-    public void registerUser(UserRequestDto userRequestDto) {
+    public boolean registerUser(UserRequestDto userRequestDto) {
+
+//        UserEntity usersEntity = mappers.convertToUserEntity(userRequestDto);
+//        UserEntity returnUserEntity = userRepository.save(usersEntity);
+//        return returnUserEntity.getUserId() != 0;
         // checking : if user already exist ?
 //        UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail()).orElse(null);
 //        if (userEntityExist != null){
@@ -41,11 +51,13 @@ public class UserService {
         cart.setUser(userEntity);
         userEntity.setCart(cart);
 
+        UserEntity registeredUser;
         try {
-            userRepository.save(userEntity);
+            registeredUser = userRepository.save(userEntity);
         } catch (Exception exception) {
             throw new RuntimeException("Saving user was not successful");
         }
+        return registeredUser != null;
 
     }
 
@@ -61,14 +73,13 @@ public class UserService {
         user.setName(userUpdateDto.getName());
         user.setPhone(userUpdateDto.getPhone());
 
-        UserEntity userUpdate ;
+        UserEntity userUpdate;
 
         try {
             userUpdate = userRepository.save(user);
-        } catch (Exception exception){
+        } catch (Exception exception) {
             throw new RuntimeException("Error update user");
         }
-
 
         return userUpdate != null;
     }
