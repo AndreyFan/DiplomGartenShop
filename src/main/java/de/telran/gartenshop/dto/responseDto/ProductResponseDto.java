@@ -21,5 +21,5 @@ public class ProductResponseDto {
     private BigDecimal discountPrice;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private CategoryResponseDto categoryResponseDto;
+    private CategoryResponseDto category;
 }
