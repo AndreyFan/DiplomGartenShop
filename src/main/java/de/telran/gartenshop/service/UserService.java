@@ -51,7 +51,8 @@ public class UserService {
     public void registerAdmin(UserRequestDto userRequestDto) {
     }
 
-    public void updateUser(UserRequestDto userRequestDto) {
+    public Boolean updateUser(UserRequestDto userRequestDto) {
+        return true;
     }
 
     public void deleteUser(Long userId) {
@@ -69,4 +70,17 @@ public class UserService {
         foundedUser.setPhone(user.getPhone());
         return foundedUser;
     }
+
+//    public UserRequestDto getUserByEmail(String email) {
+//        UserEntity user = userRepository.findByEmail(email);
+//        if (user == null) {
+//            throw new RuntimeException("This User not exist");
+//        }
+//        UserRequestDto userRequestDto=new UserRequestDto();
+//        userRequestDto.setName(user.getName());
+//        userRequestDto.setPhone(user.getPhone());
+//        userRequestDto.setEmail(user.getEmail());
+//        userRequestDto.setPassword("******");
+//        return userRequestDto;
+//    }
 }

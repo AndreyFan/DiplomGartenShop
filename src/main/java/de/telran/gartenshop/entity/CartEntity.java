@@ -26,19 +26,23 @@ public class CartEntity {
         this.user = user;
     }
 
-    public Long getCartId() {
-        return cartId;
-    }
-
     public UserEntity getUser() {
         return user;
-    }
-
-    public void setCartId(Long cartId) {
-        this.cartId = cartId;
     }
 
     public void setUser(UserEntity user) {
         this.user = user;
     }
+
+    public Long getCartId() {
+        return cartId;
+    }
+
+
+
+    public void setCartId(Long cartId) {
+        this.cartId = cartId;
+    }
+
+
 }

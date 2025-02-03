@@ -39,6 +39,10 @@ public class UserController {
        return  userService.getUserById(userId);
     }
 
+//@GetMapping(value = "/get")
+//public UserRequestDto getUserByEmail(@RequestParam String email){
+//        return userService.getUserByEmail(email);
+//}
 
     @PostMapping("/registerAdmin")
     public void registerAdmin(@RequestBody UserRequestDto userRequestDto) {
@@ -47,8 +51,9 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void updateUser(@RequestBody UserRequestDto userRequestDto) {
-        userService.updateUser(userRequestDto);
+    public Boolean updateUser(@RequestBody UserRequestDto userRequestDto) {
+
+        return  userService.updateUser(userRequestDto);
     }
 
 
