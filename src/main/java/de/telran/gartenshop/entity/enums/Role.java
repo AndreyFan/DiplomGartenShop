@@ -1,7 +1,6 @@
 package de.telran.gartenshop.entity.enums;
 
 public enum Role {
-
     CLIENT("Клиент"),
     ADMINISTRATOR("Администратор");
 
