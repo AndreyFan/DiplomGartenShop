@@ -4,9 +4,15 @@ import de.telran.gartenshop.dto.requestDto.*;
 import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
 import de.telran.gartenshop.dto.responseDto.CartResponseDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
+import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+
 import de.telran.gartenshop.entity.*;
 import lombok.RequiredArgsConstructor;
+
+import de.telran.gartenshop.dto.responseDto.UserResponseDto;
+import de.telran.gartenshop.entity.*;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +56,7 @@ public class Mappers {
 
         return productEntity;
     }
-
+  
     public CartItemResponseDto convertToCartItemResponseDto(CartItemEntity cartItemEntity) {
         CartItemResponseDto cartItemResponseDto = modelMapper.map(cartItemEntity, CartItemResponseDto.class);
         cartItemResponseDto.setCartResponseDto(convertToCartResponseDto(cartItemEntity.getCart())); //связанный объект
@@ -61,5 +67,12 @@ public class Mappers {
 
     public CartItemEntity convertToCartItemEntity(CartItemRequestDto cartItemRequestDto) {
         return modelMapper.map(cartItemRequestDto, CartItemEntity.class);
+
+    public FavoriteResponseDto convertToFavoriteResponseDto(FavoriteEntity favorite) {
+        FavoriteResponseDto favoriteResponseDto = modelMapper.map(favorite, FavoriteResponseDto.class);
+        modelMapper.typeMap(FavoriteEntity.class, FavoriteResponseDto.class)
+                .addMappings(mapper -> mapper.skip(FavoriteResponseDto::setUserResponseDto));
+        favoriteResponseDto.setProductResponseDto(convertToProductResponseDto(favorite.getProduct()));
+        return favoriteResponseDto;
     }
 }
