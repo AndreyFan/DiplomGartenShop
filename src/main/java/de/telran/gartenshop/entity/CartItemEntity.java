@@ -23,11 +23,11 @@ public class CartItemEntity {
     @Column(name = "Quantity")
     private Integer quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CartID")
     private CartEntity cart;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")
     private ProductEntity product;
 
