@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-//    @Query("SELECT ce FROM Users  ce WHERE ce.Email=?1 ")
-//   UserEntity findByEmail(String email);
+    @Query("SELECT ce FROM UserEntity ce WHERE ce.email=?1 ")
+   UserEntity findByEmail(String email);
 
 }

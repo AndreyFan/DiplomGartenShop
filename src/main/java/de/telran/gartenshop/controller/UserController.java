@@ -36,14 +36,14 @@ public class UserController {
 
     @GetMapping(value = "/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public UserRequestDto getUserById(@PathVariable Long userId){
-       return  userService.getUserById(userId);
+    public UserRequestDto getUserById(@PathVariable Long userId) {
+        return userService.getUserById(userId);
     }
 
-//@GetMapping(value = "/get")
-//public UserRequestDto getUserByEmail(@RequestParam String email){
-//        return userService.getUserByEmail(email);
-//}
+    @GetMapping(value = "/get")
+    public UserRequestDto getUserByEmail(@RequestParam String email) {
+        return userService.getUserByEmail(email);
+    }
 
     @PostMapping("/registerAdmin")
     public void registerAdmin(@RequestBody UserRequestDto userRequestDto) {
@@ -54,7 +54,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public Boolean updateUser(@RequestBody UserUpdateDto userUpdateDto, @PathVariable Long userId) {
 
-        return  userService.updateUser(userUpdateDto, userId);
+        return userService.updateUser(userUpdateDto, userId);
     }
 
 
