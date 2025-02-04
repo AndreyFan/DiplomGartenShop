@@ -28,15 +28,23 @@ public class ProductService {
         return MapperUtil.convertList(productEntityList, mappers::convertToProductResponseDto);
     }
 
-    public List<ProductResponseDto> getProducts(Long categoryId, Double minPrice, Double maxPrice,
-                                                Boolean isDiscount, String sort) {
+    public List<ProductResponseDto> getProductsByFilter(Long categoryId, Double minPrice, Double maxPrice,
+                                                        Boolean isDiscount, String sort) {
         CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElse(null);
 
         List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
                 isDiscount, sort);
         List<ProductResponseDto> productResponseDtoList = MapperUtil.convertList(productEntity, mappers::convertToProductResponseDto);
         return productResponseDtoList;
+    }
 
+    public ProductResponseDto getProductById(Long productId) {
+        ProductEntity productEntity = productRepository.findById(productId).orElse(null);
+
+        if (productEntity == null) {
+            throw new NullPointerException("Product not found with Id: " + productId);
+        }
+        return mappers.convertToProductResponseDto(productEntity);
     }
 
     public boolean createProduct(ProductRequestDto productRequestDto) {
