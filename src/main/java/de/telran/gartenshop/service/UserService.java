@@ -20,13 +20,11 @@ import java.util.List;
 public class UserService {
 
     private UserRepository userRepository;
-    private CartRepository cartRepository;
     private Mappers mappers;
 
     @Autowired
     public UserService(UserRepository userRepository, CartRepository cartRepository, Mappers mappers) {
         this.userRepository = userRepository;
-        this.cartRepository = cartRepository;
         this.mappers = mappers;
     }
 
@@ -35,11 +33,12 @@ public class UserService {
 //        UserEntity usersEntity = mappers.convertToUserEntity(userRequestDto);
 //        UserEntity returnUserEntity = userRepository.save(usersEntity);
 //        return returnUserEntity.getUserId() != 0;
+
         // checking : if user already exist ?
-//        UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail()).orElse(null);
-//        if (userEntityExist != null){
-//            throw new RuntimeException("User already exist");
-//        }
+        UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail());
+        if (userEntityExist != null) {
+            throw new RuntimeException("User already exist");
+        }
 
         UserEntity userEntity = new UserEntity();
         userEntity.setName(userRequestDto.getName());
@@ -100,16 +99,18 @@ public class UserService {
         return foundedUser;
     }
 
-//    public UserRequestDto getUserByEmail(String email) {
-//        UserEntity user = userRepository.findByEmail(email);
-//        if (user == null) {
-//            throw new RuntimeException("This User not exist");
-//        }
-//        UserRequestDto userRequestDto=new UserRequestDto();
-//        userRequestDto.setName(user.getName());
-//        userRequestDto.setPhone(user.getPhone());
-//        userRequestDto.setEmail(user.getEmail());
-//        userRequestDto.setPassword("******");
-//        return userRequestDto;
-//    }
+    public UserRequestDto getUserByEmail(String email) {
+
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("This User not exist");
+        }
+
+        UserRequestDto userRequestDto = new UserRequestDto();
+        userRequestDto.setName(user.getName());
+        userRequestDto.setPhone(user.getPhone());
+        userRequestDto.setEmail(user.getEmail());
+        userRequestDto.setPassword("******");
+        return userRequestDto;
+    }
 }
