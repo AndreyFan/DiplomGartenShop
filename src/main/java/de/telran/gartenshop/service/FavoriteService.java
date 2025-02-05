@@ -56,6 +56,8 @@ public class FavoriteService {
                 for (FavoriteEntity f : favoriteEntitySet) {
                     if (f.getProduct().getProductId() == favoriteRequestDto.getProductId()) {
                         return true;
+                        // логика такая: если у конкретного юзера этот товар уже есть в избранном -
+                        // просто вернём true без генерации ошибок
                     }
                 }
 
@@ -66,10 +68,28 @@ public class FavoriteService {
                 favoriteEntitySet.add(favorite);
                 return favorite != null;
             } else {
-                throw new RuntimeException(" Product not found");
+                throw new RuntimeException(" This Product is not in the database");
             }
         } else {
             throw new RuntimeException(" User not found");
+        }
+    }
+
+    public Boolean deleteFavorite(FavoriteRequestDto favoriteRequestDto) {
+
+        UserEntity user = userRepository.findById(favoriteRequestDto.getUserId()).orElse(null);
+        if (user != null) {
+             Set<FavoriteEntity> favoriteEntitySet = user.getFavorites();
+                for (FavoriteEntity f : favoriteEntitySet) {
+                    if (f.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
+                        favoriteEntitySet.remove(f);
+                        favoriteRepository.deleteById(f.getFavoriteId());
+                        return true;
+                    }
+                }
+                throw new RuntimeException(" This Product is not in favorites ");
+        } else {
+            throw new RuntimeException("User not found in database");
         }
     }
 }
