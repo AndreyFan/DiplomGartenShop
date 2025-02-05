@@ -4,6 +4,7 @@ import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,13 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteProduct(@PathVariable Long productId) { //delete
         productService.deleteProduct(productId);
+    }
+
+    //Товар дня (с max discountPrice)
+    @GetMapping(value = "/productOfDay")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponseDto getProductOfDay() {
+        return productService.getProductOfDay();
     }
 }
 

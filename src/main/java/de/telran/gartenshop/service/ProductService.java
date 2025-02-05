@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -94,6 +95,17 @@ public class ProductService {
             productRepository.delete(deleteProductEntity);
         } else {
             throw new NullPointerException("Product not found with Id: " + productId);
+        }
+    }
+
+    public ProductResponseDto getProductOfDay() {
+        List<ProductEntity> productOfDayList = productRepository.getProductOfDay();
+        if (productOfDayList.size() > 1) {
+            Random random = new Random();
+            int randomNum = random.nextInt(productOfDayList.size());
+            return mappers.convertToProductResponseDto(productOfDayList.get(randomNum));
+        } else {
+            return mappers.convertToProductResponseDto(productOfDayList.getFirst());
         }
     }
 }
