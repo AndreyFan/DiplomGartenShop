@@ -67,6 +67,7 @@ public class Mappers {
 
     public CartItemEntity convertToCartItemEntity(CartItemRequestDto cartItemRequestDto) {
         return modelMapper.map(cartItemRequestDto, CartItemEntity.class);
+    }
 
     public FavoriteResponseDto convertToFavoriteResponseDto(FavoriteEntity favorite) {
         FavoriteResponseDto favoriteResponseDto = modelMapper.map(favorite, FavoriteResponseDto.class);
