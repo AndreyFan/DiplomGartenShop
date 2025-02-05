@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name="Users")
 @Getter
@@ -38,5 +41,7 @@ public class UserEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private CartEntity cart;
 
+    @OneToMany(mappedBy = "users" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<OrderEntity> orderEntities = new HashSet<>();
 
 }

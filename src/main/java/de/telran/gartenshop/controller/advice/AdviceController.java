@@ -1,4 +1,4 @@
-package de.telran.gartenshop.controller.edvice;
+package de.telran.gartenshop.controller.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
