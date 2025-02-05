@@ -17,6 +17,7 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     // запрос списка товаров-фаворитов для юзера (по его userId)
+    // http://localhost:8088/favorites/3   - список фаворитов для юзера с userId=3
     @GetMapping(value = "/{userId}")
     public Set<FavoriteResponseDto> getFavoritesByUserId(@PathVariable Long userId){
         return favoriteService.getFavoritesByUserId(userId);
@@ -29,9 +30,21 @@ public class FavoriteController {
         return favoriteService.getFavorites(email);
     }
 
+    // добавление товара в избранное (фавориты)
+    // http://localhost:8088/favorites
+    // тело запроса
+    // {
+    //    "productId": 5,
+    //    "userId": 3
+    //}
     @PostMapping
     public Boolean createFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto){
         return favoriteService.createFavorite(favoriteRequestDto);
+    }
+
+    @DeleteMapping
+    public Boolean deleteFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto){
+        return favoriteService.deleteFavorite(favoriteRequestDto);
     }
 
 }
