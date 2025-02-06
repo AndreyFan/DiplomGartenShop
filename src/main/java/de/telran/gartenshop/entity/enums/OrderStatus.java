@@ -4,7 +4,7 @@ public enum OrderStatus {
 
     CREATED("Создан"),
     CANCELED("Отменено"),
-    AWAIT_PAYMENT("Ожидает оплаты"),
+    AWAITING_PAYMENT("Ожидает оплаты"),
     PAID("Оплачен"),
     ON_THE_WAY("В пути"),
     DELIVERED("Доставлено");

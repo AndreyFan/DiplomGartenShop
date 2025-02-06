@@ -1,14 +1,20 @@
 package de.telran.gartenshop.controller;
 
 
+import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
+import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
+import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
+import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,9 +23,23 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @GetMapping( "/Status")
+    @GetMapping("/Status")
     public ResponseEntity<OrderStatus> getOrderStatus(@PathVariable Long orderId) {
         return orderService.getOrderStatus(orderId);
     }
 
+    //просмотр всех заказов
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderResponseDto> getAllOrders() {
+        return orderService.getAllOrders();
+    }
+
+    //Оформление заказа
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public boolean createOrder(@RequestBody OrderRequestDto orderRequestDto) {
+//        return orderService.createOrder(orderRequestDto);
+//    }
 }
