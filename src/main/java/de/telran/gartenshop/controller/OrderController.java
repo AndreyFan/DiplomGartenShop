@@ -1,5 +1,6 @@
 package de.telran.gartenshop.controller;
 
+import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
 import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
@@ -32,10 +33,10 @@ public class OrderController {
     }
 
     //Оформление заказа
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public boolean createOrder(@RequestBody OrderRequestDto orderRequestDto) {
-//        return orderService.createOrder(orderRequestDto);
-//    }
+    @PostMapping("/{userId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto, @PathVariable Long userId) {
+        return orderService.createOrder(orderRequestDto, userId);
+    }
 
 }
