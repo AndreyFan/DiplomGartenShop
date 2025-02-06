@@ -19,14 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
-    private Mappers mappers;
-
-    @Autowired
-    public UserService(UserRepository userRepository, CartRepository cartRepository, Mappers mappers) {
-        this.userRepository = userRepository;
-        this.mappers = mappers;
-    }
+    private final UserRepository userRepository;
+    private final Mappers mappers;
+    private final CartRepository cartRepository;
 
     public boolean registerUser(UserRequestDto userRequestDto) {
 
@@ -84,6 +79,16 @@ public class UserService {
     }
 
     public void deleteUser(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("This User not exist");
+        }
+        // находим и удаляем корзину данного юзера
+        if (user.getCart() != null) {
+            cartRepository.delete(user.getCart());
+        }
+
+        userRepository.deleteById(userId);
     }
 
     public UserRequestDto getUserById(Long userId) {
