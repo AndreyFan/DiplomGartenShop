@@ -38,6 +38,25 @@ public class OrderService {
         return MapperUtil.convertList(orderEntityList, mappers:: convertToOrderResponseDto);
     }
 
+    public void changeStatus() {
+        List<OrderEntity> orderEntityList = orderRepository.findAll();
+
+        for (OrderEntity orderEntity: orderEntityList){
+
+            OrderStatus currentStatus = orderEntity.getOrderStatus();
+
+            OrderStatus nextStatus = switch (currentStatus) {
+                case OrderStatus.CREATED -> OrderStatus.AWAITING_PAYMENT;
+                case OrderStatus.AWAITING_PAYMENT -> OrderStatus.PAID;
+                case OrderStatus.PAID -> OrderStatus.ON_THE_WAY;
+                case OrderStatus.ON_THE_WAY -> OrderStatus.DELIVERED;
+                default -> currentStatus;
+            };
+            orderEntity.setOrderStatus(nextStatus);
+        }
+
+    }
+
 
 //    public boolean createOrder(OrderRequestDto orderRequestDto) {
 //

@@ -42,4 +42,9 @@ public class OrderController {
 //    public boolean createOrder(@RequestBody OrderRequestDto orderRequestDto) {
 //        return orderService.createOrder(orderRequestDto);
 //    }
+
+    @GetMapping("/up")
+    public void changeStatus(){
+        orderService.changeStatus();
+    }
 }
