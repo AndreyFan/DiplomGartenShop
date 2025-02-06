@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -39,10 +40,7 @@ public class CartService {
 
         if (userEntity != null) {
             Set<CartItemEntity> cartItemEntitySet = userEntity.getCart().getCartItems();
-
-            Set<CartItemResponseDto> str1 = MapperUtil.convertSet(cartItemEntitySet, mappers::convertToCartItemResponseDto);
-            return str1;
-            //    return MapperUtil.convertSet(cartItemEntitySet, mappers::convertToCartItemResponseDto);
+            return MapperUtil.convertSet(cartItemEntitySet, mappers::convertToCartItemResponseDto);
         } else {
             throw new NullPointerException("User with Id: " + userId + " not found.");
         }
@@ -82,14 +80,11 @@ public class CartService {
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
         if (userEntity != null) {
             CartEntity cartEntity = userEntity.getCart();
-            Set<CartItemEntity> deleteCartItemEntitySet = cartEntity.getCartItems();
-            for (CartItemEntity item : deleteCartItemEntitySet) {
-                //  if (item.getProduct().getProductId().equals(productId)) {
-                 //   cartItemRepository.deleteById(item.getCartItemId());
-                cartItemRepository.delete(item);
-             //   }
+            Set<CartItemEntity> cartItemEntitySet = cartEntity.getCartItems();
+
+            for (CartItemEntity cartItem : cartItemEntitySet) {
+                cartItemRepository.delete(cartItem);
             }
-           // cartItemRepository.deleteAll(deleteCartItemEntitySet);
         } else {
             throw new NullPointerException("User not found with Id: " + userId);
         }
