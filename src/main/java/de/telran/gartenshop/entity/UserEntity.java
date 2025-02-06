@@ -40,7 +40,7 @@ public class UserEntity {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private CartEntity cart;
-
+  
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<FavoriteEntity> favorites =new HashSet<>();
 
