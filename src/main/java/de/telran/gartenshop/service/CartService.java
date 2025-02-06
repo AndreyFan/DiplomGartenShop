@@ -77,4 +77,21 @@ public class CartService {
             throw new NullPointerException("CartItem not found with Id: " + cartItemId);
         }
     }
+
+    public void deleteAllCartItems(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElse(null);
+        if (userEntity != null) {
+            CartEntity cartEntity = userEntity.getCart();
+            Set<CartItemEntity> deleteCartItemEntitySet = cartEntity.getCartItems();
+            for (CartItemEntity item : deleteCartItemEntitySet) {
+                //  if (item.getProduct().getProductId().equals(productId)) {
+                 //   cartItemRepository.deleteById(item.getCartItemId());
+                cartItemRepository.delete(item);
+             //   }
+            }
+           // cartItemRepository.deleteAll(deleteCartItemEntitySet);
+        } else {
+            throw new NullPointerException("User not found with Id: " + userId);
+        }
+    }
 }
