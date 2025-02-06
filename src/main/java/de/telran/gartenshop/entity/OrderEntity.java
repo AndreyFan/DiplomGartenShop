@@ -44,10 +44,10 @@ public class OrderEntity {
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "orders")
+    @OneToMany(mappedBy = "order")
     private Set<OrderItemEntity> orderItems = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "UserID")
-    private UserEntity users;
+    private UserEntity user;
 }

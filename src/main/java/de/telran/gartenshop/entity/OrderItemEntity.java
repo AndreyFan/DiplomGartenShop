@@ -21,16 +21,16 @@ public class OrderItemEntity {
     private Long orderItemId;
 
     @Column(name = "Quantity")
-    private long quantity;
+    private Integer quantity;
 
     @Column(name = "PriceAtPurchase")
     private BigDecimal priceAtPurchase;
 
     @ManyToOne
     @JoinColumn(name = "ProductID")
-    private ProductEntity products;
+    private ProductEntity product;
 
     @ManyToOne
     @JoinColumn(name = "OrderID")
-    private OrderEntity orders;
+    private OrderEntity order;
 }

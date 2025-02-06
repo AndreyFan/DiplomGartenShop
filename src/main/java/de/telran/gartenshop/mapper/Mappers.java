@@ -1,16 +1,11 @@
 package de.telran.gartenshop.mapper;
 
 import de.telran.gartenshop.dto.requestDto.*;
-import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
-import de.telran.gartenshop.dto.responseDto.CartResponseDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.dto.responseDto.*;
 
 import de.telran.gartenshop.entity.*;
 import lombok.RequiredArgsConstructor;
 
-import de.telran.gartenshop.dto.responseDto.UserResponseDto;
 import de.telran.gartenshop.entity.*;
 
 import org.modelmapper.ModelMapper;
@@ -75,5 +70,11 @@ public class Mappers {
                 .addMappings(mapper -> mapper.skip(FavoriteResponseDto::setUserResponseDto));
         favoriteResponseDto.setProductResponseDto(convertToProductResponseDto(favorite.getProduct()));
         return favoriteResponseDto;
+    }
+
+    public OrderResponseDto convertToOrderResponseDto(OrderEntity orderEntity) {
+        OrderResponseDto orderResponseDto = modelMapper.map(orderEntity, OrderResponseDto.class);
+        //productResponseDto.setCategoryResponseDto(convertToCategoryResponseDto(productEntity.getCategory())); //связанный объект
+        return orderResponseDto;
     }
 }
