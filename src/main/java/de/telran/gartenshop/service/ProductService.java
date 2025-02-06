@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -28,15 +29,23 @@ public class ProductService {
         return MapperUtil.convertList(productEntityList, mappers::convertToProductResponseDto);
     }
 
-    public List<ProductResponseDto> getProducts(Long categoryId, Double minPrice, Double maxPrice,
-                                                Boolean isDiscount, String sort) {
+    public List<ProductResponseDto> getProductsByFilter(Long categoryId, Double minPrice, Double maxPrice,
+                                                        Boolean isDiscount, String sort) {
         CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElse(null);
 
         List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
                 isDiscount, sort);
         List<ProductResponseDto> productResponseDtoList = MapperUtil.convertList(productEntity, mappers::convertToProductResponseDto);
         return productResponseDtoList;
+    }
 
+    public ProductResponseDto getProductById(Long productId) {
+        ProductEntity productEntity = productRepository.findById(productId).orElse(null);
+
+        if (productEntity == null) {
+            throw new NullPointerException("Product not found with Id: " + productId);
+        }
+        return mappers.convertToProductResponseDto(productEntity);
     }
 
     public boolean createProduct(ProductRequestDto productRequestDto) {
@@ -86,6 +95,17 @@ public class ProductService {
             productRepository.delete(deleteProductEntity);
         } else {
             throw new NullPointerException("Product not found with Id: " + productId);
+        }
+    }
+
+    public ProductResponseDto getProductOfDay() {
+        List<ProductEntity> productOfDayList = productRepository.getProductOfDay();
+        if (productOfDayList.size() > 1) {
+            Random random = new Random();
+            int randomNum = random.nextInt(productOfDayList.size());
+            return mappers.convertToProductResponseDto(productOfDayList.get(randomNum));
+        } else {
+            return mappers.convertToProductResponseDto(productOfDayList.getFirst());
         }
     }
 }

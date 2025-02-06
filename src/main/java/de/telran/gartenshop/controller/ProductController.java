@@ -3,6 +3,8 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +37,7 @@ public class ProductController {
             @RequestParam(value = "max_price", required = false) Double maxPrice,
             @RequestParam(value = "is_discount", required = false, defaultValue = "false") Boolean isDiscount,
             @RequestParam(value = "sort", required = false) String sort) {
-        List<ProductResponseDto> productList = productService.getProducts(
+        List<ProductResponseDto> productList = productService.getProductsByFilter(
                 categoryId,
                 minPrice,
                 maxPrice,
@@ -43,6 +45,12 @@ public class ProductController {
                 sort
         );
         return productList;
+    }
+
+    @GetMapping(value = "/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponseDto getProductById(@PathVariable Long productId) {
+        return productService.getProductById(productId);
     }
 
     @PostMapping
@@ -61,6 +69,13 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteProduct(@PathVariable Long productId) { //delete
         productService.deleteProduct(productId);
+    }
+
+    //Товар дня (с max discountPrice)
+    @GetMapping(value = "/productOfDay")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponseDto getProductOfDay() {
+        return productService.getProductOfDay();
     }
 }
 

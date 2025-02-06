@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Products")
@@ -44,4 +46,7 @@ public class ProductEntity {
     @ManyToOne
     @JoinColumn(name = "CategoryID")
     private CategoryEntity category;
+
+//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+//    private Set<CartItemEntity> cartItems = new HashSet<>();
 }

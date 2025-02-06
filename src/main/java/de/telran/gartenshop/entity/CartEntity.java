@@ -6,8 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name="Cart")
+@Table(name = "Cart")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +22,10 @@ public class CartEntity {
     private Long cartId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="UserID", referencedColumnName = "UserId")
+    @JoinColumn(name = "UserID", referencedColumnName = "UserId")
     private UserEntity user;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private Set<CartItemEntity> cartItems = new HashSet<>();
 
 }
