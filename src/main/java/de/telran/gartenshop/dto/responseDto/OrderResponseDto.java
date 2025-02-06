@@ -21,9 +21,9 @@ public class OrderResponseDto {
     private OrderStatus orderStatus;
     private Timestamp updatedAt;
 
-    @JsonProperty("items")
-    private Set<OrderItemResponseDto> orderItemsSet;
+//    @JsonProperty("items")
+//    private Set<OrderItemResponseDto> orderItemsSet;
 
     @JsonProperty("user")
-    private UserResponseDto users;
+    private UserResponseDto user;
 }
