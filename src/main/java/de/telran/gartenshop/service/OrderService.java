@@ -13,10 +13,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Set;
+
+import static de.telran.gartenshop.entity.enums.OrderStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,37 +30,39 @@ public class OrderService {
     private final Mappers mappers;
 
     public ResponseEntity<OrderStatus> getOrderStatus(Long orderId) {
-       Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
-       if (orderEntity.isPresent()) {
-           return ResponseEntity.ok(orderEntity.get().getOrderStatus());
-       }
+        Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
+        if (orderEntity.isPresent()) {
+            return ResponseEntity.ok(orderEntity.get().getOrderStatus());
+        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
-        return MapperUtil.convertList(orderEntityList, mappers:: convertToOrderResponseDto);
+        return MapperUtil.convertList(orderEntityList, mappers::convertToOrderResponseDto);
     }
 
+    // changing orderStatus ( scheduler: period - 30 s )
+    @Transactional
     public void changeStatus() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
 
-        for (OrderEntity orderEntity: orderEntityList){
-
-            OrderStatus currentStatus = orderEntity.getOrderStatus();
-
+        // to avoid ConcurrentModificationException,
+        // first change all statuses and only then save as a list
+        orderEntityList.forEach(order -> {
+            OrderStatus currentStatus = order.getOrderStatus();
             OrderStatus nextStatus = switch (currentStatus) {
-                case OrderStatus.CREATED -> OrderStatus.AWAITING_PAYMENT;
-                case OrderStatus.AWAITING_PAYMENT -> OrderStatus.PAID;
-                case OrderStatus.PAID -> OrderStatus.ON_THE_WAY;
-                case OrderStatus.ON_THE_WAY -> OrderStatus.DELIVERED;
+                case CREATED -> AWAITING_PAYMENT;
+                case AWAITING_PAYMENT -> PAID;
+                case PAID -> ON_THE_WAY;
+                case ON_THE_WAY -> DELIVERED;
                 default -> currentStatus;
             };
-            orderEntity.setOrderStatus(nextStatus);
-        }
-
+            order.setOrderStatus(nextStatus);
+        });
+        // Save everything with one request
+        orderRepository.saveAll(orderEntityList);
     }
-
 
 //    public boolean createOrder(OrderRequestDto orderRequestDto) {
 //

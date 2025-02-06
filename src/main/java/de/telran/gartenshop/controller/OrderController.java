@@ -38,8 +38,4 @@ public class OrderController {
 //        return orderService.createOrder(orderRequestDto);
 //    }
 
-    @GetMapping("/up")
-    public void changeStatus(){
-        orderService.changeStatus();
-    }
 }
