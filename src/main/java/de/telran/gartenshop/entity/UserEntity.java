@@ -1,5 +1,6 @@
 package de.telran.gartenshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.telran.gartenshop.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

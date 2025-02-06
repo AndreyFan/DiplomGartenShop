@@ -2,14 +2,15 @@ package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
 import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
-import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.dto.responseDto.*;
 import de.telran.gartenshop.entity.OrderEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.telran.gartenshop.entity.enums.OrderStatus.*;
 
@@ -36,6 +38,35 @@ public class OrderService {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+    public List<TopProductsDto> getTop10Products() {
+        List<Object[]> results = orderRepository.findTop10Products();
+        return results.stream()
+                .map(obj -> new TopProductsDto((ProductEntity) obj[0], ((Number) obj[1]).intValue()))
+                .collect(Collectors.toList());
+    }
+
+    public List<CanceledOrderDto> getTop10CanceledOrders() {
+        List<Object[]> results = orderRepository.findTop10CanceledOrders();
+        return results.stream()
+                .map(obj -> new CanceledOrderDto(
+                        ((OrderEntity) obj[0]).getOrderId(),
+                        ((OrderEntity) obj[0]).getDeliveryAddress(),
+                        ((OrderEntity) obj[0]).getCreatedAt(),
+                        ((Number) obj[1]).intValue()
+                ))
+                .collect(Collectors.toList());
+    }
+
+//    public List<AwaitingPaymentDto> getAwaitingPayment(Long days) {
+//        List<Object[]> results = orderRepository.findProductsAwaitingPaymentForMoreThanNDays(Math.toIntExact(days));
+//        return results.stream()
+//                .map(obj -> new AwaitingPaymentDto(
+//                        (ProductEntity) obj[0],  // Продукт
+//                        ((Number) obj[1]).intValue()  // Общее количество товаров
+//                ))
+//                .collect(Collectors.toList());
+//    }
 
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();

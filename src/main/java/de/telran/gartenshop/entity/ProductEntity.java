@@ -1,5 +1,6 @@
 package de.telran.gartenshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,6 +44,7 @@ public class ProductEntity {
 
     @ManyToOne
     @JoinColumn(name = "CategoryID")
+    @JsonBackReference
     private CategoryEntity category;
 
 //    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
