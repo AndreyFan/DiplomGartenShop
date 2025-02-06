@@ -77,17 +77,14 @@ public class Mappers {
     }
 
     public OrderItemResponseDto convertToOrderItemResponseDto(OrderItemEntity orderItemEntity) {
-        OrderItemResponseDto orderItemResponseDto = modelMapper.map(orderItemEntity, OrderItemResponseDto.class);
-//        orderItemResponseDto.setCartResponseDto(convertToCartResponseDto(cartItemEntity.getCart())); //связанный объект
-//        orderItemResponseDto.setProductResponseDto(convertToProductResponseDto(cartItemEntity.getProduct())); //связанный объект
-
-        return orderItemResponseDto;
+        return modelMapper.map(orderItemEntity, OrderItemResponseDto.class);
     }
 
     public OrderResponseDto convertToOrderResponseDto(OrderEntity orderEntity) {
-        OrderResponseDto orderResponseDto = modelMapper.map(orderEntity, OrderResponseDto.class);
-        // orderResponseDto.setUser(convertToUserResponseDto(orderEntity.getUser()));//связанный объект, работает без этой строки
-        return orderResponseDto;
+        return modelMapper.map(orderEntity, OrderResponseDto.class);
     }
 
+    public OrderEntity convertToOrderEntity(OrderRequestDto orderRequestDto) {
+        return modelMapper.map(orderRequestDto, OrderEntity.class);
+    }
 }

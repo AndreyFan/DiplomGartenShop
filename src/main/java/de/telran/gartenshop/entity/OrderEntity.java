@@ -15,8 +15,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
+//@ToString
+//@EqualsAndHashCode
 public class OrderEntity {
 
     @Id
@@ -44,10 +44,25 @@ public class OrderEntity {
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "order")
-    private Set<OrderItemEntity> orderItems = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "UserID")
     private UserEntity user;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "order")
+    private Set<OrderItemEntity> orderItems = new HashSet<>();
+
+//    @Override
+//    public String toString() {
+//        return "OrderEntity{" +
+//                "orderId=" + orderId +
+//                ", createdAt=" + createdAt +
+//                ", deliveryAddress='" + deliveryAddress + '\'' +
+//                ", contactPhone='" + contactPhone + '\'' +
+//                ", deliveryMethod=" + deliveryMethod +
+//                ", orderStatus=" + orderStatus +
+//                ", updatedAt=" + updatedAt +
+//                ", user=" + user +
+//                '}';
+//    }
 }

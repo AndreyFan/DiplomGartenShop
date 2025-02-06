@@ -11,8 +11,8 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
+//@EqualsAndHashCode
+//@ToString
 public class CartItemEntity {
 
     @Id

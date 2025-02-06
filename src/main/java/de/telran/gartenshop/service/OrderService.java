@@ -3,22 +3,23 @@ package de.telran.gartenshop.service;
 import de.telran.gartenshop.configure.MapperUtil;
 import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
 import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.OrderEntity;
-import de.telran.gartenshop.entity.ProductEntity;
+import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.mapper.Mappers;
+import de.telran.gartenshop.repository.OrderItemRepository;
 import de.telran.gartenshop.repository.OrderRepository;
+import de.telran.gartenshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
-import java.util.Set;
 
 import static de.telran.gartenshop.entity.enums.OrderStatus.*;
 
@@ -27,6 +28,8 @@ import static de.telran.gartenshop.entity.enums.OrderStatus.*;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final OrderItemRepository orderItemRepository;
     private final Mappers mappers;
 
     public ResponseEntity<OrderStatus> getOrderStatus(Long orderId) {
@@ -39,6 +42,7 @@ public class OrderService {
 
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
+
         return MapperUtil.convertList(orderEntityList, mappers::convertToOrderResponseDto);
     }
 
@@ -64,26 +68,28 @@ public class OrderService {
         orderRepository.saveAll(orderEntityList);
     }
 
-//    public boolean createOrder(OrderRequestDto orderRequestDto) {
-//
-//    }
+    //оформление заказа
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElse(null);
+        //  if (userEntity != null) {
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+        OrderEntity orderEntity = mappers.convertToOrderEntity(orderRequestDto);
+        orderEntity.setUser(userEntity);
+        userEntity.getOrderEntities().add(orderEntity);
+        orderEntity.setContactPhone(userEntity.getPhone());
+        orderEntity.setOrderStatus(OrderStatus.CREATED);
+        orderEntity.setCreatedAt(timestamp);
+        orderEntity.setUpdatedAt(timestamp);
+        OrderEntity createdOrderEntity = orderRepository.save(orderEntity);
+        orderItemRepository.saveAll(createdOrderEntity.getOrderItems());
 
-    //получение
-//    public OrderResponseDto getOrderById(Long orderId, String email) {
-//        User user = userRepository.findByEmail(email).orElse(null);
-//        if (user == null) {
-//            throw new DataNotFoundInDataBaseException("User not found in database.");
+        orderEntity.getOrderItems().forEach(item -> {
+            item.setPriceAtPurchase(item.getProduct().getPrice());
+            orderItemRepository.save(item);
+        });
+//        } else {
+//            throw new NullPointerException("User with Id: " + userId + " not found.");
 //        }
-//        Set<Order> ordersSet = user.getOrders();
-//        for (Order order : ordersSet) {
-//            if (order.getOrderId().equals(orderId)) {
-//                OrderResponseDto orderResponseDto = mappers.convertToOrderResponseDto(order);
-//                Set<OrderItemResponseDto> orderItemResponseDto = MapperUtil.convertSet(order.getOrderItems(), mappers::convertToOrderItemResponseDto);
-//                orderResponseDto.setOrderItemsSet(orderItemResponseDto);
-//                return orderResponseDto;
-//            }
-//        }
-//
-//        throw new DataNotFoundInDataBaseException("Order not found in database or doesn't belong to user.");
-//    }
+        return mappers.convertToOrderResponseDto(orderEntity);
+    }
 }

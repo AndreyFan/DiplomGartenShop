@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
+//@EqualsAndHashCode
+//@ToString
 public class OrderItemEntity {
 
     @Id
@@ -27,10 +27,20 @@ public class OrderItemEntity {
     private BigDecimal priceAtPurchase;
 
     @ManyToOne
+            //(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")
     private ProductEntity product;
 
-    @ManyToOne
-    @JoinColumn(name = "OrderID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OrderID", nullable = false)
     private OrderEntity order;
+
+//    @Override
+//    public String toString() {
+//        return "OrderItemEntity{" +
+//                "orderItemId=" + orderItemId +
+//                ", quantity=" + quantity +
+//                ", priceAtPurchase=" + priceAtPurchase +
+//                '}';
+//    }
 }
