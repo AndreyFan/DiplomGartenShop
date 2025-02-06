@@ -1,14 +1,8 @@
 package de.telran.gartenshop.controller;
 
-
-import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
-import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +24,8 @@ public class OrderController {
 
     //просмотр всех заказов
 
-    @GetMapping
+    // /orders/get
+    @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponseDto> getAllOrders() {
         return orderService.getAllOrders();

@@ -51,7 +51,7 @@ public class Mappers {
 
         return productEntity;
     }
-  
+
     public CartItemResponseDto convertToCartItemResponseDto(CartItemEntity cartItemEntity) {
         CartItemResponseDto cartItemResponseDto = modelMapper.map(cartItemEntity, CartItemResponseDto.class);
         cartItemResponseDto.setCartResponseDto(convertToCartResponseDto(cartItemEntity.getCart())); //связанный объект
@@ -72,9 +72,22 @@ public class Mappers {
         return favoriteResponseDto;
     }
 
+    public UserResponseDto convertToUserResponseDto(UserEntity userEntity) {
+        return modelMapper.map(userEntity, UserResponseDto.class);
+    }
+
+    public OrderItemResponseDto convertToOrderItemResponseDto(OrderItemEntity orderItemEntity) {
+        OrderItemResponseDto orderItemResponseDto = modelMapper.map(orderItemEntity, OrderItemResponseDto.class);
+//        orderItemResponseDto.setCartResponseDto(convertToCartResponseDto(cartItemEntity.getCart())); //связанный объект
+//        orderItemResponseDto.setProductResponseDto(convertToProductResponseDto(cartItemEntity.getProduct())); //связанный объект
+
+        return orderItemResponseDto;
+    }
+
     public OrderResponseDto convertToOrderResponseDto(OrderEntity orderEntity) {
         OrderResponseDto orderResponseDto = modelMapper.map(orderEntity, OrderResponseDto.class);
-        //productResponseDto.setCategoryResponseDto(convertToCategoryResponseDto(productEntity.getCategory())); //связанный объект
+        // orderResponseDto.setUser(convertToUserResponseDto(orderEntity.getUser()));//связанный объект, работает без этой строки
         return orderResponseDto;
     }
+
 }
