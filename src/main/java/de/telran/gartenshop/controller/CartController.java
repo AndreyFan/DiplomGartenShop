@@ -23,13 +23,14 @@ public class CartController {
         return cartService.getAllCartItems();
     }
 
+    //получить товары в корзине определенного пользователя (поиск по userId)
     @GetMapping(value = "/get/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public Set<CartItemResponseDto> getAllCartItemsByUserId(@PathVariable Long userId) {
         return cartService.getAllCartItemsByUserId(userId);
     }
 
-    //Добавление товара в корзину
+    //Добавление товара в корзину пользователя (поиск по userId)
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public boolean createCartItem(@RequestBody CartItemRequestDto cartItemRequestDto, @PathVariable Long userId) {
@@ -40,6 +41,13 @@ public class CartController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteCartItem(@PathVariable Long cartItemId) { //delete
         cartService.deleteCartItem(cartItemId);
+    }
+
+    //очистка корзины пользователя (поиск по userId)
+    @DeleteMapping(value = "/del/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAllCartItems(@PathVariable Long userId) { //delete
+        cartService.deleteAllCartItems(userId);
     }
 }
 

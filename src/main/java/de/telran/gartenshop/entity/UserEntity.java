@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="Users")
+@Table(name = "Users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,16 +19,16 @@ import java.util.Set;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="UserID")
+    @Column(name = "UserID")
     private Long userId;
 
-    @Column(name="Name")
+    @Column(name = "Name")
     private String name;
 
-    @Column(name ="Email")
+    @Column(name = "Email")
     private String email;
 
-    @Column(name="PhoneNumber")
+    @Column(name = "PhoneNumber")
     private String phone;
 
     @Column(name = "PasswordHash")
@@ -42,6 +42,6 @@ public class UserEntity {
     private CartEntity cart;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<FavoriteEntity> favorites =new HashSet<>();
+    private Set<FavoriteEntity> favorites = new HashSet<>();
 
 }
