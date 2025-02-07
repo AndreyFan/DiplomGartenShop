@@ -15,10 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-//@ToString
-//@EqualsAndHashCode
 public class OrderEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OrderID")
@@ -49,20 +46,5 @@ public class OrderEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //@OneToMany(mappedBy = "order")
     private Set<OrderItemEntity> orderItems = new HashSet<>();
-
-//    @Override
-//    public String toString() {
-//        return "OrderEntity{" +
-//                "orderId=" + orderId +
-//                ", createdAt=" + createdAt +
-//                ", deliveryAddress='" + deliveryAddress + '\'' +
-//                ", contactPhone='" + contactPhone + '\'' +
-//                ", deliveryMethod=" + deliveryMethod +
-//                ", orderStatus=" + orderStatus +
-//                ", updatedAt=" + updatedAt +
-//                ", user=" + user +
-//                '}';
-//    }
 }

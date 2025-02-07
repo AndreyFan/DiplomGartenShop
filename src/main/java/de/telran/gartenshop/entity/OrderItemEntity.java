@@ -11,10 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
-//@EqualsAndHashCode
-//@ToString
 public class OrderItemEntity {
-
     @Id
     @Column(name = "OrderItemID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,21 +23,11 @@ public class OrderItemEntity {
     @Column(name = "PriceAtPurchase")
     private BigDecimal priceAtPurchase;
 
-    @ManyToOne
-            //(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")
     private ProductEntity product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OrderID", nullable = false)
     private OrderEntity order;
-
-//    @Override
-//    public String toString() {
-//        return "OrderItemEntity{" +
-//                "orderItemId=" + orderItemId +
-//                ", quantity=" + quantity +
-//                ", priceAtPurchase=" + priceAtPurchase +
-//                '}';
-//    }
 }

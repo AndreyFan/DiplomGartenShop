@@ -6,8 +6,6 @@ import de.telran.gartenshop.dto.responseDto.*;
 import de.telran.gartenshop.entity.*;
 import lombok.RequiredArgsConstructor;
 
-import de.telran.gartenshop.entity.*;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -44,11 +42,9 @@ public class Mappers {
 
     public ProductEntity convertToProductEntity(ProductRequestDto productRequestDto) {
         ProductEntity productEntity = modelMapper.map(productRequestDto, ProductEntity.class);
-
         CategoryEntity categoryEntity = new CategoryEntity(); //связанный объект
         categoryEntity.setCategoryId(productRequestDto.getCategoryId());
         productEntity.setCategory(categoryEntity);
-
         return productEntity;
     }
 
@@ -56,7 +52,6 @@ public class Mappers {
         CartItemResponseDto cartItemResponseDto = modelMapper.map(cartItemEntity, CartItemResponseDto.class);
         cartItemResponseDto.setCartResponseDto(convertToCartResponseDto(cartItemEntity.getCart())); //связанный объект
         cartItemResponseDto.setProductResponseDto(convertToProductResponseDto(cartItemEntity.getProduct())); //связанный объект
-
         return cartItemResponseDto;
     }
 
@@ -77,7 +72,9 @@ public class Mappers {
     }
 
     public OrderItemResponseDto convertToOrderItemResponseDto(OrderItemEntity orderItemEntity) {
-        return modelMapper.map(orderItemEntity, OrderItemResponseDto.class);
+        OrderItemResponseDto orderItemResponseDto = modelMapper.map(orderItemEntity, OrderItemResponseDto.class);
+        orderItemResponseDto.setProduct(convertToProductResponseDto(orderItemEntity.getProduct())); //связанный объект
+        return orderItemResponseDto;
     }
 
     public OrderResponseDto convertToOrderResponseDto(OrderEntity orderEntity) {

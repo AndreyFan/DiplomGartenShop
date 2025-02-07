@@ -1,6 +1,8 @@
 package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
+import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
+import de.telran.gartenshop.dto.responseDto.OrderItemResponseDto;
 import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
@@ -25,12 +27,18 @@ public class OrderController {
     }
 
     //просмотр всех заказов
-
     // /orders/get
     @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponseDto> getAllOrders() {
         return orderService.getAllOrders();
+    }
+
+    //просмотр товаров во всех заказах localhost:8088/orders/get/items
+    @GetMapping(value = "/get/items")
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderItemResponseDto> getAllOrderItems() {
+        return orderService.getAllOrderItems();
     }
 
     //Оформление заказа
