@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static de.telran.gartenshop.entity.enums.OrderStatus.*;
 
@@ -92,4 +93,20 @@ public class OrderService {
 //        }
         return mappers.convertToOrderResponseDto(orderEntity);
     }
+
+    // История покупок пользователя
+    public Set<OrderResponseDto> getUsersOrders(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("This User not found ");
+        } else {
+            Set<OrderEntity> orderEntityList = user.getOrderEntities();
+            // исключим из всех orderEntity юзера информацию о нем самом
+            orderEntityList.forEach(order -> {
+                order.setUser(null);
+            } );
+            return MapperUtil.convertSet(orderEntityList, mappers::convertToOrderResponseDto);
+        }
+    }
+
 }

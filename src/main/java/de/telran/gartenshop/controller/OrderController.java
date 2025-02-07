@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +38,14 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto, @PathVariable Long userId) {
         return orderService.createOrder(orderRequestDto, userId);
+    }
+
+    //История покупок пользователя
+    // http://localhost:8088/orders/history/6
+    @GetMapping("/history/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Set<OrderResponseDto> getUsersOrders(@PathVariable Long userId){
+        return orderService.getUsersOrders(userId);
     }
 
 }
