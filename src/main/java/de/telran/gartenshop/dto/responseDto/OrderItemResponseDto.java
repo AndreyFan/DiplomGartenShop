@@ -14,7 +14,4 @@ public class OrderItemResponseDto {
     private BigDecimal priceAtPurchase;
     private ProductResponseDto product;
     //private OrderResponseDto order;
-
-//    private Long productId;
-//    private Long orderId;
 }

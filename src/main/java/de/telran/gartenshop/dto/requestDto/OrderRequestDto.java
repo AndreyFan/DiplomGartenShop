@@ -1,7 +1,6 @@
 package de.telran.gartenshop.dto.requestDto;
 
 import de.telran.gartenshop.entity.enums.DeliveryMethod;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class OrderRequestDto {
-    private String deliveryAddress;;
+    private String deliveryAddress;
     private DeliveryMethod deliveryMethod;
 }
