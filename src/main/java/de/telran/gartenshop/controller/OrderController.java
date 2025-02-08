@@ -42,6 +42,7 @@ public class OrderController {
     }
 
     //Оформление заказа
+    //localhost:8088/orders/1
     @PostMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto, @PathVariable Long userId) {
