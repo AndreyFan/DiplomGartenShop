@@ -47,6 +47,7 @@ public class ProductEntity {
     @JsonBackReference
     private CategoryEntity category;
 
+
 //    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 //    private Set<CartItemEntity> cartItems = new HashSet<>();
 }

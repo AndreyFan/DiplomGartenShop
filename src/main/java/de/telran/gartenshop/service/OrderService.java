@@ -9,23 +9,21 @@ import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.telran.gartenshop.entity.enums.OrderStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true) // Разрешает повторные запросы
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -39,34 +37,23 @@ public class OrderService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    public List<TopProductsDto> getTop10Products() {
-        List<Object[]> results = orderRepository.findTop10Products();
-        return results.stream()
-                .map(obj -> new TopProductsDto((ProductEntity) obj[0], ((Number) obj[1]).intValue()))
-                .collect(Collectors.toList());
+
+    public List<OrderEntity> getTop10PaidProducts() {
+        return orderRepository.findTop10PaidOrders();
     }
 
-    public List<CanceledOrderDto> getTop10CanceledOrders() {
-        List<Object[]> results = orderRepository.findTop10CanceledOrders();
-        return results.stream()
-                .map(obj -> new CanceledOrderDto(
-                        ((OrderEntity) obj[0]).getOrderId(),
-                        ((OrderEntity) obj[0]).getDeliveryAddress(),
-                        ((OrderEntity) obj[0]).getCreatedAt(),
-                        ((Number) obj[1]).intValue()
-                ))
-                .collect(Collectors.toList());
+    public List<ProductEntity> getTop10CanceledProducts() {
+        return orderRepository.findTop10CanceledProducts();
     }
 
-//    public List<AwaitingPaymentDto> getAwaitingPayment(Long days) {
-//        List<Object[]> results = orderRepository.findProductsAwaitingPaymentForMoreThanNDays(Math.toIntExact(days));
-//        return results.stream()
-//                .map(obj -> new AwaitingPaymentDto(
-//                        (ProductEntity) obj[0],  // Продукт
-//                        ((Number) obj[1]).intValue()  // Общее количество товаров
-//                ))
-//                .collect(Collectors.toList());
-//    }
+
+
+    public List<OrderEntity> getOrdersAwaitingPayment(int days) {
+        return orderRepository.findOrdersAwaitingPayment( days);
+    }
+
+
+
 
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
@@ -82,14 +69,17 @@ public class OrderService {
         // first change all statuses and only then save as a list
         orderEntityList.forEach(order -> {
             OrderStatus currentStatus = order.getOrderStatus();
-            OrderStatus nextStatus = switch (currentStatus) {
-                case CREATED -> AWAITING_PAYMENT;
-                case AWAITING_PAYMENT -> PAID;
-                case PAID -> ON_THE_WAY;
-                case ON_THE_WAY -> DELIVERED;
-                default -> currentStatus;
-            };
-            order.setOrderStatus(nextStatus);
+                    if (currentStatus != DELIVERED && currentStatus!= CANCELED && currentStatus != AWAITING_PAYMENT) {
+                        // if u use request localhost:8088/orders/awaiting-payment-products?days=30 add in condition  && currentStatus != AWAITING_PAYMENT
+                        OrderStatus nextStatus = switch (currentStatus) {
+                            case CREATED -> AWAITING_PAYMENT;
+                            case AWAITING_PAYMENT -> PAID;
+                            case PAID -> ON_THE_WAY;
+                            case ON_THE_WAY -> DELIVERED;
+                            default -> currentStatus;
+                        };
+                        order.setOrderStatus(nextStatus);
+                    }
         });
         // Save everything with one request
         orderRepository.saveAll(orderEntityList);

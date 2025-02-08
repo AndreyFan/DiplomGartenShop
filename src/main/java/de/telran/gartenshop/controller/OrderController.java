@@ -1,10 +1,8 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.dto.responseDto.AwaitingPaymentDto;
-import de.telran.gartenshop.dto.responseDto.CanceledOrderDto;
 import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
-import de.telran.gartenshop.dto.responseDto.TopProductsDto;
 import de.telran.gartenshop.entity.OrderEntity;
+import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +25,23 @@ public class OrderController {
     }
 
     @GetMapping("/top-products")
-    public ResponseEntity<List<TopProductsDto>> getTopProducts() {
-        return ResponseEntity.ok(orderService.getTop10Products());
+    public ResponseEntity<List<OrderEntity>> getTop10PaidProducts() {
+        return ResponseEntity.ok(orderService.getTop10PaidProducts());
     }
 
     @GetMapping("/top-canceled")
-    public ResponseEntity <List<CanceledOrderDto>> getTopCanceled() {
-        return ResponseEntity.ok(orderService.getTop10CanceledOrders());
+    public ResponseEntity <List<ProductEntity>> getTopCanceled() {
+        return ResponseEntity.ok(orderService.getTop10CanceledProducts());
     }
 
-//    @GetMapping("/products-awaiting")
-//    public ResponseEntity<List<AwaitingPaymentDto>> getProductsAwaiting(@RequestParam Long productId) {
-//        return ResponseEntity.ok(orderService.getAwaitingPayment(productId));
-//    }
+    @GetMapping("/awaiting-payment-products")
+    public ResponseEntity<List<OrderEntity>> getAwaitingPaymentProducts(@RequestParam(name = "days",
+            defaultValue = "10") int days) {
+        List<OrderEntity> products = orderService.getOrdersAwaitingPayment(days);
+        return ResponseEntity.ok(products);
+    }
+
+
 
     //просмотр всех заказов
 

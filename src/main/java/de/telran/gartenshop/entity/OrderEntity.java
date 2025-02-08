@@ -1,5 +1,6 @@
 package de.telran.gartenshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.telran.gartenshop.entity.enums.DeliveryMethod;
 import de.telran.gartenshop.entity.enums.OrderStatus;
@@ -16,8 +17,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
+@ToString(exclude = {"user", "orderItems"})
+@EqualsAndHashCode(exclude = {"user", "orderItems"})
 public class OrderEntity {
 
     @Id
@@ -50,5 +51,6 @@ public class OrderEntity {
 
     @ManyToOne
     @JoinColumn(name = "UserID")
+    @JsonBackReference
     private UserEntity user;
 }

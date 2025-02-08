@@ -27,4 +27,5 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "category")
     @JsonManagedReference
     private Set<ProductEntity> products = new HashSet<>();
+
 }
