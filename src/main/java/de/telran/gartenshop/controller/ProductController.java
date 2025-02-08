@@ -15,15 +15,17 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
+    //Просмотр всех товаров каталога //localhost:8088/products/1
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponseDto> getAllProducts() {
         return productService.getAllProducts();
     }
 
+    //Просмотр и фильтрация товара
+    //localhost:8088/products/filter?category=3&min_price=10&max_price=90&is_discount=true&sort=price,desc
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/filter")
-    //пример строки фильтра:    ?category=1&min_price=1&max_price=10&is_discount=true&sort=price,desc
     public List<ProductResponseDto> getProductsWithQuery(
             @RequestParam(value = "category", required = false) Long categoryId,
             @RequestParam(value = "min_price", required = false) Double minPrice,
@@ -40,31 +42,35 @@ public class ProductController {
         return productList;
     }
 
+    //Просмотр товара по Id //localhost:8088/products/1
     @GetMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getProductById(@PathVariable Long productId) {
         return productService.getProductById(productId);
     }
 
+    //Добавление нового товара //localhost:8088/products
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public boolean createProduct(@RequestBody ProductRequestDto productRequestDto) {
         return productService.createProduct(productRequestDto);
     }
 
+    //Редактирование товара по Id //localhost:8088/products/1
     @PutMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto updateProduct(@RequestBody ProductRequestDto productRequestDto, @PathVariable Long productId) {
         return productService.updateProduct(productRequestDto, productId);
     }
 
+    //Удаление товара по Id //localhost:8088/products/1
     @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteProduct(@PathVariable Long productId) { //delete
         productService.deleteProduct(productId);
     }
 
-    //Товар дня (с max discountPrice)
+    //Товар дня (с max discountPrice) //localhost:8088/products/productOfDay
     @GetMapping(value = "/productOfDay")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getProductOfDay() {

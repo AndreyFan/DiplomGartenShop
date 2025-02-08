@@ -71,7 +71,8 @@ CREATE TABLE OrderItems
     ProductID       INT                    NULL,
     Quantity        INT                    NULL,
     PriceAtPurchase DECIMAL(10, 2)         NULL,
-    CONSTRAINT PK_ORDERITEMS PRIMARY KEY (OrderItemID)
+    CONSTRAINT PK_ORDERITEMS PRIMARY KEY (OrderItemID),
+    FOREIGN KEY (ProductID) REFERENCES Products (ProductID)  --080225 ng
 );
 
 
@@ -92,7 +93,8 @@ CREATE TABLE CartItems
     CartID     INT                    NULL,
     ProductID  INT                    NULL,
     Quantity   INT                    NULL,
-    CONSTRAINT PK_CARTITEMS PRIMARY KEY (CartItemID)
+    CONSTRAINT PK_CARTITEMS PRIMARY KEY (CartItemID),
+    FOREIGN KEY (ProductID) REFERENCES Products (ProductID)  --080225 ng
 );
 
 

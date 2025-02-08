@@ -47,7 +47,11 @@ public class CategoryService {
     public void deleteCategory(Long categoryId) {
         CategoryEntity deleteCategoryEntity = categoryRepository.findById(categoryId).orElse(null);
         if (deleteCategoryEntity != null) {
-            categoryRepository.delete(deleteCategoryEntity);
+            try {
+                categoryRepository.delete(deleteCategoryEntity);
+            } catch (Exception exception) {
+                throw new NullPointerException("Cannot delete due to integrity constraints Category with Id: " + categoryId);
+            }
         } else {
             throw new NullPointerException("Category not found with Id: " + categoryId);
         }

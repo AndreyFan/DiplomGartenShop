@@ -1,5 +1,6 @@
 package de.telran.gartenshop.controller.advice;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
@@ -12,7 +13,7 @@ import java.io.FileNotFoundException;
 @RestControllerAdvice
 public class AdviceController {
     // альтернативная обработка ошибочной ситуации Exception
-    @ExceptionHandler({IllegalArgumentException.class, FileNotFoundException.class, NullPointerException.class})
+    @ExceptionHandler({IllegalArgumentException.class, FileNotFoundException.class})
     public ResponseEntity handleTwoExceptionNotFound(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -20,7 +21,7 @@ public class AdviceController {
     }
 
     // альтернативная обработка ошибочной ситуации Exception
-    @ExceptionHandler({HttpMessageConversionException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler({HttpMessageConversionException.class, MethodArgumentNotValidException.class, DataIntegrityViolationException.class, NullPointerException.class})
     public ResponseEntity handleTwoExceptionBadRequest(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
