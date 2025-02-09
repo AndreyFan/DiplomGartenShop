@@ -16,33 +16,35 @@ import java.util.Set;
 public class CartController {
     private final CartService cartService;
 
+    //получить все товары во всех корзинах //localhost:8088/cart/get
     @GetMapping(value = "/get")
     @ResponseStatus(HttpStatus.OK)
     public List<CartItemResponseDto> getAllCartItems() {
         return cartService.getAllCartItems();
     }
 
-    //получить товары в корзине определенного пользователя (поиск по userId)
+    //получить товары в корзине определенного пользователя (поиск по userId) //localhost:8088/cart/get/1
     @GetMapping(value = "/get/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public Set<CartItemResponseDto> getAllCartItemsByUserId(@PathVariable Long userId) {
         return cartService.getAllCartItemsByUserId(userId);
     }
 
-    //Добавление товара в корзину пользователя (поиск по userId)
+    //Добавление товара в корзину пользователя (поиск по userId) //localhost:8088/cart/1
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public boolean createCartItem(@RequestBody CartItemRequestDto cartItemRequestDto, @PathVariable Long userId) {
         return cartService.createCartItem(cartItemRequestDto, userId);
     }
 
+    //Удаление товара в корзине (поиск по cartItemId)  //localhost:8088/cart/1
     @DeleteMapping(value = "/{cartItemId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCartItem(@PathVariable Long cartItemId) { //delete
         cartService.deleteCartItem(cartItemId);
     }
 
-    //очистка корзины пользователя (поиск по userId)
+    //Очистка корзины пользователя (поиск по userId) //localhost:8088/cart/del/1
     @DeleteMapping(value = "/del/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteAllCartItems(@PathVariable Long userId) { //delete

@@ -1,7 +1,6 @@
 package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
-import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
 import de.telran.gartenshop.dto.responseDto.OrderItemResponseDto;
 import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
 import de.telran.gartenshop.entity.enums.OrderStatus;
@@ -26,23 +25,21 @@ public class OrderController {
         return orderService.getOrderStatus(orderId);
     }
 
-    //просмотр всех заказов
-    // /orders/get
+    //Просмотр всех заказов //localhost:8088/orders/get
     @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponseDto> getAllOrders() {
         return orderService.getAllOrders();
     }
 
-    //просмотр товаров во всех заказах localhost:8088/orders/get/items
+    //Просмотр товаров во всех заказах //localhost:8088/orders/get/items
     @GetMapping(value = "/get/items")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderItemResponseDto> getAllOrderItems() {
         return orderService.getAllOrderItems();
     }
 
-    //Оформление заказа
-    //localhost:8088/orders/1
+    //Оформление заказа (поиск по userId), все товары из CartItems переходят в OrderItems //localhost:8088/orders/1
     @PostMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto, @PathVariable Long userId) {
@@ -53,7 +50,7 @@ public class OrderController {
     // http://localhost:8088/orders/history/6
     @GetMapping("/history/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public Set<OrderResponseDto> getUsersOrders(@PathVariable Long userId){
+    public Set<OrderResponseDto> getUsersOrders(@PathVariable Long userId) {
         return orderService.getUsersOrders(userId);
     }
 
