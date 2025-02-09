@@ -31,7 +31,11 @@ public class ProductService {
 
     public List<ProductResponseDto> getProductsByFilter(Long categoryId, Double minPrice, Double maxPrice,
                                                         Boolean isDiscount, String sort) {
-        CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+
+        CategoryEntity categoryEntity = null;
+        if (categoryId != null) {
+            categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+        }
 
         List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
                 isDiscount, sort);
