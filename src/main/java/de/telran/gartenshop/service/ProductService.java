@@ -93,6 +93,20 @@ public class ProductService {
         return mappers.convertToProductResponseDto(updateProductEntity);
     }
 
+    public ProductResponseDto updateDiscountPrice(ProductRequestDto productRequestDto, Long productId) {
+        ProductEntity updateProductEntity = productRepository.findById(productId).orElse(null);
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+
+        if (updateProductEntity != null) {
+            updateProductEntity.setDiscountPrice(productRequestDto.getDiscountPrice());
+            updateProductEntity.setUpdatedAt(timestamp);
+            productRepository.save(updateProductEntity);
+        } else {
+            throw new NullPointerException("Product not found with Id: " + productId);
+        }
+        return mappers.convertToProductResponseDto(updateProductEntity);
+    }
+
     public void deleteProduct(Long productId) {
         ProductEntity deleteProductEntity = productRepository.findById(productId).orElse(null);
         if (deleteProductEntity != null) {

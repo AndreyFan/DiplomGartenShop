@@ -63,6 +63,13 @@ public class ProductController {
         return productService.updateProduct(productRequestDto, productId);
     }
 
+    //Добавить скидку на товар по productId //localhost:8088/products/discount/1
+    @PutMapping(value = "/discount/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponseDto updateDiscountPrice(@RequestBody ProductRequestDto productRequestDto, @PathVariable Long productId) {
+        return productService.updateDiscountPrice(productRequestDto, productId);
+    }
+
     //Удаление товара по Id //localhost:8088/products/1
     @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
@@ -70,7 +77,7 @@ public class ProductController {
         productService.deleteProduct(productId);
     }
 
-    //Товар дня (с max discountPrice) //localhost:8088/products/productOfDay
+    //Товар дня (с наибольшей скидкой) //localhost:8088/products/productOfDay
     @GetMapping(value = "/productOfDay")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getProductOfDay() {
