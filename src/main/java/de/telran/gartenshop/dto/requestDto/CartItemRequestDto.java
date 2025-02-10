@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+//4) CartItems - товары в корзине
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDto {
-private String name;
-private String email;
-private String phone;
-private String password;
-
+@Builder
+public class CartItemRequestDto {
+    private Long productId;
+    private Integer quantity;
 }

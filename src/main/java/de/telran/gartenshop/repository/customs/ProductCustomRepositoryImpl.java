@@ -47,7 +47,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         if (sort != null) {
             String[] sortArr = sort.split(",");
             if (sortArr.length == 2) {
-                if (sortArr[1].equalsIgnoreCase("DESC")) {
+                if (sortArr[1].trim().equalsIgnoreCase("DESC")) { //trim() - удаление пробелов в начале и в конце строки
                     sortOrder = cb.desc(root.get(sortArr[0]));
                 } else {
                     sortOrder = cb.asc(root.get(sortArr[0]));

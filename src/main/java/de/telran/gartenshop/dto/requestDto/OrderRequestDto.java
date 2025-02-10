@@ -1,18 +1,16 @@
 package de.telran.gartenshop.dto.requestDto;
 
+import de.telran.gartenshop.entity.enums.DeliveryMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDto {
-private String name;
-private String email;
-private String phone;
-private String password;
-
+@Builder
+public class OrderRequestDto {
+    private String deliveryAddress;
+    private DeliveryMethod deliveryMethod;
 }

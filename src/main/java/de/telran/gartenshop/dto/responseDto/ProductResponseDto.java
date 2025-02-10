@@ -1,5 +1,7 @@
 package de.telran.gartenshop.dto.responseDto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +23,7 @@ public class ProductResponseDto {
     private BigDecimal discountPrice;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+
+    @JsonProperty("category")
     private CategoryResponseDto categoryResponseDto;
 }

@@ -1,5 +1,6 @@
 package de.telran.gartenshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,8 +13,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
+//@EqualsAndHashCode
+//@ToString
 public class CategoryEntity {
     @Id
     @Column(name = "CategoryID")
@@ -24,5 +25,7 @@ public class CategoryEntity {
     private String name;
 
     @OneToMany(mappedBy = "category")
+    @JsonManagedReference
     private Set<ProductEntity> products = new HashSet<>();
+
 }

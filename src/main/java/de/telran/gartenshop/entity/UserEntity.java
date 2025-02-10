@@ -1,5 +1,7 @@
 package de.telran.gartenshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.telran.gartenshop.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,20 +9,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name="Users")
+@Table(name = "Users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
     @Id
-    @Column(name="UserID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "UserID")
     private Long userId;
 
-    @Column(name="Name")
+    @Column(name = "Name")
     private String name;
 
-    @Column(name ="Email")
+    @Column(name = "Email")
     private String email;
 
-    @Column(name="PhoneNumber")
+    @Column(name = "PhoneNumber")
     private String phone;
 
     @Column(name = "PasswordHash")
@@ -32,70 +42,15 @@ public class UserEntity {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private CartEntity cart;
+  
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<FavoriteEntity> favorites = new HashSet<>();
 
-    public UserEntity() {
-    }
 
-    public UserEntity(Long userId, String name, String email, String phone, String passwordHash, Role role, CartEntity cart) {
-        this.userId = userId;
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.passwordHash = passwordHash;
-        this.role = role;
-        this.cart = cart;
-    }
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<OrderEntity> orderEntities = new HashSet<>();
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public CartEntity getCart() {
-        return cart;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public void setCart(CartEntity cart) {
-        this.cart = cart;
-    }
 
 }

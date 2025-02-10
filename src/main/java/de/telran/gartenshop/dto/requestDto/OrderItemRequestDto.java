@@ -1,18 +1,17 @@
 package de.telran.gartenshop.dto.requestDto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDto {
-private String name;
-private String email;
-private String phone;
-private String password;
-
+@Builder
+public class OrderItemRequestDto {
+    private Long productId;
+    private Integer quantity;
 }

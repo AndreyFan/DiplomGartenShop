@@ -5,6 +5,8 @@ import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
 import de.telran.gartenshop.entity.CartEntity;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.entity.enums.Role;
+import de.telran.gartenshop.mapper.Mappers;
+import de.telran.gartenshop.repository.CartRepository;
 import de.telran.gartenshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +19,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final Mappers mappers;
+    private final CartRepository cartRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    public boolean registerUser(UserRequestDto userRequestDto) {
 
-    public void registerUser(UserRequestDto userRequestDto) {
+//        UserEntity usersEntity = mappers.convertToUserEntity(userRequestDto);
+//        UserEntity returnUserEntity = userRepository.save(usersEntity);
+//        return returnUserEntity.getUserId() != 0;
+
         // checking : if user already exist ?
-//        UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail()).orElse(null);
-//        if (userEntityExist != null){
-//            throw new RuntimeException("User already exist");
-//        }
+        UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail());
+        if (userEntityExist != null) {
+            throw new RuntimeException("User already exist");
+        }
 
         UserEntity userEntity = new UserEntity();
         userEntity.setName(userRequestDto.getName());
@@ -41,11 +45,13 @@ public class UserService {
         cart.setUser(userEntity);
         userEntity.setCart(cart);
 
+        UserEntity registeredUser;
         try {
-            userRepository.save(userEntity);
+            registeredUser = userRepository.save(userEntity);
         } catch (Exception exception) {
             throw new RuntimeException("Saving user was not successful");
         }
+        return registeredUser != null;
 
     }
 
@@ -61,19 +67,28 @@ public class UserService {
         user.setName(userUpdateDto.getName());
         user.setPhone(userUpdateDto.getPhone());
 
-        UserEntity userUpdate ;
+        UserEntity userUpdate;
 
         try {
             userUpdate = userRepository.save(user);
-        } catch (Exception exception){
+        } catch (Exception exception) {
             throw new RuntimeException("Error update user");
         }
-
 
         return userUpdate != null;
     }
 
     public void deleteUser(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("This User not exist");
+        }
+        // находим и удаляем корзину данного юзера
+        if (user.getCart() != null) {
+            cartRepository.delete(user.getCart());
+        }
+
+        userRepository.deleteById(userId);
     }
 
     public UserRequestDto getUserById(Long userId) {
@@ -89,16 +104,18 @@ public class UserService {
         return foundedUser;
     }
 
-//    public UserRequestDto getUserByEmail(String email) {
-//        UserEntity user = userRepository.findByEmail(email);
-//        if (user == null) {
-//            throw new RuntimeException("This User not exist");
-//        }
-//        UserRequestDto userRequestDto=new UserRequestDto();
-//        userRequestDto.setName(user.getName());
-//        userRequestDto.setPhone(user.getPhone());
-//        userRequestDto.setEmail(user.getEmail());
-//        userRequestDto.setPassword("******");
-//        return userRequestDto;
-//    }
+    public UserRequestDto getUserByEmail(String email) {
+
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("This User not exist");
+        }
+
+        UserRequestDto userRequestDto = new UserRequestDto();
+        userRequestDto.setName(user.getName());
+        userRequestDto.setPhone(user.getPhone());
+        userRequestDto.setEmail(user.getEmail());
+        userRequestDto.setPassword("******");
+        return userRequestDto;
+    }
 }
