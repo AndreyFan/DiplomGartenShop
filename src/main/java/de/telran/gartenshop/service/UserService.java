@@ -55,7 +55,16 @@ public class UserService {
 
     }
 
-    public void registerAdmin(UserRequestDto userRequestDto) {
+    // метод служит для изменения роли, так как при регистрации нового человека
+    // ему присваивается роль "Клиент"
+    public Boolean registerAdmin(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("This User not exist");
+        }
+        user.setRole(Role.ADMINISTRATOR);
+        UserEntity updatedRoleUser = userRepository.save(user);
+        return updatedRoleUser != null;
     }
 
     public Boolean updateUser(UserUpdateDto userUpdateDto, Long userId) {

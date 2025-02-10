@@ -70,22 +70,16 @@ public class OrderService {
     @Transactional
     public void changeStatus() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
-
         // to avoid ConcurrentModificationException,
         // first change all statuses and only then save as a list
         orderEntityList.forEach(order -> {
             OrderStatus currentStatus = order.getOrderStatus();
-            if (currentStatus != DELIVERED && currentStatus != CANCELED && currentStatus != AWAITING_PAYMENT) {
-                // if u use request localhost:8088/orders/awaiting-payment-products?days=30 add in condition  && currentStatus != AWAITING_PAYMENT
-                OrderStatus nextStatus = switch (currentStatus) {
-                    case CREATED -> AWAITING_PAYMENT;
-                    case AWAITING_PAYMENT -> PAID;
-                    case PAID -> ON_THE_WAY;
-                    case ON_THE_WAY -> DELIVERED;
-                    default -> currentStatus;
-                };
-                order.setOrderStatus(nextStatus);
-            }
+                        OrderStatus nextStatus = switch (currentStatus) {
+                            case PAID -> ON_THE_WAY;
+                            case ON_THE_WAY -> DELIVERED;
+                            default -> currentStatus;
+                        };
+
         });
         // Save everything with one request
         orderRepository.saveAll(orderEntityList);
