@@ -158,11 +158,12 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public OrderResponseDto cancelOrder(Long orderId) {
         OrderEntity orderEntity = orderRepository.findById(orderId).orElse(null);
         OrderEntity updateOrderEntity;
         if (orderEntity != null) {
-            if (orderEntity.getOrderStatus() == OrderStatus.CREATED || orderEntity.getOrderStatus() == AWAITING_PAYMENT) {
+            if (orderEntity.getOrderStatus() == OrderStatus.CREATED || orderEntity.getOrderStatus() == OrderStatus.AWAITING_PAYMENT) {
                 Timestamp timestamp = new Timestamp(new Date().getTime());
                 orderEntity.setOrderStatus(OrderStatus.CANCELED);
                 orderEntity.setUpdatedAt(timestamp);
