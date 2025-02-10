@@ -7,6 +7,7 @@ import de.telran.gartenshop.entity.OrderEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class OrderController {
     }
 
     @GetMapping("/top-canceled")
-    public ResponseEntity <List<ProductEntity>> getTopCanceled() {
+    public ResponseEntity<List<ProductEntity>> getTopCanceled() {
         return ResponseEntity.ok(orderService.getTop10CanceledProducts());
     }
 
@@ -44,14 +45,7 @@ public class OrderController {
         return ResponseEntity.ok(products);
     }
 
-
-
-    //просмотр всех заказов
-
-    // /orders/get
-
     //Просмотр всех заказов //localhost:8088/orders/get
-
     @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponseDto> getAllOrders() {
@@ -80,4 +74,11 @@ public class OrderController {
         return orderService.getUsersOrders(userId);
     }
 
+    //Отмена заказа по orderId //localhost:8088/orders/1
+    @PutMapping(value = "/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderResponseDto cancelOrder(@PathVariable Long orderId) {
+        return orderService.cancelOrder(orderId);
+    }
 }
+
