@@ -45,9 +45,13 @@ public class UserController {
         return userService.getUserByEmail(email);
     }
 
-    @PostMapping("/registerAdmin")
-    public void registerAdmin(@RequestBody UserRequestDto userRequestDto) {
-        userService.registerAdmin(userRequestDto);
+
+    // метод служит для изменения роли, так как при регистрации нового человека
+    // ему присваивается роль "Клиент"
+    // http://localhost:8088/users/registerAdmin?email=nina.green@example.com
+    @PutMapping("/registerAdmin")
+    public Boolean registerAdmin(@RequestParam String email) {
+        return userService.registerAdmin(email);
     }
 
     @PutMapping("/{userId}")
