@@ -17,10 +17,11 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+
 @ToString(exclude = {"user", "orderItems"})
 @EqualsAndHashCode(exclude = {"user", "orderItems"})
-public class OrderEntity {
 
+public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OrderID")
@@ -46,11 +47,11 @@ public class OrderEntity {
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "order")
-    private Set<OrderItemEntity> orderItems = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "UserID")
     @JsonBackReference
     private UserEntity user;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<OrderItemEntity> orderItems = new HashSet<>();
 }

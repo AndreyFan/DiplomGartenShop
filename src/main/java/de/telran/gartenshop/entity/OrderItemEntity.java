@@ -12,10 +12,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
+
 @EqualsAndHashCode(exclude = {"product", "order"})
 @ToString(exclude = {"product", "order"})
-public class OrderItemEntity {
 
+public class OrderItemEntity {
     @Id
     @Column(name = "OrderItemID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,12 +28,11 @@ public class OrderItemEntity {
     @Column(name = "PriceAtPurchase")
     private BigDecimal priceAtPurchase;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")
     private ProductEntity product;
 
-    @ManyToOne
-    @JoinColumn(name = "OrderID")
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OrderID", nullable = false)
     private OrderEntity order;
 }

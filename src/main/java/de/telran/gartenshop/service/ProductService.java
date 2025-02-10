@@ -31,7 +31,11 @@ public class ProductService {
 
     public List<ProductResponseDto> getProductsByFilter(Long categoryId, Double minPrice, Double maxPrice,
                                                         Boolean isDiscount, String sort) {
-        CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+
+        CategoryEntity categoryEntity = null;
+        if (categoryId != null) {
+            categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+        }
 
         List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
                 isDiscount, sort);
@@ -80,6 +84,20 @@ public class ProductService {
             updateProductEntity.setPrice(productRequestDto.getPrice());
             updateProductEntity.setCategory(categoryEntity);
             updateProductEntity.setImageUrl(productRequestDto.getImageUrl());
+            updateProductEntity.setDiscountPrice(productRequestDto.getDiscountPrice());
+            updateProductEntity.setUpdatedAt(timestamp);
+            productRepository.save(updateProductEntity);
+        } else {
+            throw new NullPointerException("Product not found with Id: " + productId);
+        }
+        return mappers.convertToProductResponseDto(updateProductEntity);
+    }
+
+    public ProductResponseDto updateDiscountPrice(ProductRequestDto productRequestDto, Long productId) {
+        ProductEntity updateProductEntity = productRepository.findById(productId).orElse(null);
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+
+        if (updateProductEntity != null) {
             updateProductEntity.setDiscountPrice(productRequestDto.getDiscountPrice());
             updateProductEntity.setUpdatedAt(timestamp);
             productRepository.save(updateProductEntity);

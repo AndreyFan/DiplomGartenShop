@@ -28,7 +28,7 @@ public class CartEntity {
     @JsonBackReference
     private UserEntity user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart")
     private Set<CartItemEntity> cartItems = new HashSet<>();
 
 }

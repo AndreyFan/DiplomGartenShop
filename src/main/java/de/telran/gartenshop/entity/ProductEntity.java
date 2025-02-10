@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Products")
@@ -13,8 +15,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString(exclude = {"category"})
+//@EqualsAndHashCode
+//@ToString(exclude = {"category"})
 public class ProductEntity {
     @Id
     @Column(name = "ProductID")

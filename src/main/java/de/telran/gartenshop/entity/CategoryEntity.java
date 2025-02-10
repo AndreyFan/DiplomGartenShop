@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 //@EqualsAndHashCode
-@ToString
+//@ToString
 public class CategoryEntity {
     @Id
     @Column(name = "CategoryID")

@@ -13,5 +13,5 @@ public class OrderItemResponseDto {
     private Integer quantity;
     private BigDecimal priceAtPurchase;
     private ProductResponseDto product;
-    private OrderResponseDto order;
+    //private OrderResponseDto order;
 }
