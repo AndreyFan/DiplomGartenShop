@@ -44,7 +44,6 @@ public class OrderService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-
     public List<OrderEntity> getTop10PaidProducts() {
         return orderRepository.findTop10PaidOrders();
     }
@@ -53,14 +52,9 @@ public class OrderService {
         return orderRepository.findTop10CanceledProducts();
     }
 
-
-
     public List<OrderEntity> getOrdersAwaitingPayment(int days) {
-        return orderRepository.findOrdersAwaitingPayment( days);
+        return orderRepository.findOrdersAwaitingPayment(days);
     }
-
-
-
 
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
@@ -85,7 +79,7 @@ public class OrderService {
                             case ON_THE_WAY -> DELIVERED;
                             default -> currentStatus;
                         };
-                        order.setOrderStatus(nextStatus);
+
         });
         // Save everything with one request
         orderRepository.saveAll(orderEntityList);
@@ -164,4 +158,21 @@ public class OrderService {
         }
     }
 
+    public OrderResponseDto cancelOrder(Long orderId) {
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElse(null);
+        OrderEntity updateOrderEntity;
+        if (orderEntity != null) {
+            if (orderEntity.getOrderStatus() == OrderStatus.CREATED || orderEntity.getOrderStatus() == AWAITING_PAYMENT) {
+                Timestamp timestamp = new Timestamp(new Date().getTime());
+                orderEntity.setOrderStatus(OrderStatus.CANCELED);
+                orderEntity.setUpdatedAt(timestamp);
+                updateOrderEntity = orderRepository.save(orderEntity);
+            } else {
+                throw new NullPointerException("Order with Id: " + +orderId + " could not be cancel");
+            }
+        } else {
+            throw new NullPointerException("Order not found with Id: " + orderId);
+        }
+        return mappers.convertToOrderResponseDto(updateOrderEntity);
+    }
 }

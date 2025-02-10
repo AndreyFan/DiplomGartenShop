@@ -3,7 +3,6 @@ package de.telran.gartenshop.service;
 import de.telran.gartenshop.configure.MapperUtil;
 import de.telran.gartenshop.dto.requestDto.CartItemRequestDto;
 import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.*;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CartItemRepository;
@@ -14,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
