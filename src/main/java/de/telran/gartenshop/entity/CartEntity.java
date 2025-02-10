@@ -1,5 +1,7 @@
 package de.telran.gartenshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class CartEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserID", referencedColumnName = "UserId")
+    @JsonBackReference
     private UserEntity user;
 
     @OneToMany(mappedBy = "cart")

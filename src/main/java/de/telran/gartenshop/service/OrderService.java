@@ -2,10 +2,10 @@ package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
 import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
-import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
-import de.telran.gartenshop.dto.responseDto.OrderItemResponseDto;
-import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
+
+import de.telran.gartenshop.dto.responseDto.*;
 import de.telran.gartenshop.entity.*;
+
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.*;
@@ -16,12 +16,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.telran.gartenshop.entity.enums.OrderStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true) // Разрешает повторные запросы
 public class OrderService {
 
     private final UserRepository userRepository;
@@ -39,6 +43,24 @@ public class OrderService {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+
+    public List<OrderEntity> getTop10PaidProducts() {
+        return orderRepository.findTop10PaidOrders();
+    }
+
+    public List<ProductEntity> getTop10CanceledProducts() {
+        return orderRepository.findTop10CanceledProducts();
+    }
+
+
+
+    public List<OrderEntity> getOrdersAwaitingPayment(int days) {
+        return orderRepository.findOrdersAwaitingPayment( days);
+    }
+
+
+
 
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
@@ -59,14 +81,17 @@ public class OrderService {
         // first change all statuses and only then save as a list
         orderEntityList.forEach(order -> {
             OrderStatus currentStatus = order.getOrderStatus();
-            OrderStatus nextStatus = switch (currentStatus) {
-                case CREATED -> AWAITING_PAYMENT;
-                case AWAITING_PAYMENT -> PAID;
-                case PAID -> ON_THE_WAY;
-                case ON_THE_WAY -> DELIVERED;
-                default -> currentStatus;
-            };
-            order.setOrderStatus(nextStatus);
+                    if (currentStatus != DELIVERED && currentStatus!= CANCELED && currentStatus != AWAITING_PAYMENT) {
+                        // if u use request localhost:8088/orders/awaiting-payment-products?days=30 add in condition  && currentStatus != AWAITING_PAYMENT
+                        OrderStatus nextStatus = switch (currentStatus) {
+                            case CREATED -> AWAITING_PAYMENT;
+                            case AWAITING_PAYMENT -> PAID;
+                            case PAID -> ON_THE_WAY;
+                            case ON_THE_WAY -> DELIVERED;
+                            default -> currentStatus;
+                        };
+                        order.setOrderStatus(nextStatus);
+                    }
         });
         // Save everything with one request
         orderRepository.saveAll(orderEntityList);

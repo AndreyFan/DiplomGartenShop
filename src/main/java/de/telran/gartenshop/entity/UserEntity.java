@@ -1,5 +1,7 @@
 package de.telran.gartenshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.telran.gartenshop.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,10 +44,12 @@ public class UserEntity {
     private CartEntity cart;
   
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<FavoriteEntity> favorites = new HashSet<>();
 
 
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<OrderEntity> orderEntities = new HashSet<>();
 
 
