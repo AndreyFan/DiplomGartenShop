@@ -1,8 +1,6 @@
 package de.telran.gartenshop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.repository.ProductRepository;
@@ -11,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -21,8 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,11 +39,13 @@ public class ProductServiceIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    Long productIdTest;
     private ProductEntity productEntityTest;
-    private ProductResponseDto productResponseDtoTest;
+    //private ProductResponseDto productResponseDtoTest;
 
     @BeforeEach
     void setUp() {
+       productIdTest = 1L;
         Timestamp timestamp = new Timestamp(new Date().getTime());
         productEntityTest = new ProductEntity(
                 1L,
@@ -58,16 +58,16 @@ public class ProductServiceIntegrationTest {
                 timestamp,
                 new CategoryEntity(1L, "CategoryName", null));
 
-        productResponseDtoTest = new ProductResponseDto(
-                1L,
-                "ProductName",
-                "ProductDescription",
-                new BigDecimal("10.25"),
-                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
-                new BigDecimal("8.50"),
-                timestamp,
-                timestamp,
-                new CategoryResponseDto(1L, "CategoryName"));
+//        productResponseDtoTest = new ProductResponseDto(
+//                1L,
+//                "ProductName",
+//                "ProductDescription",
+//                new BigDecimal("10.25"),
+//                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
+//                new BigDecimal("8.50"),
+//                timestamp,
+//                timestamp,
+//                new CategoryResponseDto(1L, "CategoryName"));
     }
 
     @Test
@@ -78,19 +78,37 @@ public class ProductServiceIntegrationTest {
                 .andDo(print()) //печать лога вызова
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..productId").exists())
-                .andExpect(jsonPath("$..name").exists());
+                .andExpect(jsonPath("$..name").exists())
+                .andExpect(jsonPath("$..productId").value(1));
+    }
+
+    @Test
+    void getProductByIdTest() throws Exception {
+        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
+        this.mockMvc.perform(get("/products/{productId}", productIdTest))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..name").exists())
+                .andExpect(jsonPath("$..productId").value(1));
+    }
+
+    @Test
+    void getProductOfDayTest() throws Exception {
+        when(productRepositoryMock.getProductOfDay()).thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/products/productOfDay"))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..name").exists())
+                .andExpect(jsonPath("$..productId").value(1));
     }
 
 //    @Test
-//    void getProductByIdTest() throws Exception {
-//        Long testId = 1L;
-//        when(productRepositoryMock.findById(testId)).thenReturn(Optional.of(productEntityTest));
-//
-//        // when(mappersMock.convertToProductDto(productEntityTest1)).thenReturn(productDtoTest1);
-//        this.mockMvc.perform(get("/products/{productId}"))
-//                .andDo(print()) //печать лога вызова
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$..productId").exists())
-//                .andExpect(jsonPath("$..name").exists());
+//    void deleteProductTest() throws Exception {
+//        when(productRepositoryMock.deleteProduct().findById(inputId)).thenReturn(Optional.ofNullable(null));
+//        this.mockMvc.perform(delete("/products/{productId}", productIdTest))
+//                .andDo(print())
+//                .andExpect(status().isOk());
 //    }
 }
