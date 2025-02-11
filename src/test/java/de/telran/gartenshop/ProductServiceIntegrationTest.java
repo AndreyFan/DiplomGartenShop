@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.repository.ProductRepository;
+import de.telran.gartenshop.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,13 +43,13 @@ public class ProductServiceIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    Long productIdTest;
     private ProductEntity productEntityTest;
-    //private ProductResponseDto productResponseDtoTest;
+
+    Long productIdTest;
 
     @BeforeEach
     void setUp() {
-       productIdTest = 1L;
+        productIdTest = 1L;
         Timestamp timestamp = new Timestamp(new Date().getTime());
         productEntityTest = new ProductEntity(
                 1L,
@@ -58,16 +62,6 @@ public class ProductServiceIntegrationTest {
                 timestamp,
                 new CategoryEntity(1L, "CategoryName", null));
 
-//        productResponseDtoTest = new ProductResponseDto(
-//                1L,
-//                "ProductName",
-//                "ProductDescription",
-//                new BigDecimal("10.25"),
-//                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
-//                new BigDecimal("8.50"),
-//                timestamp,
-//                timestamp,
-//                new CategoryResponseDto(1L, "CategoryName"));
     }
 
     @Test
@@ -104,11 +98,12 @@ public class ProductServiceIntegrationTest {
                 .andExpect(jsonPath("$..productId").value(1));
     }
 
-//    @Test
-//    void deleteProductTest() throws Exception {
-//        when(productRepositoryMock.deleteProduct().findById(inputId)).thenReturn(Optional.ofNullable(null));
-//        this.mockMvc.perform(delete("/products/{productId}", productIdTest))
-//                .andDo(print())
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void deleteProductTest() throws Exception {
+        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
+        doNothing().when(productRepositoryMock).delete(productEntityTest);
+        mockMvc.perform(delete("/products/{productId}", productIdTest))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }
