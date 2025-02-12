@@ -26,7 +26,7 @@ public class ProductController {
     //localhost:8088/products/filter?category=3&min_price=10&max_price=90&is_discount=true&sort=price,desc
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/filter")
-    public List<ProductResponseDto> getProductsWithQuery(
+    public List<ProductResponseDto> getProductsByFilter(
             @RequestParam(value = "category", required = false) Long categoryId,
             @RequestParam(value = "min_price", required = false) Double minPrice,
             @RequestParam(value = "max_price", required = false) Double maxPrice,
