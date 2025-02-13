@@ -141,20 +141,6 @@ public class ProductIntegrationTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    void getProductsByFilterTest() throws Exception {
-//        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
-//        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
-//        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 9.99, 12.99,
-//                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
-//        this.mockMvc.perform(get("/products/filter?category=1&min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
-//                .andDo(print()) //печать лога вызова
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$..productId").exists())
-//                .andExpect(jsonPath("$..name").exists())
-//                .andExpect(jsonPath("$..productId").value(1));
-//    }
-
     @Test
     void createProductTest() throws Exception {
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(productEntityTest);
@@ -196,4 +182,18 @@ public class ProductIntegrationTest {
                 .andExpect(jsonPath("$.productId").value(1L))
                 .andExpect(jsonPath("$.name").value("ProductName"));
     }
+
+//    @Test
+//    void getProductsByFilterTest() throws Exception {
+//        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+//        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
+//        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 9.99, 12.99,
+//                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
+//        this.mockMvc.perform(get("/products/filter?category=1&min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
+//                .andDo(print()) //печать лога вызова
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$..productId").exists())
+//                .andExpect(jsonPath("$..name").exists())
+//                .andExpect(jsonPath("$..productId").value(1));
+//    }
 }
