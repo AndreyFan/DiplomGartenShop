@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest // запускаем контейнер Spring для тестирования
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @ActiveProfiles(profiles = {"dev"})
-public class ProductServiceIntegrationTest {
+public class ProductIntegrationTest {
     @Autowired
     private MockMvc mockMvc; // для имитации запросов пользователей
 
@@ -144,9 +144,10 @@ public class ProductServiceIntegrationTest {
 //    @Test
 //    void getProductsByFilterTest() throws Exception {
 //        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+//        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
 //        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 9.99, 12.99,
 //                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
-//        this.mockMvc.perform(get("/products/filter?category=1&min_price=0.99&max_price=120.99&is_discount=true&sort=price,desc"))
+//        this.mockMvc.perform(get("/products/filter?category=1&min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
 //                .andDo(print()) //печать лога вызова
 //                .andExpect(status().isOk())
 //                .andExpect(jsonPath("$..productId").exists())
