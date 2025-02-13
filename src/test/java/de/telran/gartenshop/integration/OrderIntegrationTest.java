@@ -221,6 +221,7 @@ public class OrderIntegrationTest {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
         when(orderItemRepositoryMock.save(any(OrderItemEntity.class))).thenReturn(orderItemEntityTest);
+        when(productRepositoryMock.findById(orderItemEntityTest.getProduct().getProductId())).thenReturn(Optional.of(productEntityTest));
         this.mockMvc.perform(post("/orders/{userId}", userIdTest)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequesDtoTest))) // jackson: object -> json
@@ -228,14 +229,27 @@ public class OrderIntegrationTest {
                 .andExpect(status().isCreated());
     }
 
+    @Test
+    void createOrderExceptionByUserTest() throws Exception {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
+        this.mockMvc.perform(post("/orders/{userId}", userIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderRequesDtoTest)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
 //    @Test
-//    void createOrderExceptionNotFoundTest() throws Exception {
-//        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
+//    void createOrderExceptionByProductTest() throws Exception {
+//        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+//        when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
+//        when(orderItemRepositoryMock.save(any(OrderItemEntity.class))).thenReturn(orderItemEntityTest);
+//        when(productRepositoryMock.findById(orderItemEntityTest.getProduct().getProductId())).thenReturn(Optional.empty());
 //        this.mockMvc.perform(post("/orders/{userId}", userIdTest)
 //                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(orderRequesDtoTest))) // jackson: object -> json
+//                        .content(objectMapper.writeValueAsString(orderRequesDtoTest)))
 //                .andDo(print())
-//                .andExpect(status().isNotFound()); // ожидаем 404 статус
+//                .andExpect(status().isBadRequest());
 //    }
 
     @Test
@@ -248,6 +262,25 @@ public class OrderIntegrationTest {
                 .andExpect(jsonPath("$..orderId").exists())
                 .andExpect(jsonPath("$.orderId").value(1L))
                 .andExpect(jsonPath("$.orderStatus").value("CANCELED"));
+    }
+
+    @Test
+    void cancelOrderExceptionByOrderTest() throws Exception {
+        when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.empty());
+        when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
+        this.mockMvc.perform(put("/orders/{orderId}", orderIdTest))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void cancelOrderExceptionByStatusOrderTest() throws Exception {
+        when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.of(orderEntityTest));
+        orderEntityTest.setOrderStatus(OrderStatus.DELIVERED);
+        when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
+        this.mockMvc.perform(put("/orders/{orderId}", orderIdTest))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
