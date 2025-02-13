@@ -186,6 +186,7 @@ public class ProductServiceIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..name").exists())
                 .andExpect(jsonPath("$.productId").value(1L))
                 .andExpect(jsonPath("$.name").value("ProductName"));
     }
