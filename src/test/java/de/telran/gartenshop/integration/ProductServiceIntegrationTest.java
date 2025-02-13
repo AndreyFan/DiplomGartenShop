@@ -156,21 +156,10 @@ public class ProductServiceIntegrationTest {
 
     @Test
     void createProductTest() throws Exception {
-        ProductResponseDto createProductResponseDtoTest = new ProductResponseDto(
-                null,
-                "ProductName",
-                "ProductDescription",
-                new BigDecimal("10.25"),
-                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
-                new BigDecimal("8.50"),
-                timestamp,
-                timestamp,
-                categoryResponseDtoTest);
-
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(productEntityTest);
         this.mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createProductResponseDtoTest))) // jackson: object -> json
+                        .content(objectMapper.writeValueAsString(productRequestDtoTest))) // jackson: object -> json
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
