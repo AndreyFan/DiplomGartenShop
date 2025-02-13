@@ -179,4 +179,20 @@ public class ProductServiceIntegrationTest {
                 .andExpect(jsonPath("$.productId").value(1L))
                 .andExpect(jsonPath("$.name").value("ProductName"));
     }
+
+    @Test
+    void updateDiscountPriceTest() throws Exception {
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
+        when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(productEntityTest);
+        this.mockMvc.perform(put("/products/discount/{productId}", productIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequestDtoTest))) // jackson: object -> json
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..name").exists())
+                .andExpect(jsonPath("$.productId").value(1L))
+                .andExpect(jsonPath("$.name").value("ProductName"));
+    }
 }
