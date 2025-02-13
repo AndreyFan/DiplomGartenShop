@@ -167,7 +167,7 @@ public class OrderIntegrationTest {
 
 
     @Test
-    void getOrderStatusExceptionNotFoundTest() throws Exception {
+    void getOrderStatusExceptionByUserTest() throws Exception {
         when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(get("/orders/status/{orderId}", orderIdTest))
                 .andDo(print())  // печать лога вызова
@@ -258,5 +258,13 @@ public class OrderIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..orderId").exists())
                 .andExpect(jsonPath("$..orderId").value(1));
+    }
+
+    @Test
+    void getUsersOrdersExceptionByUserTest() throws Exception {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
+        this.mockMvc.perform(get("/orders/history/{userId}", userIdTest))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }
