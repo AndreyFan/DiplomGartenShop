@@ -74,11 +74,11 @@ public class OrderService {
         // first change all statuses and only then save as a list
         orderEntityList.forEach(order -> {
             OrderStatus currentStatus = order.getOrderStatus();
-                        OrderStatus nextStatus = switch (currentStatus) {
-                            case PAID -> ON_THE_WAY;
-                            case ON_THE_WAY -> DELIVERED;
-                            default -> currentStatus;
-                        };
+            OrderStatus nextStatus = switch (currentStatus) {
+                case PAID -> ON_THE_WAY;
+                case ON_THE_WAY -> DELIVERED;
+                default -> currentStatus;
+            };
 
         });
         // Save everything with one request
@@ -147,7 +147,8 @@ public class OrderService {
     public Set<OrderResponseDto> getUsersOrders(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new RuntimeException("This User not found ");
+            //throw new RuntimeException("This User not found ");
+            throw new NullPointerException("This User not found ");
         } else {
             Set<OrderEntity> orderEntityList = user.getOrderEntities();
             // исключим из всех orderEntity юзера информацию о нем самом
