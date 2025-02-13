@@ -1,9 +1,7 @@
 package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
-import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.*;
 import de.telran.gartenshop.entity.*;
 import de.telran.gartenshop.entity.enums.DeliveryMethod;
@@ -22,10 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -59,37 +54,25 @@ public class OrderIntegrationTest {
     private ObjectMapper objectMapper;
 
     private ProductEntity productEntityTest;
-    private CategoryEntity categoryEntityTest;
     private OrderEntity orderEntityTest;
     private OrderItemEntity orderItemEntityTest;
     private UserEntity userEntityTest;
 
-    private ProductRequestDto productRequestDtoTest;
-    private CategoryRequestDto categoryRequestDtoTest;
     private OrderRequestDto orderRequesDtoTest;
 
-    private ProductResponseDto productResponseDtoTest;
-    private CategoryResponseDto categoryResponseDtoTest;
-    private OrderResponseDto orderResponseDtoTest;
-    private OrderItemResponseDto orderItemResponseDtoTest;
-
     Timestamp timestamp;
-
-    Long orderIdTest;
-    Long userIdTest;
+    Long orderIdTest = 1L;
+    Long userIdTest = 1L;
 
     @BeforeEach
     void setUp() {
-        orderIdTest = 1L;
-        userIdTest = 1L;
-
         timestamp = new Timestamp(new Date().getTime());
 
         orderRequesDtoTest = new OrderRequestDto(
                 "Berlin",
                 DeliveryMethod.SELF_DELIVERY);
 
-        orderResponseDtoTest = new OrderResponseDto(
+        OrderResponseDto orderResponseDtoTest = new OrderResponseDto(
                 1L,
                 timestamp,
                 "Berlin",
@@ -111,7 +94,7 @@ public class OrderIntegrationTest {
                 new UserEntity(),
                 new HashSet<OrderItemEntity>());
 
-        categoryEntityTest = new CategoryEntity(1L, "CategoryName", null);
+        CategoryEntity categoryEntityTest = new CategoryEntity(1L, "CategoryName", null);
         productEntityTest = new ProductEntity(
                 1L,
                 "ProductName",
@@ -123,8 +106,8 @@ public class OrderIntegrationTest {
                 timestamp,
                 categoryEntityTest);
 
-        categoryResponseDtoTest = new CategoryResponseDto(1L, "CategoryName");
-        productResponseDtoTest = new ProductResponseDto(
+        CategoryResponseDto categoryResponseDtoTest = new CategoryResponseDto(1L, "CategoryName");
+        ProductResponseDto productResponseDtoTest = new ProductResponseDto(
                 1L,
                 "ProductName",
                 "ProductDescription",
@@ -142,11 +125,15 @@ public class OrderIntegrationTest {
                 productEntityTest,
                 orderEntityTest);
 
-        orderItemResponseDtoTest = new OrderItemResponseDto(
+        OrderItemResponseDto orderItemResponseDtoTest = new OrderItemResponseDto(
                 1L,
                 100,
                 new BigDecimal("8.50"),
                 productResponseDtoTest);
+
+
+        Set<OrderEntity> orderEntitySet = new HashSet<>();
+        orderEntitySet.add(orderEntityTest);
 
         userEntityTest = new UserEntity(
                 1L,
@@ -157,7 +144,7 @@ public class OrderIntegrationTest {
                 Role.CLIENT,
                 new CartEntity(),
                 new HashSet<FavoriteEntity>(),
-                new HashSet<OrderEntity>());
+                orderEntitySet);
     }
 
     @Test
@@ -180,7 +167,7 @@ public class OrderIntegrationTest {
 
 
     @Test
-    void getOrderStatusExceptionTest() throws Exception {
+    void getOrderStatusExceptionNotFoundTest() throws Exception {
         when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(get("/orders/status/{orderId}", orderIdTest))
                 .andDo(print())  // печать лога вызова
@@ -241,6 +228,16 @@ public class OrderIntegrationTest {
                 .andExpect(status().isCreated());
     }
 
+//    @Test
+//    void createOrderExceptionNotFoundTest() throws Exception {
+//        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
+//        this.mockMvc.perform(post("/orders/{userId}", userIdTest)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(orderRequesDtoTest))) // jackson: object -> json
+//                .andDo(print())
+//                .andExpect(status().isNotFound()); // ожидаем 404 статус
+//    }
+
     @Test
     void cancelOrderTest() throws Exception {
         when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.of(orderEntityTest));
@@ -253,14 +250,13 @@ public class OrderIntegrationTest {
                 .andExpect(jsonPath("$.orderStatus").value("CANCELED"));
     }
 
-//    @Test
-//    void getUsersOrdersTest() throws Exception {
-//        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
-//         when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(orderEntityTest));
-//        this.mockMvc.perform(get("/orders/history/{userId}", userIdTest))
-//                .andDo(print()) //печать лога вызова
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$..orderId").exists())
-//                .andExpect(jsonPath("$..orderId").value(1));
-//    }
+    @Test
+    void getUsersOrdersTest() throws Exception {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        this.mockMvc.perform(get("/orders/history/{userId}", userIdTest))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..orderId").exists())
+                .andExpect(jsonPath("$..orderId").value(1));
+    }
 }
