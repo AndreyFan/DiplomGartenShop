@@ -132,15 +132,10 @@ public class OrderService {
                 orderRepository.save(createOrderEntity);
 
                 //3. Очищение товаров в корзине (удаление CartItems)
-                //  CartEntity cartEntity = userEntity.getCart();
-                // if (cartEntity != null) {
                 Set<CartItemEntity> cartItemSet = cartEntity.getCartItems();
                 for (CartItemEntity item : cartItemSet) {
                     cartItemRepository.delete(item);
                 }
-//            } else {
-//                throw new IllegalArgumentException("Cart for UserId: " + userId + " not found.");
-//            }
             }
         } else {
             throw new IllegalArgumentException("Cart for UserId: " + userId + " not found.");

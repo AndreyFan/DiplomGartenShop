@@ -29,8 +29,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest // запускаем контейнер Spring для тестирования
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
@@ -122,6 +121,16 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    void getProductByIdExceptionByProductTest() throws Exception {
+        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.empty());
+        this.mockMvc.perform(get("/products/{productId}", productIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequestDtoTest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void getProductOfDayTest() throws Exception {
         when(productRepositoryMock.getProductOfDay()).thenReturn(List.of(productEntityTest));
         this.mockMvc.perform(get("/products/productOfDay"))
@@ -142,13 +151,33 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    void deleteProductExceptionByProductTest() throws Exception {
+        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.empty());
+        this.mockMvc.perform(delete("/products/{productId}", productIdTest))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void createProductTest() throws Exception {
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(productEntityTest);
         this.mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequestDtoTest))) // jackson: object -> json
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(content().string("true"));
+    }
+
+    @Test
+    void createProductReturnFalseTest() throws Exception {
+        when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(new ProductEntity());
+        this.mockMvc.perform(post("/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequestDtoTest))) // jackson: object -> json
+                .andDo(print())
+                .andExpect(content().string("false"));
+        ;
     }
 
     @Test
@@ -168,6 +197,16 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    void updateProductExceptionByProductTest() throws Exception {
+        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.empty());
+        this.mockMvc.perform(put("/products/{productId}", productIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequestDtoTest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void updateDiscountPriceTest() throws Exception {
         when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
@@ -183,17 +222,26 @@ public class ProductIntegrationTest {
                 .andExpect(jsonPath("$.name").value("ProductName"));
     }
 
-//    @Test
-//    void getProductsByFilterTest() throws Exception {
-//        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
-//        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
-//        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 9.99, 12.99,
-//                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
-//        this.mockMvc.perform(get("/products/filter?category=1&min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
-//                .andDo(print()) //печать лога вызова
-//                .andExpect(status().isOk())
+    @Test
+    void updateDiscountPriceExceptionByProductTest() throws Exception {
+        when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.empty());
+        this.mockMvc.perform(put("/products/discount/{productId}", productIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequestDtoTest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getProductsByFilterTest() throws Exception {
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 9.99, 12.99,
+                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/products/filter?category=1&min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
+                .andDo(print())
+                .andExpect(status().isOk());
 //                .andExpect(jsonPath("$..productId").exists())
 //                .andExpect(jsonPath("$..name").exists())
 //                .andExpect(jsonPath("$..productId").value(1));
-//    }
+    }
 }
