@@ -65,7 +65,7 @@ public class CartService {
         if (deleteCartItemEntity != null) {
             cartItemRepository.delete(deleteCartItemEntity);
         } else {
-            throw new NullPointerException("CartItem not found with Id: " + cartItemId);
+            throw new IllegalArgumentException("CartItem not found with Id: " + cartItemId);
         }
     }
 
@@ -79,7 +79,7 @@ public class CartService {
                 cartItemRepository.delete(cartItem);
             }
         } else {
-            throw new NullPointerException("User not found with Id: " + userId);
+            throw new IllegalArgumentException("User not found with Id: " + userId);
         }
     }
 }

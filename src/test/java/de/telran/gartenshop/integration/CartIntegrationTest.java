@@ -24,8 +24,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -65,6 +64,7 @@ public class CartIntegrationTest {
     Timestamp timestamp;
     Long cartIdTest = 1L;
     Long userIdTest = 1L;
+    Long cartItemIdTest = 1L;
 
     @BeforeEach
     void setUp() {
@@ -198,16 +198,37 @@ public class CartIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    void createCartItemExceptionByProductTest() throws Exception {
-//        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
-//        when(cartItemRepositoryMock.save(any(CartItemEntity.class))).thenReturn(cartItemEntityTest);
-//        when(productRepositoryMock.findById(cartItemEntityTest.getProduct().getProductId())).thenReturn(Optional.empty());
-//
-//        this.mockMvc.perform(post("/cart/{userId}", userIdTest)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(cartItemRequestDtoTest)))
-//                .andDo(print())
-//                .andExpect(status().isNotFound());
-//    }
+    @Test
+    void deleteCartItemTest() throws Exception {
+        when(cartItemRepositoryMock.findById(cartItemIdTest)).thenReturn(Optional.of(cartItemEntityTest));
+        doNothing().when(cartItemRepositoryMock).delete(cartItemEntityTest);
+        mockMvc.perform(delete("/cart/{cartItemId}", cartItemIdTest))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteAllCartItemsByCartItemTest() throws Exception {
+        when(cartItemRepositoryMock.findById(cartItemIdTest)).thenReturn(Optional.empty());
+        this.mockMvc.perform(delete("/cart/{cartItemId}", cartItemIdTest))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteAllCartItemsTest() throws Exception {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        doNothing().when(cartItemRepositoryMock).delete(cartItemEntityTest);
+        mockMvc.perform(delete("/cart/del/{userId}", userIdTest))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteAllCartItemsByUserTest() throws Exception {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
+        this.mockMvc.perform(delete("/cart/del/{userId}", userIdTest))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
