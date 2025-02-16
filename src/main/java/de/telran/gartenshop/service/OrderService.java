@@ -101,7 +101,7 @@ public class OrderService {
             orderEntity.setUpdatedAt(timestamp);
             createOrderEntity = orderRepository.save(orderEntity);
         } else {
-            throw new NullPointerException("User with Id: " + userId + " not found.");
+            throw new IllegalArgumentException("User with Id: " + userId + " not found.");
         }
 
         //2. Заполнение товаров в заказе (преобразование CartItems в OrderItems)
@@ -123,7 +123,7 @@ public class OrderService {
 
                 orderItemEntitySet.add(createOrderItem);
             } else {
-                throw new NullPointerException("Product " + orderItem.getProduct().getName() + " not found.");
+                throw new IllegalArgumentException("Product " + orderItem.getProduct().getName() + " not found.");
             }
 
             createOrderEntity.setOrderItems(orderItemEntitySet);
@@ -137,7 +137,7 @@ public class OrderService {
                     cartItemRepository.delete(item);
                 }
             } else {
-                throw new NullPointerException("Cart for UserId: " + userId + " not found.");
+                throw new IllegalArgumentException("Cart for UserId: " + userId + " not found.");
             }
         }
         return mappers.convertToOrderResponseDto(orderEntity);
@@ -147,8 +147,7 @@ public class OrderService {
     public Set<OrderResponseDto> getUsersOrders(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            //throw new RuntimeException("This User not found ");
-            throw new NullPointerException("This User not found ");
+            throw new IllegalArgumentException("This User not found ");
         } else {
             Set<OrderEntity> orderEntityList = user.getOrderEntities();
             // исключим из всех orderEntity юзера информацию о нем самом
@@ -170,10 +169,10 @@ public class OrderService {
                 orderEntity.setUpdatedAt(timestamp);
                 updateOrderEntity = orderRepository.save(orderEntity);
             } else {
-                throw new NullPointerException("Order with Id: " + +orderId + " could not be cancel");
+                throw new IllegalArgumentException("Order with Id: " + +orderId + " could not be cancel");
             }
         } else {
-            throw new NullPointerException("Order not found with Id: " + orderId);
+            throw new IllegalArgumentException("Order not found with Id: " + orderId);
         }
         return mappers.convertToOrderResponseDto(updateOrderEntity);
     }

@@ -236,7 +236,7 @@ public class OrderIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequesDtoTest)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
 //    @Test
@@ -270,7 +270,7 @@ public class OrderIntegrationTest {
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
         this.mockMvc.perform(put("/orders/{orderId}", orderIdTest))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -280,7 +280,7 @@ public class OrderIntegrationTest {
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
         this.mockMvc.perform(put("/orders/{orderId}", orderIdTest))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -298,6 +298,6 @@ public class OrderIntegrationTest {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(get("/orders/history/{userId}", userIdTest))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

@@ -36,9 +36,10 @@ public class CartService {
 
         if (userEntity != null) {
             Set<CartItemEntity> cartItemEntitySet = userEntity.getCart().getCartItems();
+
             return MapperUtil.convertSet(cartItemEntitySet, mappers::convertToCartItemResponseDto);
         } else {
-            throw new NullPointerException("User with Id: " + userId + " not found.");
+            throw new IllegalArgumentException("User with Id: " + userId + " not found.");
         }
     }
 
