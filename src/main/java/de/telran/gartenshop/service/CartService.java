@@ -10,7 +10,6 @@ import de.telran.gartenshop.repository.CartRepository;
 import de.telran.gartenshop.repository.ProductRepository;
 import de.telran.gartenshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +48,7 @@ public class CartService {
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
         ProductEntity productEntity = productRepository.findById(cartItemRequestDto.getProductId()).orElse(null);
         if (productEntity == null) {
-            throw new HttpMessageConversionException("Product with Id " + cartItemRequestDto.getProductId() + " not added");
+            throw new IllegalArgumentException("Product with Id " + cartItemRequestDto.getProductId() + " not found and not added to the Cart");
         }
 
         createCartItemEntity.setCartItemId(null);
@@ -58,9 +57,6 @@ public class CartService {
 
         CartItemEntity savedCartItemEntity = cartItemRepository.save(createCartItemEntity);
 
-        if (savedCartItemEntity == null) {
-            throw new HttpMessageConversionException("Product with Id " + cartItemRequestDto.getProductId() + " not added");
-        }
         return savedCartItemEntity.getCartItemId() != null;
     }
 
