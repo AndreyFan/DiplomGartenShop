@@ -62,8 +62,6 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         if (sortOrder == null) { //сортировка по умолчанию
             sortOrder = cb.asc(root.get("name"));
         }
-        // Нужно сделать ExceptionHandler на org.springframework.dao.InvalidDataAccessApiUsageException,
-        // или org.hibernate.query.sqm.PathElementException, если не правильно передали поле для сортировки
 
         query.select(root)
                 .where(cb.and(predicates.toArray(new Predicate[predicates.size()])))
