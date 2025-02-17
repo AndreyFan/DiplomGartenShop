@@ -1,5 +1,6 @@
 package de.telran.gartenshop.controller;
 
+import de.telran.gartenshop.aspect.LogAnnotation;
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.service.CategoryService;

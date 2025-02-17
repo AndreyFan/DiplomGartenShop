@@ -3,6 +3,7 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
 import de.telran.gartenshop.dto.responseDto.OrderItemResponseDto;
 import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
+import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.OrderEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.enums.OrderStatus;
@@ -29,21 +30,26 @@ public class OrderController {
     }
 
     @GetMapping("/top-products")
-    public ResponseEntity<List<OrderEntity>> getTop10PaidProducts() {
-        return ResponseEntity.ok(orderService.getTop10PaidProducts());
-    }
-
-    @GetMapping("/top-canceled")
-    public ResponseEntity<List<ProductEntity>> getTopCanceled() {
-        return ResponseEntity.ok(orderService.getTop10CanceledProducts());
-    }
-
-    @GetMapping("/awaiting-payment-products")
-    public ResponseEntity<List<OrderEntity>> getAwaitingPaymentProducts(@RequestParam(name = "days",
-            defaultValue = "10") int days) {
-        List<OrderEntity> products = orderService.getOrdersAwaitingPayment(days);
+    public ResponseEntity<List<OrderResponseDto>> getTop10PaidProducts() {
+        List<OrderResponseDto> products = orderService.getTop10PaidProducts();
         return ResponseEntity.ok(products);
     }
+
+
+    @GetMapping("/top-canceled")
+    public ResponseEntity<List<ProductResponseDto>> getTopCanceled() {
+        List<ProductResponseDto> products = orderService.getTop10CanceledProducts();
+        return ResponseEntity.ok(products);
+    }
+
+
+    @GetMapping("/awaiting-payment-products")
+    public ResponseEntity<List<OrderResponseDto>> getAwaitingPaymentProducts(@RequestParam(name = "days",
+            defaultValue = "10") int days) {
+        List<OrderResponseDto> products = orderService.getOrdersAwaitingPayment(days);
+        return ResponseEntity.ok(products);
+    }
+
 
     //Просмотр всех заказов //localhost:8088/orders/get
     @GetMapping("/get")
