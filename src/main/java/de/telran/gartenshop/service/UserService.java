@@ -90,6 +90,31 @@ public class UserService {
         }
     }
 
+    public UserResponseDto getUserByEmail(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User with email " + email + " not found");
+        }
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setUserId(user.getUserId());
+        userResponseDto.setName(user.getName());
+        userResponseDto.setPhone(user.getPhone());
+        userResponseDto.setEmail(user.getEmail());
+        userResponseDto.setPasswordHash("******");
+        return userResponseDto;
+    }
+
+    public UserResponseDto getUserById(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new UserNotFoundException("User with ID " + userId + " not found");
+        }
+        UserResponseDto foundedUser = mappers.convertToUserResponseDto(user);
+        foundedUser.setPasswordHash("******");
+        return foundedUser;
+    }
+
+
     public void deleteUser(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
@@ -109,29 +134,4 @@ public class UserService {
         }
     }
 
-    public UserRequestDto getUserById(Long userId) {
-        UserEntity user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            throw new UserNotFoundException("User with ID " + userId + " not found");
-        }
-        UserRequestDto foundedUser = new UserRequestDto();
-        foundedUser.setName(user.getName());
-        foundedUser.setEmail(user.getEmail());
-        foundedUser.setPhone(user.getPhone());
-        return foundedUser;
-    }
-
-    public UserResponseDto getUserByEmail(String email) {
-        UserEntity user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UserNotFoundException("User with email " + email + " not found");
-        }
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setUserId(user.getUserId());
-        userResponseDto.setName(user.getName());
-        userResponseDto.setPhone(user.getPhone());
-        userResponseDto.setEmail(user.getEmail());
-        userResponseDto.setPasswordHash("******");
-        return userResponseDto;
-    }
 }

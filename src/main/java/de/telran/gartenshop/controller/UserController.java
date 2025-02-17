@@ -48,7 +48,7 @@ public class UserController {
 
     @GetMapping(value = "/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public UserRequestDto getUserById(@PathVariable Long userId) {
+    public UserResponseDto getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }
 

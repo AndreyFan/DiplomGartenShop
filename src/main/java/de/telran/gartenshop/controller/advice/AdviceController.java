@@ -2,6 +2,7 @@ package de.telran.gartenshop.controller.advice;
 
 import de.telran.gartenshop.exception.UserAlreadyExistsException;
 import de.telran.gartenshop.exception.UserDeleteException;
+import de.telran.gartenshop.exception.UserNotFoundException;
 import de.telran.gartenshop.exception.UserSaveException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.FileNotFoundException;
@@ -40,11 +42,26 @@ public class AdviceController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleUserNotFoundException(UserNotFoundException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "User not found");
+        errorResponse.put("message", ex.getMessage());
+        return errorResponse;
+    }
+
     @ExceptionHandler(UserSaveException.class)
     public ResponseEntity<Map<String, String>> handleUserSaveException(UserSaveException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", "User registration failed: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+    @ExceptionHandler(UserDeleteException.class)
+    public ResponseEntity<Map<String, String>> handleUserDeleteException(UserDeleteException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(Exception.class)
@@ -52,13 +69,6 @@ public class AdviceController {
         Map<String, String> response = new HashMap<>();
         response.put("error", "An unexpected error occurred: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
-
-    @ExceptionHandler(UserDeleteException.class)
-    public ResponseEntity<Map<String, String>> handleUserDeleteException(UserDeleteException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
 }
