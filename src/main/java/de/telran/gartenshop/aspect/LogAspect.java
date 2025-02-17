@@ -33,6 +33,7 @@ public class LogAspect {
         log.info(">>> Arguments: {}", Arrays.toString(args));
 
         Object result = null;
+        try {
             result = pjp.proceed();
             return result;
         } catch (Throwable ex) {
