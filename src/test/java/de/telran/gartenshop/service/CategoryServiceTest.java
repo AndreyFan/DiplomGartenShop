@@ -1,8 +1,7 @@
-package de.telran.gartenshop.service.integration;
+package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
