@@ -6,6 +6,7 @@ import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
 import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.UserEntity;
+import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.exception.UserNotFoundException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.FavoriteRepository;
@@ -69,10 +70,10 @@ public class FavoriteService {
                 favoriteEntitySet.add(favorite);
                 return favorite != null;
             } else {
-                throw new RuntimeException(" This Product is not in the database");
+                throw new DataNotFoundInDataBaseException(" This Product is not in the database");
             }
         } else {
-            throw new RuntimeException(" User not found");
+            throw new UserNotFoundException(" User not found");
         }
     }
 
@@ -88,9 +89,9 @@ public class FavoriteService {
                         return true;
                     }
                 }
-                throw new RuntimeException(" This Product is not in favorites ");
+                throw new DataNotFoundInDataBaseException(" This Product is not in favorites ");
         } else {
-            throw new RuntimeException("User not found in database");
+            throw new UserNotFoundException("User not found in database");
         }
     }
 }
