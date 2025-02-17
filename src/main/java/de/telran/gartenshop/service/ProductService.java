@@ -5,11 +5,11 @@ import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
+import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CategoryRepository;
 import de.telran.gartenshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -47,7 +47,7 @@ public class ProductService {
         ProductEntity productEntity = productRepository.findById(productId).orElse(null);
 
         if (productEntity == null) {
-            throw new IllegalArgumentException("Product not found with Id: " + productId);
+            throw new DataNotFoundInDataBaseException("Product not found with Id: " + productId);
         }
         return mappers.convertToProductResponseDto(productEntity);
     }
@@ -85,7 +85,7 @@ public class ProductService {
             updateProductEntity.setUpdatedAt(timestamp);
             productRepository.save(updateProductEntity);
         } else {
-            throw new IllegalArgumentException("Product not found with Id: " + productId);
+            throw new DataNotFoundInDataBaseException("Product not found with Id: " + productId);
         }
         return mappers.convertToProductResponseDto(updateProductEntity);
     }
@@ -99,7 +99,7 @@ public class ProductService {
             updateProductEntity.setUpdatedAt(timestamp);
             productRepository.save(updateProductEntity);
         } else {
-            throw new IllegalArgumentException("Product not found with Id: " + productId);
+            throw new DataNotFoundInDataBaseException("Product not found with Id: " + productId);
         }
         return mappers.convertToProductResponseDto(updateProductEntity);
     }
@@ -109,7 +109,7 @@ public class ProductService {
         if (deleteProductEntity != null) {
             productRepository.delete(deleteProductEntity);
         } else {
-            throw new IllegalArgumentException("Product not found with Id: " + productId);
+            throw new DataNotFoundInDataBaseException("Product not found with Id: " + productId);
         }
     }
 

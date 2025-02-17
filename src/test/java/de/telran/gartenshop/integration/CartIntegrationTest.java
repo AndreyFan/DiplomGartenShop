@@ -147,7 +147,7 @@ public class CartIntegrationTest {
     }
 
     @Test
-    void getAllCartItemsByUserIdByUserTest() throws Exception {
+    void getAllCartItemsByUserIdExceptionByUserTest() throws Exception {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(get("/cart/get/{userId}", userIdTest))
                 .andDo(print())
@@ -202,7 +202,7 @@ public class CartIntegrationTest {
     }
 
     @Test
-    void deleteAllCartItemsByCartItemTest() throws Exception {
+    void deleteAllCartItemsExceptionByCartItemTest() throws Exception {
         when(cartItemRepositoryMock.findById(cartItemIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(delete("/cart/{cartItemId}", cartItemIdTest))
                 .andDo(print())
@@ -219,7 +219,7 @@ public class CartIntegrationTest {
     }
 
     @Test
-    void deleteAllCartItemsByUserTest() throws Exception {
+    void deleteAllCartItemsExceptionByUserTest() throws Exception {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(delete("/cart/del/{userId}", userIdTest))
                 .andDo(print())

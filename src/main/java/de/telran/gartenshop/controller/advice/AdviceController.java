@@ -1,9 +1,6 @@
 package de.telran.gartenshop.controller.advice;
 
-import de.telran.gartenshop.exception.UserAlreadyExistsException;
-import de.telran.gartenshop.exception.UserDeleteException;
-import de.telran.gartenshop.exception.UserNotFoundException;
-import de.telran.gartenshop.exception.UserSaveException;
+import de.telran.gartenshop.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,11 +54,19 @@ public class AdviceController {
         response.put("error", "User registration failed: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+
     @ExceptionHandler(UserDeleteException.class)
     public ResponseEntity<Map<String, String>> handleUserDeleteException(UserDeleteException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(DataNotFoundInDataBaseException.class)
+    public ResponseEntity<Map<String, String>> handleDataNotFoundInDataBaseException(DataNotFoundInDataBaseException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @ExceptionHandler(Exception.class)
@@ -70,5 +75,4 @@ public class AdviceController {
         response.put("error", "An unexpected error occurred: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
-
 }

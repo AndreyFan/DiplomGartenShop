@@ -68,6 +68,7 @@ class FavoriteServiceTest {
 
     Timestamp timestamp;
     Long userIdTest = 1L;
+    Long userIdTestFalse = 2L;
 
     @BeforeEach
     void setUp() {
@@ -138,9 +139,6 @@ class FavoriteServiceTest {
 
     @Test
     void getFavoritesByUserIdTest() {
-        Long userIdTest = 1L;
-        Long userIdTestFalse = 2L;
-
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
         when(mappersMock.convertToFavoriteResponseDto(favoriteEntityTest)).thenReturn(favoriteResponseDtoTest);
 
@@ -155,9 +153,60 @@ class FavoriteServiceTest {
         verify(userRepositoryMock, times(1)).findById(userIdTest); // был ли запущен этот метод и ск. раз
         verify(mappersMock, times(1)).convertToFavoriteResponseDto(any(FavoriteEntity.class));
 
-//          when(userRepositoryMock.findById(userIdTestFalse)).thenReturn(Optional.empty());
-//        userNotFoundException = assertThrows(UserNotFoundException.class,
-//                () -> favoriteServiceMock.getFavoritesByUserId(userIdTestFalse));
-//        assertEquals("User not found in database.", userNotFoundException.getMessage());
+        when(userRepositoryMock.findById(userIdTestFalse)).thenReturn(Optional.empty());
+        userNotFoundException = assertThrows(UserNotFoundException.class,
+                () -> favoriteServiceMock.getFavoritesByUserId(userIdTestFalse));
+        assertEquals(" This user not found ", userNotFoundException.getMessage());
     }
+
+    @Test
+    void getFavoritesTest() {
+        String emailTest = "ts@gmail.com";
+        String emailTestFalse = "ts555@gmail.com";
+
+        when(userRepositoryMock.findByEmail(emailTest)).thenReturn(userEntityTest);
+        when(mappersMock.convertToFavoriteResponseDto(favoriteEntityTest)).thenReturn(favoriteResponseDtoTest);
+
+        Set<FavoriteResponseDto> actualFavoriteResponseDtoSetTest = favoriteServiceMock.getFavorites(emailTest);
+
+        //проверка
+        assertNotNull(actualFavoriteResponseDtoSetTest);
+        assertEquals(1, favoriteResponseDtoSetTest.size());
+        assertEquals(favoriteResponseDtoSetTest.size(), actualFavoriteResponseDtoSetTest.size());
+        assertEquals(favoriteResponseDtoSetTest.hashCode(), actualFavoriteResponseDtoSetTest.hashCode());
+
+        verify(userRepositoryMock, times(1)).findByEmail(emailTest); // был ли запущен этот метод и ск. раз
+        verify(mappersMock, times(1)).convertToFavoriteResponseDto(any(FavoriteEntity.class));
+
+        when(userRepositoryMock.findByEmail(emailTestFalse)).thenReturn(null);
+        userNotFoundException = assertThrows(UserNotFoundException.class,
+                () -> favoriteServiceMock.getFavorites(emailTestFalse));
+        assertEquals(" This user not found ", userNotFoundException.getMessage());
+    }
+
+//    @Test
+//    void createFavoriteTest() {
+//        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+//        when(productRepositoryMock.findById(favoriteRequestDtoTest.getProductId())).thenReturn(Optional.of(productEntityTest));
+//
+//        favoriteServiceMock.createFavorite(favoriteRequestDtoTest);
+//
+//        verify(favoriteRepositoryMock, times(1)).save(any(FavoriteEntity.class));
+
+//        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
+//        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+//                () -> favoriteServiceMock.insertFavorite(favoriteRequestDto, wrongEmail));
+//        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
+//
+//        when(productRepositoryMock.findById(wrongFavoriteRequestDto.getProductId())).thenReturn(Optional.empty());
+//        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+//                () -> favoriteServiceMock.insertFavorite(wrongFavoriteRequestDto, email));
+//        assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
+//
+//        when(productRepositoryMock.findById(existingFavoriteRequestDto.getProductId())).thenReturn(Optional.of(product));
+//        dataAlreadyExistsException = assertThrows(DataAlreadyExistsException.class,
+//                () -> favoriteServiceMock.insertFavorite(existingFavoriteRequestDto, email));
+//        assertEquals("This product is already in favorites.", dataAlreadyExistsException.getMessage());
+  //  }
+
 }
