@@ -6,6 +6,7 @@ import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
 import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.UserEntity;
+import de.telran.gartenshop.exception.UserNotFoundException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.FavoriteRepository;
 import de.telran.gartenshop.repository.ProductRepository;
@@ -28,7 +29,7 @@ public class FavoriteService {
         UserEntity user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            throw new RuntimeException(" This user not found ");
+            throw new UserNotFoundException(" This user not found ");
         } else {
             Set<FavoriteEntity> favorites = user.getFavorites();
             return MapperUtil.convertSet(favorites, mappers::convertToFavoriteResponseDto);
@@ -39,7 +40,7 @@ public class FavoriteService {
         UserEntity user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new RuntimeException(" This user not found ");
+            throw new UserNotFoundException(" This user not found ");
         } else {
             Set<FavoriteEntity> favorites = user.getFavorites();
             return MapperUtil.convertSet(favorites, mappers::convertToFavoriteResponseDto);
