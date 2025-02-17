@@ -13,7 +13,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/cart")
-public class CartController {
+public class CartController implements CartControllerInterface{
     private final CartService cartService;
 
     //получить все товары во всех корзинах //localhost:8088/cart/get

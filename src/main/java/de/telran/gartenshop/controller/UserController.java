@@ -2,6 +2,7 @@ package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestDto.UserRequestDto;
 import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
+import de.telran.gartenshop.dto.responseDto.UserResponseDto;
 import de.telran.gartenshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,27 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public String getTest() {
-        return "Test Task_2";
-    }
-
-
+    // метод служит для регистрации нового Client
+    // http://localhost:8088/users/register
+    // body:
+    // {
+    //  "name": "string_name",
+    //  "email": "string_email",
+    //  "phone": "string_phone",
+    //  "password": "123"
+    //}
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public boolean registerUser(@RequestBody UserRequestDto userRequestDto) {
+    public Boolean registerUser(@RequestBody UserRequestDto userRequestDto) {
         return userService.registerUser(userRequestDto);
+    }
+
+    // метод служит для регистрации нового Admina
+    // http://localhost:8088/users/registerAdmin
+    @PostMapping("/registerAdmin")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Boolean registerAdmin(@RequestBody UserRequestDto userRequestDto) {
+        return userService.registerAdmin(userRequestDto);
     }
 
     @GetMapping(value = "/{userId}")
@@ -40,14 +52,11 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
+    // поиск юзера по его email
+    // http://localhost:8088/users/get?email=alice.smith@example.com
     @GetMapping(value = "/get")
-    public UserRequestDto getUserByEmail(@RequestParam String email) {
+    public UserResponseDto getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email);
-    }
-
-    @PostMapping("/registerAdmin")
-    public void registerAdmin(@RequestBody UserRequestDto userRequestDto) {
-        userService.registerAdmin(userRequestDto);
     }
 
     @PutMapping("/{userId}")

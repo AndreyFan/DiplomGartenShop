@@ -43,10 +43,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
             """)
     List<ProductEntity> findTop10CanceledProducts();
 
-
-
     @Query(value = "SELECT * FROM Orders WHERE Status = 'AWAITING_PAYMENT' AND CreatedAt < DATEADD('DAY', -:days, " +
             "NOW())", nativeQuery = true)
     List<OrderEntity> findOrdersAwaitingPayment(@Param("days") int days);
-
 }
