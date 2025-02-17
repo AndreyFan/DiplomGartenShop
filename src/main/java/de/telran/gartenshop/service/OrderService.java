@@ -44,17 +44,23 @@ public class OrderService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    public List<OrderEntity> getTop10PaidProducts() {
-        return orderRepository.findTop10PaidOrders();
+    public List<OrderResponseDto> getTop10PaidProducts() {
+        List<OrderEntity> orders = orderRepository.findTop10PaidOrders();
+        return MapperUtil.convertList(orders, mappers::convertToOrderResponseDto);
     }
 
-    public List<ProductEntity> getTop10CanceledProducts() {
-        return orderRepository.findTop10CanceledProducts();
+
+    public List<ProductResponseDto> getTop10CanceledProducts() {
+        List<ProductEntity> orders = orderRepository.findTop10CanceledProducts();
+        return MapperUtil.convertList(orders, mappers::convertToProductResponseDto);
     }
 
-    public List<OrderEntity> getOrdersAwaitingPayment(int days) {
-        return orderRepository.findOrdersAwaitingPayment(days);
+
+    public List<OrderResponseDto> getOrdersAwaitingPayment(int days) {
+        List<OrderEntity> orders = orderRepository.findOrdersAwaitingPayment(days);
+        return MapperUtil.convertList(orders, mappers::convertToOrderResponseDto);
     }
+
 
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();

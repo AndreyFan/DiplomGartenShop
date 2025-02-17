@@ -16,10 +16,12 @@ import java.util.logging.Logger;
 @Slf4j
 public class LogAspect {
 
-
     @Around("@annotation(LogAnnotation)")
     public Object aroundCallAt(ProceedingJoinPoint pjp) throws Throwable {
+        return logInformation(pjp);
+    }
 
+    public Object logInformation(ProceedingJoinPoint pjp) throws Throwable {
         long startTime = System.currentTimeMillis();
         String methodName = pjp.getSignature().toShortString();
         String fullMethodName = pjp.getSignature().toLongString();
@@ -31,8 +33,7 @@ public class LogAspect {
         log.info(">>> Arguments: {}", Arrays.toString(args));
 
         Object result = null;
-        try {
-             result = pjp.proceed();
+            result = pjp.proceed();
             return result;
         } catch (Throwable ex) {
             log.error(">>> The method {} closed with exception: {}", methodName, ex.getMessage(), ex);
@@ -43,4 +44,8 @@ public class LogAspect {
         }
     }
 
+    @Around("execution(* de.telran.gartenshop.controller..*(..)))")
+    public Object controllerLogger(ProceedingJoinPoint pjp) throws Throwable {
+        return logInformation(pjp);
+    }
 }
