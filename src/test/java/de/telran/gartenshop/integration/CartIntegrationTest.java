@@ -124,12 +124,6 @@ public class CartIntegrationTest {
         cartItemRequestDtoTest = new CartItemRequestDto(
                 1L,
                 1);
-
-//        CartItemResponseDto cartItemResponseDtoTest = new CartItemResponseDto(
-//                1L,
-//                100,
-//                null,
-//                productResponseDtoTest);
     }
 
     @Test
