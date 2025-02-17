@@ -107,44 +107,44 @@ public class OrderService {
             orderEntity.setUpdatedAt(timestamp);
             createOrderEntity = orderRepository.save(orderEntity);
         } else {
-            throw new NullPointerException("User with Id: " + userId + " not found.");
+            throw new IllegalArgumentException("User with Id: " + userId + " not found.");
         }
 
         //2. Заполнение товаров в заказе (преобразование CartItems в OrderItems)
-        Set<CartItemEntity> cartItemEntitySet = userEntity.getCart().getCartItems();
-        Set<OrderItemEntity> orderItemEntitySet = new HashSet<>();
-        for (CartItemEntity orderItem : cartItemEntitySet) {
-            OrderItemEntity createOrderItem = new OrderItemEntity();
-            ProductEntity productEntity = productRepository.findById(orderItem.getProduct().getProductId()).orElse(null);
-            if (productEntity != null) {
-                createOrderItem.setProduct(productEntity);
-                if (productEntity.getDiscountPrice() == null) {
-                    createOrderItem.setPriceAtPurchase(productEntity.getPrice());
+        CartEntity cartEntity = userEntity.getCart();
+        if (cartEntity != null) {
+            Set<CartItemEntity> cartItemEntitySet = userEntity.getCart().getCartItems();
+            Set<OrderItemEntity> orderItemEntitySet = new HashSet<>();
+            for (CartItemEntity orderItem : cartItemEntitySet) {
+                OrderItemEntity createOrderItem = new OrderItemEntity();
+                ProductEntity productEntity = productRepository.findById(orderItem.getProduct().getProductId()).orElse(null);
+                if (productEntity != null) {
+                    createOrderItem.setProduct(productEntity);
+                    if (productEntity.getDiscountPrice() == null) {
+                        createOrderItem.setPriceAtPurchase(productEntity.getPrice());
+                    } else {
+                        createOrderItem.setPriceAtPurchase(productEntity.getDiscountPrice());
+                    }
+                    createOrderItem.setQuantity(orderItem.getQuantity());
+                    createOrderItem.setOrder(createOrderEntity);
+                    orderItemRepository.save(createOrderItem);
+
+                    orderItemEntitySet.add(createOrderItem);
                 } else {
-                    createOrderItem.setPriceAtPurchase(productEntity.getDiscountPrice());
+                    throw new IllegalArgumentException("Product " + orderItem.getProduct().getName() + " not found.");
                 }
-                createOrderItem.setQuantity(orderItem.getQuantity());
-                createOrderItem.setOrder(createOrderEntity);
-                orderItemRepository.save(createOrderItem);
 
-                orderItemEntitySet.add(createOrderItem);
-            } else {
-                throw new NullPointerException("Product " + orderItem.getProduct().getName() + " not found.");
-            }
+                createOrderEntity.setOrderItems(orderItemEntitySet);
+                orderRepository.save(createOrderEntity);
 
-            createOrderEntity.setOrderItems(orderItemEntitySet);
-            orderRepository.save(createOrderEntity);
-
-            //3. Очищение товаров в корзине (удаление CartItems)
-            CartEntity cartEntity = userEntity.getCart();
-            if (cartEntity != null) {
+                //3. Очищение товаров в корзине (удаление CartItems)
                 Set<CartItemEntity> cartItemSet = cartEntity.getCartItems();
                 for (CartItemEntity item : cartItemSet) {
                     cartItemRepository.delete(item);
                 }
-            } else {
-                throw new NullPointerException("Cart for UserId: " + userId + " not found.");
             }
+        } else {
+            throw new IllegalArgumentException("Cart for UserId: " + userId + " not found.");
         }
         return mappers.convertToOrderResponseDto(orderEntity);
     }
@@ -153,8 +153,7 @@ public class OrderService {
     public Set<OrderResponseDto> getUsersOrders(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            //throw new RuntimeException("This User not found ");
-            throw new NullPointerException("This User not found ");
+            throw new IllegalArgumentException("This User not found ");
         } else {
             Set<OrderEntity> orderEntityList = user.getOrderEntities();
             // исключим из всех orderEntity юзера информацию о нем самом
@@ -176,10 +175,10 @@ public class OrderService {
                 orderEntity.setUpdatedAt(timestamp);
                 updateOrderEntity = orderRepository.save(orderEntity);
             } else {
-                throw new NullPointerException("Order with Id: " + +orderId + " could not be cancel");
+                throw new IllegalArgumentException("Order with Id: " + +orderId + " could not be cancel");
             }
         } else {
-            throw new NullPointerException("Order not found with Id: " + orderId);
+            throw new IllegalArgumentException("Order not found with Id: " + orderId);
         }
         return mappers.convertToOrderResponseDto(updateOrderEntity);
     }

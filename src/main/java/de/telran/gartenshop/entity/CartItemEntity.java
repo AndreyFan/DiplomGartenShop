@@ -11,8 +11,6 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-//@EqualsAndHashCode
-//@ToString
 public class CartItemEntity {
 
     @Id
@@ -30,6 +28,4 @@ public class CartItemEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")
     private ProductEntity product;
-
-
 }

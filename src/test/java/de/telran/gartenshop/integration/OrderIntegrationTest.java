@@ -50,6 +50,9 @@ public class OrderIntegrationTest {
     @MockBean
     private UserRepository userRepositoryMock;
 
+    @MockBean
+    private CartRepository cartRepositoryMock;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -57,6 +60,8 @@ public class OrderIntegrationTest {
     private OrderEntity orderEntityTest;
     private OrderItemEntity orderItemEntityTest;
     private UserEntity userEntityTest;
+    private CartItemEntity cartItemEntityTest;
+    private CartEntity cartEntityTest;
 
     private OrderRequestDto orderRequesDtoTest;
 
@@ -145,6 +150,23 @@ public class OrderIntegrationTest {
                 new CartEntity(),
                 new HashSet<FavoriteEntity>(),
                 orderEntitySet);
+
+        cartEntityTest = new CartEntity(
+                1L,
+                userEntityTest,
+                null);
+
+        userEntityTest.setCart(cartEntityTest);
+
+        cartItemEntityTest = new CartItemEntity(
+                1L,
+                10,
+                cartEntityTest,
+                productEntityTest);
+        Set<CartItemEntity> cartItemEntitySet = new HashSet<>();
+        cartItemEntitySet.add(cartItemEntityTest);
+
+        cartEntityTest.setCartItems(cartItemEntitySet);
     }
 
     @Test
@@ -236,21 +258,31 @@ public class OrderIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequesDtoTest)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    void createOrderExceptionByProductTest() throws Exception {
-//        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
-//        when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
-//        when(orderItemRepositoryMock.save(any(OrderItemEntity.class))).thenReturn(orderItemEntityTest);
-//        when(productRepositoryMock.findById(orderItemEntityTest.getProduct().getProductId())).thenReturn(Optional.empty());
-//        this.mockMvc.perform(post("/orders/{userId}", userIdTest)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(orderRequesDtoTest)))
-//                .andDo(print())
-//                .andExpect(status().isBadRequest());
-//    }
+    @Test
+    void createOrderExceptionBProductTest() throws Exception {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        when(productRepositoryMock.findById(1L)).thenReturn(Optional.empty());
+        this.mockMvc.perform(post("/orders/{userId}", userIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderRequesDtoTest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createOrderExceptionByCartTest() throws Exception {
+        UserEntity userEntityCartNullTest = userEntityTest;
+        userEntityCartNullTest.setCart(null);
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityCartNullTest));
+        this.mockMvc.perform(post("/orders/{userId}", userIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderRequesDtoTest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     void cancelOrderTest() throws Exception {
@@ -270,7 +302,7 @@ public class OrderIntegrationTest {
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
         this.mockMvc.perform(put("/orders/{orderId}", orderIdTest))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -280,7 +312,7 @@ public class OrderIntegrationTest {
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
         this.mockMvc.perform(put("/orders/{orderId}", orderIdTest))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -298,6 +330,6 @@ public class OrderIntegrationTest {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(get("/orders/history/{userId}", userIdTest))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

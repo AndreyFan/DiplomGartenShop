@@ -47,7 +47,7 @@ public class ProductService {
         ProductEntity productEntity = productRepository.findById(productId).orElse(null);
 
         if (productEntity == null) {
-            throw new NullPointerException("Product not found with Id: " + productId);
+            throw new IllegalArgumentException("Product not found with Id: " + productId);
         }
         return mappers.convertToProductResponseDto(productEntity);
     }
@@ -66,9 +66,6 @@ public class ProductService {
 
         ProductEntity savedProductEntity = productRepository.save(createProductEntity);
 
-        if (savedProductEntity == null) {
-            throw new HttpMessageConversionException("Product " + productRequestDto.getName() + " not created");
-        }
         return savedProductEntity.getProductId() != null;
     }
 
@@ -88,7 +85,7 @@ public class ProductService {
             updateProductEntity.setUpdatedAt(timestamp);
             productRepository.save(updateProductEntity);
         } else {
-            throw new NullPointerException("Product not found with Id: " + productId);
+            throw new IllegalArgumentException("Product not found with Id: " + productId);
         }
         return mappers.convertToProductResponseDto(updateProductEntity);
     }
@@ -102,7 +99,7 @@ public class ProductService {
             updateProductEntity.setUpdatedAt(timestamp);
             productRepository.save(updateProductEntity);
         } else {
-            throw new NullPointerException("Product not found with Id: " + productId);
+            throw new IllegalArgumentException("Product not found with Id: " + productId);
         }
         return mappers.convertToProductResponseDto(updateProductEntity);
     }
@@ -112,7 +109,7 @@ public class ProductService {
         if (deleteProductEntity != null) {
             productRepository.delete(deleteProductEntity);
         } else {
-            throw new NullPointerException("Product not found with Id: " + productId);
+            throw new IllegalArgumentException("Product not found with Id: " + productId);
         }
     }
 
