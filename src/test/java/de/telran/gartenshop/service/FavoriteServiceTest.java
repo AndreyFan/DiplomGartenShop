@@ -10,6 +10,7 @@ import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.entity.enums.Role;
+import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.exception.UserNotFoundException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.FavoriteRepository;
@@ -52,19 +53,20 @@ class FavoriteServiceTest {
     private Mappers mappersMock;
 
     private UserEntity userEntityTest;
-    private ProductEntity productEntityTest;
-    private FavoriteEntity favoriteEntityTest;
+    private ProductEntity productEntityTest, productEntityTestInput;
+    private FavoriteEntity favoriteEntityTest, favoriteEntityTestInput;
 
     private UserResponseDto userResponseDtoTest;
     private ProductResponseDto productResponseDtoTest;
     private FavoriteResponseDto favoriteResponseDtoTest;
 
-    private FavoriteRequestDto favoriteRequestDtoTest;
+    private FavoriteRequestDto favoriteRequestDtoTest, favoriteRequestDtoTestInput;
 
     private Set<FavoriteEntity> favoriteEntitySetTest = new HashSet<>();
     private Set<FavoriteResponseDto> favoriteResponseDtoSetTest = new HashSet<>();
 
-    UserNotFoundException userNotFoundException;
+    private UserNotFoundException userNotFoundException;
+    private DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
 
     Timestamp timestamp;
     Long userIdTest = 1L;
@@ -91,6 +93,17 @@ class FavoriteServiceTest {
                 1L,
                 "ProductName",
                 "ProductDescription",
+                new BigDecimal("10.25"),
+                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
+                new BigDecimal("8.50"),
+                timestamp,
+                timestamp,
+                categoryEntityTest);
+
+        productEntityTestInput = new ProductEntity(
+                2L,
+                "ProductName2",
+                "ProductDescription2",
                 new BigDecimal("10.25"),
                 "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
                 new BigDecimal("8.50"),
@@ -134,6 +147,10 @@ class FavoriteServiceTest {
 
         favoriteRequestDtoTest = new FavoriteRequestDto(
                 1L,
+                1L);
+
+        favoriteRequestDtoTestInput = new FavoriteRequestDto(
+                2L,
                 1L);
     }
 
@@ -184,29 +201,58 @@ class FavoriteServiceTest {
         assertEquals(" This user not found ", userNotFoundException.getMessage());
     }
 
-//    @Test
-//    void createFavoriteTest() {
-//        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
-//        when(productRepositoryMock.findById(favoriteRequestDtoTest.getProductId())).thenReturn(Optional.of(productEntityTest));
-//
-//        favoriteServiceMock.createFavorite(favoriteRequestDtoTest);
-//
-//        verify(favoriteRepositoryMock, times(1)).save(any(FavoriteEntity.class));
+    @Test
+    void createFavoriteTest() {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        when(productRepositoryMock.findById(favoriteRequestDtoTestInput.getProductId())).thenReturn(Optional.of(productEntityTestInput));
+        Boolean result = favoriteServiceMock.createFavorite(favoriteRequestDtoTestInput);
 
-//        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
-//        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-//                () -> favoriteServiceMock.insertFavorite(favoriteRequestDto, wrongEmail));
-//        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
-//
-//        when(productRepositoryMock.findById(wrongFavoriteRequestDto.getProductId())).thenReturn(Optional.empty());
-//        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-//                () -> favoriteServiceMock.insertFavorite(wrongFavoriteRequestDto, email));
-//        assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
-//
-//        when(productRepositoryMock.findById(existingFavoriteRequestDto.getProductId())).thenReturn(Optional.of(product));
-//        dataAlreadyExistsException = assertThrows(DataAlreadyExistsException.class,
-//                () -> favoriteServiceMock.insertFavorite(existingFavoriteRequestDto, email));
-//        assertEquals("This product is already in favorites.", dataAlreadyExistsException.getMessage());
-  //  }
+        assertTrue(result);
+        verify(favoriteRepositoryMock, times(1)).save(any(FavoriteEntity.class));
+    }
+
+    @Test
+    void createFavoriteFalseTest() {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        when(productRepositoryMock.findById(favoriteRequestDtoTest.getProductId())).thenReturn(Optional.of(productEntityTest));
+        Boolean result = favoriteServiceMock.createFavorite(favoriteRequestDtoTest);
+
+        assertTrue(result);
+        verify(favoriteRepositoryMock, times(0)).save(any(FavoriteEntity.class));
+    }
+
+    @Test
+    void createFavoriteExceptionByUserTest() {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> favoriteServiceMock.createFavorite(favoriteRequestDtoTestInput));
+    }
+
+    @Test
+    void createFavoriteExceptionByProductTest() {
+        when(productRepositoryMock.findById(favoriteRequestDtoTestInput.getProductId())).thenReturn(Optional.empty());
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        assertThrows(DataNotFoundInDataBaseException.class, () -> favoriteServiceMock.createFavorite(favoriteRequestDtoTestInput));
+    }
+
+    @Test
+    void deleteFavoriteTest() {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        Boolean result = favoriteServiceMock.deleteFavorite(favoriteRequestDtoTest);
+
+        assertTrue(result);
+        verify(favoriteRepositoryMock, times(1)).deleteById(favoriteEntityTest.getFavoriteId());
+    }
+
+    @Test
+    void deleteFavoriteExceptionByUserTest() {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> favoriteServiceMock.deleteFavorite(favoriteRequestDtoTest));
+    }
+
+    @Test
+    void deleteFavoriteExceptionByProductTest() {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        assertThrows(DataNotFoundInDataBaseException.class, () -> favoriteServiceMock.deleteFavorite(favoriteRequestDtoTestInput));
+    }
 
 }
