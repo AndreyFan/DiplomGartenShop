@@ -5,11 +5,16 @@ import de.telran.gartenshop.dto.requestDto.UserRequestDto;
 import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.entity.enums.Role;
+import de.telran.gartenshop.exception.UserAlreadyExistsException;
 import de.telran.gartenshop.repository.CartRepository;
 import de.telran.gartenshop.repository.UserRepository;
+import de.telran.gartenshop.service.UserService;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,9 +25,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,6 +38,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserIntegrationTest {
@@ -42,6 +51,8 @@ public class UserIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @InjectMocks
+    private UserService userService;
 
     @MockBean
     private CartRepository cartRepository;
@@ -147,7 +158,6 @@ public class UserIntegrationTest {
 
         verify(userRepository).deleteById(1L);
     }
-
 
 
 }
