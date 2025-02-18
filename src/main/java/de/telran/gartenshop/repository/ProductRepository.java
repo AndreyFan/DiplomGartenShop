@@ -1,7 +1,7 @@
 package de.telran.gartenshop.repository;
 
+import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.entity.ProductEntity;
-import de.telran.gartenshop.entity.query.ProductProfitInterface;
 import de.telran.gartenshop.repository.customs.ProductCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -44,5 +44,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, P
                     "        WHEN :period = 'MONTH' THEN DATE_FORMAT(o.CreatedAt, '%Y-%m') " +
                     "    END",
             nativeQuery = true)
-    List<ProductProfitInterface> getProductProfitByPeriod(String period, Integer value);
+    //List<ProductProfitInterface> getProductProfitByPeriod(String period, Integer value);
+    List<ProductProfitDto> getProductProfitByPeriod(String period, Integer value);
 }

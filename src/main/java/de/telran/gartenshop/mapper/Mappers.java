@@ -5,7 +5,6 @@ import de.telran.gartenshop.dto.requestDto.*;
 import de.telran.gartenshop.dto.responseDto.*;
 
 import de.telran.gartenshop.entity.*;
-import de.telran.gartenshop.entity.query.ProductProfitInterface;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -85,9 +84,5 @@ public class Mappers {
 
     public OrderEntity convertToOrderEntity(OrderRequestDto orderRequestDto) {
         return modelMapper.map(orderRequestDto, OrderEntity.class);
-    }
-
-    public ProductProfitDto convertToProductProfitDto(ProductProfitInterface productProfitInterface) {
-        return modelMapper.map(productProfitInterface, ProductProfitDto.class);
     }
 }

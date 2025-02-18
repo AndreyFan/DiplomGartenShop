@@ -127,6 +127,7 @@ public class ProductService {
 
     public List<ProductProfitDto> getProductProfitByPeriod(String period, Integer value) {
         //   logger.info("Fetching product profit for period: {}, value: {}", period, value);
-        return MapperUtil.convertList(productRepository.getProductProfitByPeriod(period, value), mappers::convertToProductProfitDto);
+        //  return MapperUtil.convertList(productRepository.getProductProfitByPeriod(period, value), mappers::convertToProductProfitDto);
+        return productRepository.getProductProfitByPeriod(period, value);
     }
 }
