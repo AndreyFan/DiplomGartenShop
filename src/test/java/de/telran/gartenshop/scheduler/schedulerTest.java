@@ -13,7 +13,7 @@ import static org.mockito.Mockito.times;
 @ExtendWith(MockitoExtension.class)
 public class schedulerTest {
     @Mock
-    private OrderService orderService;  // Мокируем OrderService
+    private OrderService orderService;
 
     @InjectMocks
     private ChangeOrderStatusScheduler scheduler;  // Внедряем мок в тестируемый класс
