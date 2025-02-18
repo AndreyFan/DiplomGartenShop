@@ -1,5 +1,6 @@
 package de.telran.gartenshop.controller;
 
+import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
@@ -82,6 +83,20 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getProductOfDay() {
         return productService.getProductOfDay();
+    }
+
+    //Прибыль с группировкой по периодам
+    @GetMapping(value = "/profit")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductProfitDto> getProfitByPeriod(@RequestParam("period") String period, @RequestParam("value") Integer value) {
+//            @RequestParam("period")
+//            @Pattern(regexp = "^(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH")
+//            @Parameter(description = "Type of period for profit calculating: <code>DAY</code>, <code>WEEK</code> or <code>MONTH</code>") String period,
+//
+//            @RequestParam("value")
+//            @Positive(message = "Period length must be a positive number")
+//            @Parameter(description = "Length of period for profit calculating") Integer value) {
+        return productService.getProductProfitByPeriod(period, value);
     }
 }
 

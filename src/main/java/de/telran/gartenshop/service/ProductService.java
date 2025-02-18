@@ -1,6 +1,7 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
+import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
@@ -122,5 +123,10 @@ public class ProductService {
         } else {
             return mappers.convertToProductResponseDto(productOfDayList.getFirst());
         }
+    }
+
+    public List<ProductProfitDto> getProductProfitByPeriod(String period, Integer value) {
+        //   logger.info("Fetching product profit for period: {}, value: {}", period, value);
+        return MapperUtil.convertList(productRepository.getProductProfitByPeriod(period, value), mappers::convertToProductProfitDto);
     }
 }
