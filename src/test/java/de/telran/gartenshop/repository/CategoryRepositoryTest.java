@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @DataJpaTest
-class CategoryRepositoryUnitTest {
+class CategoryRepositoryTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
