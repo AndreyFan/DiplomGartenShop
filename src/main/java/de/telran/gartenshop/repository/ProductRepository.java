@@ -44,6 +44,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, P
                     "        WHEN :period = 'MONTH' THEN DATE_FORMAT(o.CreatedAt, '%Y-%m') " +
                     "    END",
             nativeQuery = true)
-    //List<ProductProfitInterface> getProductProfitByPeriod(String period, Integer value);
     List<ProductProfitDto> getProductProfitByPeriod(String period, Integer value);
 }

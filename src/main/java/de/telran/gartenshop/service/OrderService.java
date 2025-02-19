@@ -153,7 +153,7 @@ public class OrderService {
     public Set<OrderResponseDto> getUsersOrders(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new DataNotFoundInDataBaseException("This User not found ");
+            throw new UserNotFoundException("This User not found ");
         } else {
             Set<OrderEntity> orderEntityList = user.getOrderEntities();
             // исключим из всех orderEntity юзера информацию о нем самом
