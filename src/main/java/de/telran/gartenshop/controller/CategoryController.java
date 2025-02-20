@@ -1,12 +1,17 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.aspect.LogAnnotation;
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.service.CategoryService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/categories")
+@Validated
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -27,21 +33,30 @@ public class CategoryController {
     //Добавление новой категории товаров //localhost:8088/categories
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean createCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
+    public boolean createCategory(
+            @RequestBody @Valid CategoryRequestDto categoryRequestDto) {
         return categoryService.createCategory(categoryRequestDto);
     }
 
     //Редактирование категории товаров по Id //localhost:8088/categories/3
     @PutMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryResponseDto updateCategory(@RequestBody CategoryRequestDto categoryRequestDto, @PathVariable Long categoryId) {
+    public CategoryResponseDto updateCategory(
+            @RequestBody @Valid CategoryRequestDto categoryRequestDto,
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
+            Long categoryId) {
         return categoryService.updateCategory(categoryRequestDto, categoryId);
     }
 
     //Удаление категории товаров по Id //localhost:8088/categories/11
     @DeleteMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategory(@PathVariable Long categoryId) { //delete
+    public void deleteCategory(
+            @PathVariable
+            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
+            Long categoryId) {
         categoryService.deleteCategory(categoryId);
     }
 }
