@@ -4,8 +4,11 @@ import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
+@Validated
 public class ProductController {
     private final ProductService productService;
 
@@ -46,21 +50,24 @@ public class ProductController {
     //Просмотр товара по Id //localhost:8088/products/1
     @GetMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductById(@PathVariable Long productId) {
+    public ProductResponseDto getProductById(
+            @PathVariable
+            @Min(value = 1, message = "Invalid productId: productId must be greater than or equal to 1")
+            Long productId) {
         return productService.getProductById(productId);
     }
 
     //Добавление нового товара //localhost:8088/products
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean createProduct(@RequestBody ProductRequestDto productRequestDto) {
+    public boolean createProduct(@RequestBody @Valid ProductRequestDto productRequestDto) {
         return productService.createProduct(productRequestDto);
     }
 
     //Редактирование товара по Id //localhost:8088/products/1
     @PutMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto updateProduct(@RequestBody ProductRequestDto productRequestDto, @PathVariable Long productId) {
+    public ProductResponseDto updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto, @PathVariable Long productId) {
         return productService.updateProduct(productRequestDto, productId);
     }
 
@@ -74,7 +81,9 @@ public class ProductController {
     //Удаление товара по Id //localhost:8088/products/1
     @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProduct(@PathVariable Long productId) { //delete
+    public void deleteProduct(@PathVariable
+                              @Min(value = 1, message = "Invalid Id: Id must be >= 1")
+                              Long productId) {
         productService.deleteProduct(productId);
     }
 
