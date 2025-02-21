@@ -23,7 +23,6 @@ public class ProductRequestDto {
     @Digits(integer = 7, fraction = 2, message = "Invalid price: Must be a number with up to 7 digits before and 2 after the decimal.")
     private BigDecimal price;
 
-    @NotNull(message = "CategoryId cannot be null")
     @Min(value = 1, message = "Invalid categoryId: categoryId must be >= 1")
     private Long categoryId;
 
