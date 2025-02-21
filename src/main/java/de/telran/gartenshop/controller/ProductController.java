@@ -3,6 +3,7 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.exception.BadRequestException;
 import de.telran.gartenshop.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -32,11 +33,29 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/filter")
     public List<ProductResponseDto> getProductsByFilter(
-            @RequestParam(value = "category", required = false) Long categoryId,
-            @RequestParam(value = "min_price", required = false) Double minPrice,
-            @RequestParam(value = "max_price", required = false) Double maxPrice,
-            @RequestParam(value = "is_discount", required = false, defaultValue = "false") Boolean isDiscount,
-            @RequestParam(value = "sort", required = false) String sort) {
+            @RequestParam(value = "category", required = false)
+            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
+            @Min(value = 1, message = "Invalid category Id: category Id must be >= 1") Long categoryId,
+
+            @RequestParam(value = "min_price", required = false)
+            @DecimalMin(value = "0.00", message = "Invalid min_price: Must be > 0.")
+            @DecimalMax(value = "9999999.99", message = "Invalid min_price: Must be <= 9999999.99.")
+            @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits before and 2 after the decimal.") Double minPrice,
+
+
+            @RequestParam(value = "max_price", required = false)
+            @DecimalMin(value = "0.00", message = "Invalid max_price: Must be > 0.")
+            @DecimalMax(value = "9999999.99", message = "Invalid max_price: Must be <= 9999999.99.")
+            @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits before and 2 after the decimal.") Double maxPrice,
+
+
+            @RequestParam(value = "is_discount", required = false, defaultValue = "false")
+            @NotNull(message = "is_discount can not be null, must be true/false.") Boolean isDiscount,
+
+            @RequestParam(value = "sort", required = false)
+            @Pattern(regexp = "^(name|price|discountPrice|createdAt|updatedAt)(,(asc|desc))?$",
+                    message = "Invalid parameter definition: parameter must be = name|price|discountPrice|createdAt|updatedAt. " +
+                            "Invalid sorting definition: must be in form '<sort parameter>,<sort order>'") String sort) {
         List<ProductResponseDto> productList = productService.getProductsByFilter(
                 categoryId,
                 minPrice,
@@ -52,7 +71,8 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getProductById(
             @PathVariable
-            @Min(value = 1, message = "Invalid productId: productId must be greater than or equal to 1")
+            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
             Long productId) {
         return productService.getProductById(productId);
     }
@@ -60,30 +80,43 @@ public class ProductController {
     //Добавление нового товара //localhost:8088/products
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean createProduct(@RequestBody @Valid ProductRequestDto productRequestDto) {
+    public boolean createProduct(
+            @RequestBody @Valid ProductRequestDto productRequestDto) {
         return productService.createProduct(productRequestDto);
     }
 
     //Редактирование товара по Id //localhost:8088/products/1
     @PutMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto, @PathVariable Long productId) {
+    public ProductResponseDto updateProduct(
+            @RequestBody @Valid ProductRequestDto productRequestDto,
+            @PathVariable
+            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
+            Long productId) {
         return productService.updateProduct(productRequestDto, productId);
     }
 
     //Добавить скидку на товар по productId //localhost:8088/products/discount/1
     @PutMapping(value = "/discount/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto updateDiscountPrice(@RequestBody ProductRequestDto productRequestDto, @PathVariable Long productId) {
+    public ProductResponseDto updateDiscountPrice(
+            @RequestBody @Valid ProductRequestDto productRequestDto,
+            @PathVariable
+            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
+            Long productId) {
         return productService.updateDiscountPrice(productRequestDto, productId);
     }
 
     //Удаление товара по Id //localhost:8088/products/1
     @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProduct(@PathVariable
-                              @Min(value = 1, message = "Invalid Id: Id must be >= 1")
-                              Long productId) {
+    public void deleteProduct(
+            @PathVariable
+            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
+            Long productId) {
         productService.deleteProduct(productId);
     }
 
@@ -97,7 +130,9 @@ public class ProductController {
     //Прибыль с группировкой по периодам
     @GetMapping(value = "/profit")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductProfitDto> getProfitByPeriod(@RequestParam("period") String period, @RequestParam("value") Integer value) {
+    public List<ProductProfitDto> getProfitByPeriod(
+            @RequestParam("period") String period,
+            @RequestParam("value") Integer value) {
 //            @RequestParam("period")
 //            @Pattern(regexp = "^(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH")
 //            @Parameter(description = "Type of period for profit calculating: <code>DAY</code>, <code>WEEK</code> or <code>MONTH</code>") String period,

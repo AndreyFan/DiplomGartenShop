@@ -6,6 +6,7 @@ import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
+import de.telran.gartenshop.exception.BadRequestException;
 import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CategoryRepository;
@@ -33,9 +34,24 @@ public class ProductService {
     public List<ProductResponseDto> getProductsByFilter(Long categoryId, Double minPrice, Double maxPrice,
                                                         Boolean isDiscount, String sort) {
 
+        if (minPrice == null) {
+            minPrice = 0.00;
+        }
+        if (maxPrice == null) {
+            maxPrice = Double.MAX_VALUE;
+        }
+
+        if (minPrice > maxPrice) {
+            throw new BadRequestException("min_price must be <= max_price");
+        }
+
         CategoryEntity categoryEntity = null;
         if (categoryId != null) {
-            categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+            if (categoryId != null) {
+                categoryEntity = categoryRepository.findById(categoryId).
+                        orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + categoryId));
+            }
+
         }
 
         List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
