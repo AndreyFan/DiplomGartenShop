@@ -5,7 +5,6 @@ import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.service.CategoryService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,7 +41,6 @@ public class CategoryController {
     public CategoryResponseDto updateCategory(
             @RequestBody @Valid CategoryRequestDto categoryRequestDto,
             @PathVariable
-            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long categoryId) {
         return categoryService.updateCategory(categoryRequestDto, categoryId);
     }
@@ -52,7 +50,6 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteCategory(
             @PathVariable
-            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long categoryId) {
         categoryService.deleteCategory(categoryId);
     }
