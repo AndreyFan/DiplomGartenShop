@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.Set;
 
-@Tag(name = "Carts", description = "Cart for adding CartItems",
+@Tag(name = "Carts-Endpoint", description = "Controller for adding CartItems",
         externalDocs = @ExternalDocumentation(description = "Link for external " +
                 "documentation in German language", url = "https://gartenshopExDoc.de"
         )

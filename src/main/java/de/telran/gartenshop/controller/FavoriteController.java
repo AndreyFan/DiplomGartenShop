@@ -12,7 +12,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/favorites")
-public class FavoriteController {
+public class FavoriteController implements FavoriteControllerInterface{
 
     private final FavoriteService favoriteService;
 

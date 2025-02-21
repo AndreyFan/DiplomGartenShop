@@ -24,14 +24,14 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     Optional<OrderEntity> findByOrderId(Long orderId);
 
     @Query("""
-        SELECT o FROM OrderEntity o
-        JOIN o.orderItems oi
-        WHERE o.orderStatus = 'PAID'
-        GROUP BY o
-        ORDER BY COUNT(oi) DESC
-        LIMIT 10
-        """)
-    List<OrderEntity> findTop10PaidOrders();
+                SELECT oi.product FROM OrderItemEntity oi
+                JOIN oi.order o
+                WHERE o.orderStatus = 'PAID'
+                GROUP BY oi.product
+                ORDER BY COUNT(oi) DESC
+                LIMIT 10
+            """)
+    List<ProductEntity> findTop10PaidOrders();
 
     @Query("""
                 SELECT oi.product FROM OrderItemEntity oi
@@ -43,7 +43,15 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
             """)
     List<ProductEntity> findTop10CanceledProducts();
 
-    @Query(value = "SELECT * FROM Orders WHERE Status = 'AWAITING_PAYMENT' AND CreatedAt < DATEADD('DAY', -:days, " +
-            "NOW())", nativeQuery = true)
-    List<OrderEntity> findOrdersAwaitingPayment(@Param("days") int days);
+
+
+    @Query("""
+    SELECT oi.product FROM OrderItemEntity oi
+    JOIN oi.order o
+    WHERE o.orderStatus = 'AWAITING_PAYMENT'
+    AND o.createdAt < :cutoffDate
+""")
+    List<ProductEntity> findOrdersAwaitingPayment(@Param("cutoffDate") LocalDateTime cutoffDate);
+
+
 }

@@ -1,6 +1,7 @@
 package de.telran.gartenshop.controller.advice;
 
 import de.telran.gartenshop.exception.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Hidden
 @RestControllerAdvice
 public class AdviceController {
     // альтернативная обработка ошибочной ситуации Exception
