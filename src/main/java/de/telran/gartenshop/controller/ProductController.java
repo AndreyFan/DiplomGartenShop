@@ -33,17 +33,14 @@ public class ProductController {
     @GetMapping(value = "/filter")
     public List<ProductResponseDto> getProductsByFilter(
             @RequestParam(value = "category", required = false)
-            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
             @Min(value = 1, message = "Invalid category Id: category Id must be >= 1") Long categoryId,
 
             @RequestParam(value = "min_price", required = false)
             @DecimalMin(value = "0.00", message = "Invalid min_price: Must be > 0.")
-            @DecimalMax(value = "9999999.99", message = "Invalid min_price: Must be <= 9999999.99.")
             @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits before and 2 after the decimal.") Double minPrice,
 
             @RequestParam(value = "max_price", required = false)
             @DecimalMin(value = "0.00", message = "Invalid max_price: Must be > 0.")
-            @DecimalMax(value = "9999999.99", message = "Invalid max_price: Must be <= 9999999.99.")
             @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits before and 2 after the decimal.") Double maxPrice,
 
             @RequestParam(value = "is_discount", required = false, defaultValue = "false")
@@ -68,7 +65,6 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getProductById(
             @PathVariable
-            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId) {
         return productService.getProductById(productId);
     }
@@ -87,7 +83,6 @@ public class ProductController {
     public ProductResponseDto updateProduct(
             @RequestBody @Valid ProductRequestDto productRequestDto,
             @PathVariable
-            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId) {
         return productService.updateProduct(productRequestDto, productId);
     }
@@ -98,7 +93,6 @@ public class ProductController {
     public ProductResponseDto updateDiscountPrice(
             @RequestBody @Valid ProductRequestDto productRequestDto,
             @PathVariable
-            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId) {
         return productService.updateDiscountPrice(productRequestDto, productId);
     }
@@ -108,7 +102,6 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteProduct(
             @PathVariable
-            @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId) {
         productService.deleteProduct(productId);
     }
@@ -125,7 +118,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public List<ProductProfitDto> getProfitByPeriod(
             @RequestParam("period")
-            @Pattern(regexp = "^(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH") String period,
+            @Pattern(regexp = "^(?i)(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH (case insensitive)") String period,
 
             @RequestParam("value")
             @Positive(message = "Period length must be a positive number") Integer value) {
