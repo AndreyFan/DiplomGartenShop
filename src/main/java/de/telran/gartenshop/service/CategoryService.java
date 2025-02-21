@@ -9,7 +9,6 @@ import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
