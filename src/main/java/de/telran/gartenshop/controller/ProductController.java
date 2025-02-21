@@ -3,7 +3,6 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
-import de.telran.gartenshop.exception.BadRequestException;
 import de.telran.gartenshop.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -42,12 +41,10 @@ public class ProductController {
             @DecimalMax(value = "9999999.99", message = "Invalid min_price: Must be <= 9999999.99.")
             @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits before and 2 after the decimal.") Double minPrice,
 
-
             @RequestParam(value = "max_price", required = false)
             @DecimalMin(value = "0.00", message = "Invalid max_price: Must be > 0.")
             @DecimalMax(value = "9999999.99", message = "Invalid max_price: Must be <= 9999999.99.")
             @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits before and 2 after the decimal.") Double maxPrice,
-
 
             @RequestParam(value = "is_discount", required = false, defaultValue = "false")
             @NotNull(message = "is_discount can not be null, must be true/false.") Boolean isDiscount,
@@ -72,8 +69,7 @@ public class ProductController {
     public ProductResponseDto getProductById(
             @PathVariable
             @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
-            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
-            Long productId) {
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId) {
         return productService.getProductById(productId);
     }
 
@@ -92,8 +88,7 @@ public class ProductController {
             @RequestBody @Valid ProductRequestDto productRequestDto,
             @PathVariable
             @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
-            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
-            Long productId) {
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId) {
         return productService.updateProduct(productRequestDto, productId);
     }
 
@@ -104,8 +99,7 @@ public class ProductController {
             @RequestBody @Valid ProductRequestDto productRequestDto,
             @PathVariable
             @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
-            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
-            Long productId) {
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId) {
         return productService.updateDiscountPrice(productRequestDto, productId);
     }
 
@@ -115,8 +109,7 @@ public class ProductController {
     public void deleteProduct(
             @PathVariable
             @Digits(integer = 5, fraction = 0, message = "Invalid Id: Id must be a valid integer with up to 5 digits")
-            @Min(value = 1, message = "Invalid Id: Id must be >= 1")
-            Long productId) {
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId) {
         productService.deleteProduct(productId);
     }
 
@@ -131,15 +124,11 @@ public class ProductController {
     @GetMapping(value = "/profit")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductProfitDto> getProfitByPeriod(
-            @RequestParam("period") String period,
-            @RequestParam("value") Integer value) {
-//            @RequestParam("period")
-//            @Pattern(regexp = "^(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH")
-//            @Parameter(description = "Type of period for profit calculating: <code>DAY</code>, <code>WEEK</code> or <code>MONTH</code>") String period,
-//
-//            @RequestParam("value")
-//            @Positive(message = "Period length must be a positive number")
-//            @Parameter(description = "Length of period for profit calculating") Integer value) {
+            @RequestParam("period")
+            @Pattern(regexp = "^(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH") String period,
+
+            @RequestParam("value")
+            @Positive(message = "Period length must be a positive number") Integer value) {
         return productService.getProductProfitByPeriod(period, value);
     }
 }
