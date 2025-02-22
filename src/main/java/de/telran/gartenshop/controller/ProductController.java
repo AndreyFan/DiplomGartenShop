@@ -88,6 +88,10 @@ public class ProductController {
     }
 
     //Добавить скидку на товар по productId //localhost:8088/products/discount/1
+    // тело запроса
+//    {
+//        "discountPrice": 100.99
+//    }
     @PutMapping(value = "/discount/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto updateDiscountPrice(

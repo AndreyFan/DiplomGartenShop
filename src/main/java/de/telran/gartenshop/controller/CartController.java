@@ -3,11 +3,8 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.requestDto.CartItemRequestDto;
 import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
 import de.telran.gartenshop.service.CartService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
