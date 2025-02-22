@@ -1,4 +1,12 @@
 -- liquibase formatted sql
+drop table if exists Favorites;
+drop table if exists OrderItems;
+drop table if exists Orders;
+drop table if exists CartItems;
+drop table if exists Cart;
+drop table if exists Users;
+drop table if exists Products;
+drop table if exists Categories;
 
 -- changeset Konstantin:create_table_categories
 CREATE TABLE Categories

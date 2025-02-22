@@ -15,15 +15,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -209,12 +212,12 @@ public class OrderIntegrationTest {
 
     @Test
     void getTop10PaidProductsTest() throws Exception {
-        when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(orderEntityTest));
+        when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(productEntityTest));
         this.mockMvc.perform(get("/orders/top-products"))
                 .andDo(print()) //печать лога вызова
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..orderId").exists())
-                .andExpect(jsonPath("$..orderId").value(1));
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productId").value(1));
     }
 
     @Test
@@ -228,14 +231,16 @@ public class OrderIntegrationTest {
                 .andExpect(jsonPath("$..productId").value(1));
     }
 
-    @Test
+   @Test
     void getAwaitingPaymentProductsTest() throws Exception {
-        when(orderRepositoryMock.findOrdersAwaitingPayment(10)).thenReturn(List.of(orderEntityTest));
-        this.mockMvc.perform(get("/orders/awaiting-payment-products"))
-                .andDo(print()) //печать лога вызова
+        when(orderRepositoryMock.findOrdersAwaitingPayment(any(LocalDateTime.class)))
+                .thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/orders/awaiting-payment-products")
+                        .param("days", "10"))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..orderId").exists())
-                .andExpect(jsonPath("$..orderId").value(1));
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productId").value(1));
     }
 
     @Test
@@ -250,6 +255,29 @@ public class OrderIntegrationTest {
 
     @Test
     void createOrderTest() throws Exception {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
+        when(orderItemRepositoryMock.save(any(OrderItemEntity.class))).thenReturn(orderItemEntityTest);
+        when(productRepositoryMock.findById(orderItemEntityTest.getProduct().getProductId())).thenReturn(Optional.of(productEntityTest));
+        this.mockMvc.perform(post("/orders/{userId}", userIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderRequesDtoTest))) // jackson: object -> json
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createOrderDiscountPriceNullTest() throws Exception {
+        ProductEntity productEntityTest = new ProductEntity(
+                1L,
+                "ProductName",
+                "ProductDescription",
+                new BigDecimal("10.25"),
+                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
+                null,
+                timestamp,
+                timestamp,
+                new CategoryEntity(1L, "CategoryName", null));
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
         when(orderItemRepositoryMock.save(any(OrderItemEntity.class))).thenReturn(orderItemEntityTest);

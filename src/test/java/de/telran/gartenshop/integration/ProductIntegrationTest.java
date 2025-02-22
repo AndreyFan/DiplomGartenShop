@@ -1,10 +1,12 @@
 package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.entity.CartItemEntity;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.repository.CategoryRepository;
@@ -26,10 +28,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -64,8 +65,9 @@ public class ProductIntegrationTest {
     private ProductResponseDto productResponseDtoTest;
     private CategoryResponseDto categoryResponseDtoTest;
 
-    Timestamp timestamp;
+    List<ProductEntity> productEntityList = new ArrayList<>();
 
+    Timestamp timestamp;
     Long productIdTest;
 
     @BeforeEach
@@ -84,6 +86,20 @@ public class ProductIntegrationTest {
                 timestamp,
                 timestamp,
                 categoryEntityTest);
+
+        ProductEntity productEntityTest2 = new ProductEntity(
+                2L,
+                "ProductName2",
+                "ProductDescription2",
+                new BigDecimal("10.25"),
+                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
+                new BigDecimal("8.50"),
+                timestamp,
+                timestamp,
+                categoryEntityTest);
+
+        productEntityList.add(productEntityTest);
+        productEntityList.add(productEntityTest2);
 
         productRequestDtoTest = new ProductRequestDto(
                 "ProductName",
@@ -147,6 +163,16 @@ public class ProductIntegrationTest {
                 .andExpect(jsonPath("$..productId").exists())
                 .andExpect(jsonPath("$..name").exists())
                 .andExpect(jsonPath("$..productId").value(1));
+    }
+
+    @Test
+    void getProductOfDayListTest() throws Exception {
+        when(productRepositoryMock.getProductOfDay()).thenReturn(productEntityList);
+        this.mockMvc.perform(get("/products/productOfDay"))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..name").exists());
     }
 
     @Test
@@ -253,5 +279,33 @@ public class ProductIntegrationTest {
 //                .andExpect(jsonPath("$..productId").exists())
 //                .andExpect(jsonPath("$..name").exists())
 //                .andExpect(jsonPath("$..productId").value(1));
+    }
+
+    @Test
+    void getProductsByFilterWithoutCategoryTest() throws Exception {
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 9.99, 12.99,
+                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/products/filter?min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProfitByPeriodTest() throws Exception {
+        String periodTest = "WEEK";
+        Integer valueTest = 5;
+
+        ProductProfitDto productProfitDtoTest = new ProductProfitDto(
+                "2025-01",
+                new BigDecimal("100.00"));
+
+        when(productRepositoryMock.getProductProfitByPeriod(anyString(), anyInt())).thenReturn(List.of(productProfitDtoTest));
+        this.mockMvc.perform(get("/products/profit?period=week&value=5", periodTest, valueTest))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..period").exists())
+                .andExpect(jsonPath("$..profit").exists())
+                .andExpect(jsonPath("$..profit").value(100.00));
     }
 }

@@ -1,10 +1,12 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
+import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
+import de.telran.gartenshop.exception.BadRequestException;
 import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CategoryRepository;
@@ -31,10 +33,20 @@ public class ProductService {
 
     public List<ProductResponseDto> getProductsByFilter(Long categoryId, Double minPrice, Double maxPrice,
                                                         Boolean isDiscount, String sort) {
+        if (minPrice == null) {
+            minPrice = 0.00;
+        }
+        if (maxPrice == null) {
+            maxPrice = Double.MAX_VALUE;
+        }
+        if (minPrice > maxPrice) {
+            throw new BadRequestException("min_price must be <= max_price");
+        }
 
         CategoryEntity categoryEntity = null;
         if (categoryId != null) {
-            categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+            categoryEntity = categoryRepository.findById(categoryId).
+                    orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + categoryId));
         }
 
         List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
@@ -44,73 +56,64 @@ public class ProductService {
     }
 
     public ProductResponseDto getProductById(Long productId) {
-        ProductEntity productEntity = productRepository.findById(productId).orElse(null);
-
-        if (productEntity == null) {
-            throw new DataNotFoundInDataBaseException("Product not found with Id: " + productId);
-        }
+        ProductEntity productEntity = productRepository.findById(productId)
+                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
         return mappers.convertToProductResponseDto(productEntity);
     }
 
     public boolean createProduct(ProductRequestDto productRequestDto) {
         ProductEntity createProductEntity = mappers.convertToProductEntity(productRequestDto);
-        CategoryEntity categoryEntity = categoryRepository.findById(productRequestDto.getCategoryId()).orElse(null);
+
+        Long categoryId = productRequestDto.getCategoryId();
+
+        CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + categoryId));
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
         createProductEntity.setProductId(null);
-
         createProductEntity.setCreatedAt(timestamp);
         createProductEntity.setUpdatedAt(timestamp);
         createProductEntity.setCategory(categoryEntity);
-
         ProductEntity savedProductEntity = productRepository.save(createProductEntity);
-
         return savedProductEntity.getProductId() != null;
     }
 
     public ProductResponseDto updateProduct(ProductRequestDto productRequestDto, Long productId) {
-        ProductEntity updateProductEntity = productRepository.findById(productId).orElse(null);
-        CategoryEntity categoryEntity = categoryRepository.findById(productRequestDto.getCategoryId()).orElse(null);
+        ProductEntity updateProductEntity = productRepository.findById(productId)
+                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+        CategoryEntity categoryEntity = categoryRepository.findById(productRequestDto.getCategoryId())
+                .orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + productRequestDto.getCategoryId()));
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
-        if (updateProductEntity != null) {
-            updateProductEntity.setName(productRequestDto.getName());
-            updateProductEntity.setDescription(productRequestDto.getDescription());
-            updateProductEntity.setPrice(productRequestDto.getPrice());
-            updateProductEntity.setCategory(categoryEntity);
-            updateProductEntity.setImageUrl(productRequestDto.getImageUrl());
-            updateProductEntity.setDiscountPrice(productRequestDto.getDiscountPrice());
-            updateProductEntity.setUpdatedAt(timestamp);
-            productRepository.save(updateProductEntity);
-        } else {
-            throw new DataNotFoundInDataBaseException("Product not found with Id: " + productId);
-        }
+        updateProductEntity.setName(productRequestDto.getName());
+        updateProductEntity.setDescription(productRequestDto.getDescription());
+        updateProductEntity.setPrice(productRequestDto.getPrice());
+        updateProductEntity.setCategory(categoryEntity);
+        updateProductEntity.setImageUrl(productRequestDto.getImageUrl());
+        updateProductEntity.setDiscountPrice(productRequestDto.getDiscountPrice());
+        updateProductEntity.setUpdatedAt(timestamp);
+        productRepository.save(updateProductEntity);
         return mappers.convertToProductResponseDto(updateProductEntity);
     }
 
     public ProductResponseDto updateDiscountPrice(ProductRequestDto productRequestDto, Long productId) {
-        ProductEntity updateProductEntity = productRepository.findById(productId).orElse(null);
+        ProductEntity updateProductEntity = productRepository.findById(productId)
+                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
-        if (updateProductEntity != null) {
-            updateProductEntity.setDiscountPrice(productRequestDto.getDiscountPrice());
-            updateProductEntity.setUpdatedAt(timestamp);
-            productRepository.save(updateProductEntity);
-        } else {
-            throw new DataNotFoundInDataBaseException("Product not found with Id: " + productId);
-        }
+        updateProductEntity.setDiscountPrice(productRequestDto.getDiscountPrice());
+        updateProductEntity.setUpdatedAt(timestamp);
+        productRepository.save(updateProductEntity);
         return mappers.convertToProductResponseDto(updateProductEntity);
     }
 
     public void deleteProduct(Long productId) {
-        ProductEntity deleteProductEntity = productRepository.findById(productId).orElse(null);
-        if (deleteProductEntity != null) {
-            productRepository.delete(deleteProductEntity);
-        } else {
-            throw new DataNotFoundInDataBaseException("Product not found with Id: " + productId);
-        }
+        ProductEntity deleteProductEntity = productRepository.findById(productId)
+                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+        productRepository.delete(deleteProductEntity);
     }
 
     public ProductResponseDto getProductOfDay() {
@@ -122,5 +125,9 @@ public class ProductService {
         } else {
             return mappers.convertToProductResponseDto(productOfDayList.getFirst());
         }
+    }
+
+    public List<ProductProfitDto> getProductProfitByPeriod(String period, Integer value) {
+        return productRepository.getProductProfitByPeriod(period, value);
     }
 }
