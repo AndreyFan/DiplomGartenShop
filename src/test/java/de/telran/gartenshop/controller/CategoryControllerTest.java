@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
-class CategoryControllerUnitTest {
+class CategoryControllerTest {
 
     private MockMvc mockMvc;
 

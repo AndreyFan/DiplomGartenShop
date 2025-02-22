@@ -64,6 +64,19 @@ public class UserServiceExceptionTest {
         when(userRepository.findByEmail(userRequestDto.getEmail())).thenReturn(userEntity);
         assertThrows(UserAlreadyExistsException.class, () -> userService.registerUser(userRequestDto));
     }
+    @Test
+    void testRegisterAdmin_negative_UserAlreadyExists() {
+        UserRequestDto userRequest = new UserRequestDto();
+        userRequest.setName("TestName");
+        userRequest.setEmail("testname@example.com");
+        userRequest.setPhone("1234567890");
+        when(userRepository.findByEmail(userRequest.getEmail())).thenReturn(userEntity);
+
+        UserAlreadyExistsException exception = assertThrows(UserAlreadyExistsException.class,
+                () -> userService.registerAdmin(userRequest));
+        assertEquals("User with email testname@example.com already exists", exception.getMessage());
+
+    }
 
     @Test
     void registerUser_ShouldThrowUserSaveException_WhenDatabaseFails() {

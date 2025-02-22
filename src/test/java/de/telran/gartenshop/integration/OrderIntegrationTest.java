@@ -257,6 +257,29 @@ public class OrderIntegrationTest {
     }
 
     @Test
+    void createOrderDiscountPriceNullTest() throws Exception {
+        ProductEntity productEntityTest = new ProductEntity(
+                1L,
+                "ProductName",
+                "ProductDescription",
+                new BigDecimal("10.25"),
+                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
+                null,
+                timestamp,
+                timestamp,
+                new CategoryEntity(1L, "CategoryName", null));
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
+        when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
+        when(orderItemRepositoryMock.save(any(OrderItemEntity.class))).thenReturn(orderItemEntityTest);
+        when(productRepositoryMock.findById(orderItemEntityTest.getProduct().getProductId())).thenReturn(Optional.of(productEntityTest));
+        this.mockMvc.perform(post("/orders/{userId}", userIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderRequesDtoTest))) // jackson: object -> json
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
     void createOrderExceptionByUserTest() throws Exception {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(post("/orders/{userId}", userIdTest)

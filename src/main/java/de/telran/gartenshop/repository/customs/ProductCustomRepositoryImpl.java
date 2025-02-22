@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +31,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         }
 
         Predicate filterPrice = null;
-        if (minPrice != null && maxPrice != null && minPrice < maxPrice) {
-            filterPrice = cb.between(root.get("price"), minPrice, maxPrice); // price BETWEEN (1,100)
-        } else if (minPrice != null && maxPrice == null) { //>minPrice
-            filterPrice = cb.gt(root.get("price"), minPrice); // price > 1
-        } else if (maxPrice != null && minPrice == null) { //<maxPrice
-            filterPrice = cb.lt(root.get("price"), maxPrice); // price < 10
-        }
+
+        filterPrice = cb.between(root.get("price"), minPrice, maxPrice); // price BETWEEN (minPrice,maxPrice)
 
         if (filterPrice != null) {
             predicates.add(filterPrice); // добавляем в предикат условие по цене

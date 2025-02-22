@@ -2,86 +2,98 @@ package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
+import de.telran.gartenshop.entity.CategoryEntity;
+import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
+import de.telran.gartenshop.mapper.Mappers;
+import de.telran.gartenshop.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-//@ActiveProfiles(profiles = {"test"})
-@TestPropertySource("classpath:application-test.properties")
-@Transactional
-class CategoryServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class CategoryServiceTest {
 
-    @Autowired
+    @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private Mappers mappers;
+
+    @InjectMocks
     private CategoryService categoryService;
+
+    private CategoryEntity categoryEntity;
+    private CategoryRequestDto categoryRequestDto;
+    private CategoryResponseDto categoryResponseDto;
 
     @BeforeEach
     void setUp() {
+        categoryEntity = new CategoryEntity();
+        categoryEntity.setCategoryId(1L);
+        categoryEntity.setName("TestCategory");
+
+        categoryRequestDto = new CategoryRequestDto();
+        categoryRequestDto.setName("TestCategory");
+
+        categoryResponseDto = new CategoryResponseDto();
+        categoryResponseDto.setCategoryId(1L);
+        categoryResponseDto.setName("TestCategory");
     }
 
     @Test
-    void getAllCategories() {
-        CategoryRequestDto requestDto = new CategoryRequestDto();
-        requestDto.setName("test");
-        categoryService.createCategory(requestDto);
-        CategoryRequestDto requestDto1 = new CategoryRequestDto();
-        requestDto1.setName("test1");
-        categoryService.createCategory(requestDto1);
-        List<CategoryResponseDto> categories = categoryService.getAllCategories();
-        assertEquals(2, categories.size());
+    void getAllCategoriesTest() {
+        when(categoryRepository.findAll()).thenReturn(Arrays.asList(categoryEntity));
+        when(mappers.convertToCategoryResponseDto(any())).thenReturn(categoryResponseDto);
 
+        List<CategoryResponseDto> categoryResponseDtos = categoryService.getAllCategories();
+
+        assertNotNull(categoryResponseDtos);
+        assertEquals(1, categoryResponseDtos.size());
+        assertEquals("TestCategory", categoryResponseDtos.get(0).getName());
     }
 
     @Test
-    void testCreateCategory() {
-        CategoryRequestDto requestDto = new CategoryRequestDto();
-        requestDto.setName("Garden Tools");
+    void createCategoryTest() {
+        when(mappers.convertToCategoryEntity(any())).thenReturn(categoryEntity);
+        when(categoryRepository.save(any())).thenReturn(categoryEntity);
 
-        assertTrue(categoryService.createCategory(requestDto));
-
-        List<CategoryResponseDto> categories = categoryService.getAllCategories();
-        assertFalse(categories.isEmpty());
-        assertEquals("Garden Tools", categories.get(0).getName());
+        boolean isCreated = categoryService.createCategory(categoryRequestDto);
+        assertTrue(isCreated);
     }
 
     @Test
-    void updateCategory() {
-        CategoryRequestDto requestDto = new CategoryRequestDto();
-        requestDto.setName("Garden Tools");
-
-        categoryService.createCategory(requestDto);
-        List<CategoryResponseDto> categories = categoryService.getAllCategories();
-        assertFalse(categories.isEmpty());
-        CategoryResponseDto createdCategory = categories.stream()
-                .filter(c -> "Garden Tools".equals(c.getName()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-        Long categoryId = createdCategory.getCategoryId();
-        CategoryRequestDto updateRequestDto = new CategoryRequestDto();
-        updateRequestDto.setName("Garden Tools");
-        CategoryResponseDto updateCategory = categoryService.updateCategory(updateRequestDto, categoryId);
-        assertEquals("Garden Tools", updateCategory.getName());
-
+    void updateCategoryTest() {
+        when(mappers.convertToCategoryResponseDto(any())).thenReturn(categoryResponseDto);
+        when(categoryRepository.save(any())).thenReturn(categoryEntity);
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(categoryEntity));
+        CategoryResponseDto updateCategory = categoryService.updateCategory(categoryRequestDto, 1L);
+        assertNotNull(updateCategory);
+        assertEquals("TestCategory", updateCategory.getName());
     }
 
-
+    @Test
+    void deleteCategoryTest() {
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(categoryEntity));
+        doNothing().when(categoryRepository).delete(any());
+        assertDoesNotThrow(() -> categoryService.deleteCategory(1L));
+    }
 
     @Test
-    void deleteCategory() {
-        CategoryRequestDto requestDto = new CategoryRequestDto();
-        requestDto.setName("Garden Tools");
-        categoryService.createCategory(requestDto);
-        List<CategoryResponseDto> categories = categoryService.getAllCategories();
-        Long categoryId = categories.get(0).getCategoryId();
-        categoryService.deleteCategory(categoryId);
-        List<CategoryResponseDto> categoriesAfterDelete = categoryService.getAllCategories();
-        assertTrue(categoriesAfterDelete.isEmpty());
+    void deleteCategoryExceptionByCategoryTest() {
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(DataNotFoundInDataBaseException.class, () -> categoryService.deleteCategory(1L));
     }
 }

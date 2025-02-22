@@ -3,8 +3,12 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.requestDto.FavoriteRequestDto;
 import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
 import de.telran.gartenshop.service.FavoriteService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -13,14 +17,15 @@ import java.util.Set;
 @RequiredArgsConstructor
 @RequestMapping(value = "/favorites")
 public class FavoriteController implements FavoriteControllerInterface{
-
     private final FavoriteService favoriteService;
 
     // запрос списка товаров-фаворитов для юзера (по его userId)
     // http://localhost:8088/favorites/3   - список фаворитов для юзера с userId=3
     @GetMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public Set<FavoriteResponseDto> getFavoritesByUserId(@PathVariable Long userId) {
+    public Set<FavoriteResponseDto> getFavoritesByUserId(
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId) {
         return favoriteService.getFavoritesByUserId(userId);
     }
 
@@ -28,7 +33,8 @@ public class FavoriteController implements FavoriteControllerInterface{
     // пример запроса: http://localhost:8088/favorites/get?email=henry.lewis@example.com
     @GetMapping(value = "/get")
     @ResponseStatus(HttpStatus.OK)
-    public Set<FavoriteResponseDto> getFavorites(@RequestParam String email) {
+    public Set<FavoriteResponseDto> getFavorites(
+            @RequestParam @Email(message = "Invalid email format. Please provide a valid email.") String email) {
         return favoriteService.getFavorites(email);
     }
 
@@ -41,13 +47,13 @@ public class FavoriteController implements FavoriteControllerInterface{
     //}
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Boolean createFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto) {
+    public Boolean createFavorite(@RequestBody @Valid FavoriteRequestDto favoriteRequestDto) {
         return favoriteService.createFavorite(favoriteRequestDto);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public Boolean deleteFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto) {
+    public Boolean deleteFavorite(@RequestBody @Valid FavoriteRequestDto favoriteRequestDto) {
         return favoriteService.deleteFavorite(favoriteRequestDto);
     }
 }

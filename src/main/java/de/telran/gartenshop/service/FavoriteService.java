@@ -30,7 +30,7 @@ public class FavoriteService {
         UserEntity user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            throw new UserNotFoundException(" This user not found ");
+            throw new UserNotFoundException("User not found with Id: " + userId);
         } else {
             Set<FavoriteEntity> favorites = user.getFavorites();
             return MapperUtil.convertSet(favorites, mappers::convertToFavoriteResponseDto);
@@ -41,7 +41,7 @@ public class FavoriteService {
         UserEntity user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new UserNotFoundException(" This user not found ");
+            throw new UserNotFoundException("User not found with email: " + email);
         } else {
             Set<FavoriteEntity> favorites = user.getFavorites();
             return MapperUtil.convertSet(favorites, mappers::convertToFavoriteResponseDto);
@@ -70,10 +70,10 @@ public class FavoriteService {
                 favoriteEntitySet.add(favorite);
                 return favorite != null;
             } else {
-                throw new DataNotFoundInDataBaseException(" This Product is not in the database");
+                throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
             }
         } else {
-            throw new UserNotFoundException(" User not found");
+            throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
         }
     }
 
@@ -89,9 +89,9 @@ public class FavoriteService {
                         return true;
                     }
                 }
-                throw new DataNotFoundInDataBaseException(" This Product is not in favorites ");
+                throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
         } else {
-            throw new UserNotFoundException("User not found in database");
+            throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
         }
     }
 }
