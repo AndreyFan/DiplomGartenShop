@@ -195,6 +195,7 @@ public class ProductIntegrationTest {
     @Test
     void createProductTest() throws Exception {
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(productEntityTest);
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
         this.mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequestDtoTest))) // jackson: object -> json
@@ -206,6 +207,7 @@ public class ProductIntegrationTest {
     @Test
     void createProductReturnFalseTest() throws Exception {
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(new ProductEntity());
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
         this.mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequestDtoTest))) // jackson: object -> json
@@ -289,6 +291,36 @@ public class ProductIntegrationTest {
         this.mockMvc.perform(get("/products/filter?min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProductsByFilterWithoutMinPriceTest() throws Exception {
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 0.00, 12.99,
+                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/products/filter?max_price=12.99&is_discount=true&sort=price,desc"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProductsByFilterWithoutMaxPriceTest() throws Exception {
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 9.99, 0.00,
+                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/products/filter?min_price=9.99&is_discount=true&sort=price,desc"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProductsByFilterExceptionMinMaxPriceTest() throws Exception {
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 12.99, 9.99,
+                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/products/filter?min_price=12.99&max_price=9.99&is_discount=true&sort=price,desc"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
