@@ -3,7 +3,6 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
-import de.telran.gartenshop.security.jwt.JwtProvider;
 import de.telran.gartenshop.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

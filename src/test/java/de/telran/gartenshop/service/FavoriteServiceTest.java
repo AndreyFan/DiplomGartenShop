@@ -175,7 +175,7 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findById(userIdTestFalse)).thenReturn(Optional.empty());
         userNotFoundException = assertThrows(UserNotFoundException.class,
                 () -> favoriteServiceMock.getFavoritesByUserId(userIdTestFalse));
-        assertEquals(" This user not found ", userNotFoundException.getMessage());
+        assertEquals("User not found with Id: "+userIdTestFalse, userNotFoundException.getMessage());
     }
 
     @Test
@@ -200,7 +200,7 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findByEmail(emailTestFalse)).thenReturn(null);
         userNotFoundException = assertThrows(UserNotFoundException.class,
                 () -> favoriteServiceMock.getFavorites(emailTestFalse));
-        assertEquals(" This user not found ", userNotFoundException.getMessage());
+        assertEquals("User not found with email: "+emailTestFalse, userNotFoundException.getMessage());
     }
 
     @Test
