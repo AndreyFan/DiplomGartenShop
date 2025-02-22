@@ -16,9 +16,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/favorites")
-@Validated
-public class FavoriteController {
-
+public class FavoriteController implements FavoriteControllerInterface{
     private final FavoriteService favoriteService;
 
     // запрос списка товаров-фаворитов для юзера (по его userId)

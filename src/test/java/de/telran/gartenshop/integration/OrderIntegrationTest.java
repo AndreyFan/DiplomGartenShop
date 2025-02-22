@@ -13,13 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -199,12 +202,12 @@ public class OrderIntegrationTest {
 
     @Test
     void getTop10PaidProductsTest() throws Exception {
-        when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(orderEntityTest));
+        when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(productEntityTest));
         this.mockMvc.perform(get("/orders/top-products"))
                 .andDo(print()) //печать лога вызова
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..orderId").exists())
-                .andExpect(jsonPath("$..orderId").value(1));
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productId").value(1));
     }
 
     @Test
@@ -218,14 +221,16 @@ public class OrderIntegrationTest {
                 .andExpect(jsonPath("$..productId").value(1));
     }
 
-    @Test
+   @Test
     void getAwaitingPaymentProductsTest() throws Exception {
-        when(orderRepositoryMock.findOrdersAwaitingPayment(10)).thenReturn(List.of(orderEntityTest));
-        this.mockMvc.perform(get("/orders/awaiting-payment-products"))
-                .andDo(print()) //печать лога вызова
+        when(orderRepositoryMock.findOrdersAwaitingPayment(any(LocalDateTime.class)))
+                .thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/orders/awaiting-payment-products")
+                        .param("days", "10"))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..orderId").exists())
-                .andExpect(jsonPath("$..orderId").value(1));
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productId").value(1));
     }
 
     @Test

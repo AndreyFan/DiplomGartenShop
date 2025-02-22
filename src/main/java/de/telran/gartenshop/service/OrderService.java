@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static de.telran.gartenshop.entity.enums.OrderStatus.*;
@@ -44,9 +45,9 @@ public class OrderService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    public List<OrderResponseDto> getTop10PaidProducts() {
-        List<OrderEntity> orders = orderRepository.findTop10PaidOrders();
-        return MapperUtil.convertList(orders, mappers::convertToOrderResponseDto);
+    public List<ProductResponseDto> getTop10PaidProducts() {
+        List<ProductEntity> orders = orderRepository.findTop10PaidOrders();
+        return MapperUtil.convertList(orders, mappers::convertToProductResponseDto);
     }
 
 
@@ -56,9 +57,10 @@ public class OrderService {
     }
 
 
-    public List<OrderResponseDto> getOrdersAwaitingPayment(int days) {
-        List<OrderEntity> orders = orderRepository.findOrdersAwaitingPayment(days);
-        return MapperUtil.convertList(orders, mappers::convertToOrderResponseDto);
+    public List<ProductResponseDto> getOrdersAwaitingPayment(int days) {
+        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
+        List<ProductEntity> products = orderRepository.findOrdersAwaitingPayment(cutoffDate);
+        return MapperUtil.convertList(products, mappers::convertToProductResponseDto);
     }
 
 

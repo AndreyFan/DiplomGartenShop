@@ -30,8 +30,8 @@ public class OrderController {
     }
 
     @GetMapping("/top-products")
-    public ResponseEntity<List<OrderResponseDto>> getTop10PaidProducts() {
-        List<OrderResponseDto> products = orderService.getTop10PaidProducts();
+    public ResponseEntity<List<ProductResponseDto>> getTop10PaidProducts() {
+        List<ProductResponseDto> products = orderService.getTop10PaidProducts();
         return ResponseEntity.ok(products);
     }
 
@@ -44,9 +44,9 @@ public class OrderController {
 
 
     @GetMapping("/awaiting-payment-products")
-    public ResponseEntity<List<OrderResponseDto>> getAwaitingPaymentProducts(@RequestParam(name = "days",
+    public ResponseEntity<List<ProductResponseDto>> getAwaitingPaymentProducts(@RequestParam(name = "days",
             defaultValue = "10") int days) {
-        List<OrderResponseDto> products = orderService.getOrdersAwaitingPayment(days);
+        List<ProductResponseDto> products = orderService.getOrdersAwaitingPayment(days);
         return ResponseEntity.ok(products);
     }
 

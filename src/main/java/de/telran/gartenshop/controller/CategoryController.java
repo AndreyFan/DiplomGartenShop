@@ -16,8 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/categories")
-@Validated
-public class CategoryController {
+public class CategoryController implements CategoryControllerInterface{
     private final CategoryService categoryService;
 
     //Просмотр всех категорий товаров //localhost:8088/categories
