@@ -34,6 +34,7 @@ CREATE TABLE Users
     PhoneNumber  VARCHAR(255)                     NULL,
     PasswordHash VARCHAR(255)                     NULL,
     Role         ENUM ('CLIENT', 'ADMINISTRATOR') NULL,
+    RefreshToken VARCHAR(255)                     NULL,
     CONSTRAINT PK_USERS PRIMARY KEY (UserID)
 );
 

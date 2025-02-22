@@ -2,9 +2,11 @@ package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.security.jwt.JwtProvider;
 import de.telran.gartenshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,6 +52,7 @@ public class ProductController {
     }
 
     //Добавление нового товара //localhost:8088/products
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public boolean createProduct(@RequestBody ProductRequestDto productRequestDto) {
@@ -64,6 +67,7 @@ public class ProductController {
     }
 
     //Добавить скидку на товар по productId //localhost:8088/products/discount/1
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping(value = "/discount/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto updateDiscountPrice(@RequestBody ProductRequestDto productRequestDto, @PathVariable Long productId) {

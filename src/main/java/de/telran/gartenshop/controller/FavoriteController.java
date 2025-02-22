@@ -5,6 +5,7 @@ import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
 import de.telran.gartenshop.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;

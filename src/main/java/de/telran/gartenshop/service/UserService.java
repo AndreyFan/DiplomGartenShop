@@ -14,9 +14,11 @@ import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CartRepository;
 import de.telran.gartenshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final Mappers mappers;
     private final CartRepository cartRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Boolean registerUser(UserRequestDto userRequestDto) {
         // checking : if user already exist ?
@@ -40,6 +43,7 @@ public class UserService {
         userEntity.setEmail(userRequestDto.getEmail());
         userEntity.setPhone(userRequestDto.getPhone());
         userEntity.setRole(Role.CLIENT);
+        userEntity.setPasswordHash(passwordEncoder.encode(userRequestDto.getPassword()));
         CartEntity cart = new CartEntity();  // create Cart for this User
         cart.setUser(userEntity);
         userEntity.setCart(cart);
@@ -64,6 +68,7 @@ public class UserService {
         userEntity.setEmail(userRequestDto.getEmail());
         userEntity.setPhone(userRequestDto.getPhone());
         userEntity.setRole(Role.ADMINISTRATOR);
+        userEntity.setPasswordHash(passwordEncoder.encode(userRequestDto.getPassword()));
         CartEntity cart = new CartEntity();  // create Cart for this User
         cart.setUser(userEntity);
         userEntity.setCart(cart);
@@ -95,13 +100,9 @@ public class UserService {
         if (user == null) {
             throw new UserNotFoundException("User with email " + email + " not found");
         }
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setUserId(user.getUserId());
-        userResponseDto.setName(user.getName());
-        userResponseDto.setPhone(user.getPhone());
-        userResponseDto.setEmail(user.getEmail());
-        userResponseDto.setPasswordHash("******");
-        return userResponseDto;
+        UserResponseDto foundedUser = mappers.convertToUserResponseDto(user);
+        foundedUser.setPasswordHash("******");
+        return foundedUser;
     }
 
     public UserResponseDto getUserById(Long userId) {
@@ -134,4 +135,14 @@ public class UserService {
         }
     }
 
+    public UserResponseDto getByRefreshToken(String token) {
+        UserEntity usersEntity = userRepository.getByRefreshToken(token).stream().findFirst().orElse(null);
+        return mappers.convertToUserResponseDto(usersEntity);
+    }
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateUserRefreshToken(UserResponseDto user, String refreshToken) {
+        UserEntity userEntity = userRepository.findByEmail(user.getEmail());
+        userEntity.setRefreshToken(refreshToken);
+        UserEntity refreshUsersEntity =  userRepository.save(userEntity);
+    }
 }
