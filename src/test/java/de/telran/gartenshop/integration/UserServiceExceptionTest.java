@@ -15,6 +15,8 @@ import de.telran.gartenshop.exception.UserSaveException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CartRepository;
 import de.telran.gartenshop.repository.UserRepository;
+import de.telran.gartenshop.security.configure.SecurityConfig;
+import de.telran.gartenshop.security.jwt.JwtProvider;
 import de.telran.gartenshop.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,11 +24,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
+@Import(SecurityConfig.class)
+@WithMockUser(roles = {"CLIENT","ADMINISTRATOR"})
 public class UserServiceExceptionTest {
     @Mock
     private UserRepository userRepository;
@@ -36,6 +43,8 @@ public class UserServiceExceptionTest {
 
     @Mock
     private Mappers mappers;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserService userService;
@@ -81,7 +90,9 @@ public class UserServiceExceptionTest {
     @Test
     void registerUser_ShouldThrowUserSaveException_WhenDatabaseFails() {
         when(userRepository.findByEmail(userRequestDto.getEmail())).thenReturn(null);
+        when(passwordEncoder.encode(userRequestDto.getPassword())).thenReturn("encodedPassword"); // ✅ Добавили заглушку
         when(userRepository.save(any(UserEntity.class))).thenThrow(new RuntimeException());
+
         assertThrows(UserSaveException.class, () -> userService.registerUser(userRequestDto));
     }
 

@@ -8,6 +8,8 @@ import de.telran.gartenshop.entity.enums.DeliveryMethod;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.entity.enums.Role;
 import de.telran.gartenshop.repository.*;
+import de.telran.gartenshop.security.configure.SecurityConfig;
+import de.telran.gartenshop.security.jwt.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 //import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest // запускаем контейнер Spring для тестирования
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @ActiveProfiles(profiles = {"dev"})
+@Import(SecurityConfig.class)
+@WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
 public class OrderIntegrationTest {
     @Autowired
     private MockMvc mockMvc; // для имитации запросов пользователей
@@ -55,6 +61,9 @@ public class OrderIntegrationTest {
 
     @MockBean
     private CartRepository cartRepositoryMock;
+
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -150,6 +159,7 @@ public class OrderIntegrationTest {
                 "+4975644333",
                 "hgfgjfdlgjflg",
                 Role.CLIENT,
+                "refreshToken",
                 new CartEntity(),
                 new HashSet<FavoriteEntity>(),
                 orderEntitySet);

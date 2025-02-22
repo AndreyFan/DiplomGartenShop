@@ -83,6 +83,7 @@ class FavoriteServiceTest {
                 "+4975644333",
                 "hgfgjfdlgjflg",
                 Role.CLIENT,
+                "refreshToken",
                 null,
                 null,
                 null);
@@ -125,7 +126,8 @@ class FavoriteServiceTest {
                 "ts@gmail.com",
                 "+4975644333",
                 "hgfgjfdlgjflg",
-                Role.CLIENT);
+                Role.CLIENT,
+                "refreshToken");
 
         ProductResponseDto productResponseDtoTest = new ProductResponseDto(
                 1L,

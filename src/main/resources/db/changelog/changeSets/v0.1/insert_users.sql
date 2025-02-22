@@ -3,8 +3,8 @@
 -- changeset Konstantin:insert_users
 insert into Users (Name, Email, PhoneNumber, PasswordHash, Role)
 values
-    ('Alice Smith', 'alice.smith@example.com', '1234567890', 'hashpassword1',  'CLIENT'),
-    ('Bob Johnson', 'bob.johnson@example.com', '1234567891', 'hashpassword2', 'ADMINISTRATOR'),
+    ('Alice Smith', 'alice.smith@example.com', '1234567890', '$2a$10$5BCRjMPhpKmS5oQjMN5lO.n0nJIdESnU2LyvuIbc/mVskUFOSkCua',  'CLIENT'),
+    ('Bob Johnson', 'bob.johnson@example.com', '1234567891', '$2a$10$5BCRjMPhpKmS5oQjMN5lO.n0nJIdESnU2LyvuIbc/mVskUFOSkCua', 'ADMINISTRATOR'),
     ('Charlie Brown', 'charlie.brown@example.com', '1234567892', 'hashpassword3',   'CLIENT'),
     ('David Wilson', 'david.wilson@example.com', '1234567893', 'hashpassword4',   'CLIENT'),
     ('Emma Davis', 'emma.davis@example.com', '1234567894', 'hashpassword5',  'CLIENT'),
