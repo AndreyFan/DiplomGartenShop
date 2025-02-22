@@ -4,8 +4,6 @@ import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.service.CategoryService;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/categories")
-public class CategoryController implements CategoryControllerInterface{
+public class CategoryController implements CategoryControllerInterface {
     private final CategoryService categoryService;
 
     //Просмотр всех категорий товаров //localhost:8088/categories
@@ -31,8 +29,7 @@ public class CategoryController implements CategoryControllerInterface{
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean createCategory(
-            @RequestBody @Valid CategoryRequestDto categoryRequestDto) {
+    public boolean createCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
         return categoryService.createCategory(categoryRequestDto);
     }
 
@@ -40,10 +37,7 @@ public class CategoryController implements CategoryControllerInterface{
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryResponseDto updateCategory(
-            @RequestBody @Valid CategoryRequestDto categoryRequestDto,
-            @PathVariable
-            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long categoryId) {
+    public CategoryResponseDto updateCategory(@RequestBody CategoryRequestDto categoryRequestDto, @PathVariable Long categoryId) {
         return categoryService.updateCategory(categoryRequestDto, categoryId);
     }
 
@@ -51,9 +45,7 @@ public class CategoryController implements CategoryControllerInterface{
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @DeleteMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategory(
-            @PathVariable
-            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long categoryId) {
+    public void deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
     }
 }
