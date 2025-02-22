@@ -6,6 +6,8 @@ import de.telran.gartenshop.service.CategoryService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class CategoryController implements CategoryControllerInterface {
     }
 
     //Добавление новой категории товаров //localhost:8088/categories
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public boolean createCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
@@ -31,6 +34,7 @@ public class CategoryController implements CategoryControllerInterface {
     }
 
     //Редактирование категории товаров по Id //localhost:8088/categories/3
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryResponseDto updateCategory(@RequestBody CategoryRequestDto categoryRequestDto, @PathVariable Long categoryId) {
@@ -38,6 +42,7 @@ public class CategoryController implements CategoryControllerInterface {
     }
 
     //Удаление категории товаров по Id //localhost:8088/categories/11
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @DeleteMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCategory(@PathVariable Long categoryId) {

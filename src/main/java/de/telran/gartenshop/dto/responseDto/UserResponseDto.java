@@ -17,5 +17,6 @@ public class UserResponseDto {
     private String phone;
     private String passwordHash;
     private Role role;
+    private String refreshToken;
 
 }

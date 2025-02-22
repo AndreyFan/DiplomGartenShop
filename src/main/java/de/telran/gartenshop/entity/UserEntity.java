@@ -27,7 +27,7 @@ public class UserEntity {
     @Column(name = "Name")
     private String name;
 
-    @Column(name = "Email")
+    @Column(name = "Email", unique = true)
     private String email;
 
     @Column(name = "PhoneNumber")
@@ -39,6 +39,9 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
     private Role role;
+
+    @Column(name = "RefreshToken")
+    private String refreshToken;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private CartEntity cart;
