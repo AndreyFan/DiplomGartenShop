@@ -4,12 +4,9 @@ import de.telran.gartenshop.dto.requestDto.UserRequestDto;
 import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
 import de.telran.gartenshop.dto.responseDto.UserResponseDto;
 import de.telran.gartenshop.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
