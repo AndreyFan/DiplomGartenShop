@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OrderRequestDto {
     @NotNull(message = "Delivery address cannot be empty!")
-    @Size(min = 1, max = 150, message = "Delivery address must be <= 150 characters")
+    @Size(min = 1, max = 150, message = "Delivery address must be 1-150 characters")
     private String deliveryAddress;
 
     @NotNull(message = "Delivery method cannot be empty!")
