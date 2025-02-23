@@ -95,6 +95,35 @@ public class UserIntegrationTest {
     }
 
     @Test
+    void testRegisterAdmin() throws Exception {
+        UserRequestDto userRequest = new UserRequestDto();
+        userRequest.setName("Test Name");
+        userRequest.setEmail("testName@example.com");
+        userRequest.setPhone("1234567890");
+        userRequest.setPassword("asdfg");
+
+        when(userRepository.findByEmail("testName@example.com")).thenReturn(null);
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setName(userRequest.getName());
+        userEntity.setEmail(userRequest.getEmail());
+        userEntity.setPhone(userRequest.getPhone());
+        userEntity.setRole(Role.ADMINISTRATOR);
+
+        when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+
+        mockMvc.perform(post("/users/registerAdmin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(content().string("true"));
+
+        verify(userRepository).findByEmail("testName@example.com");
+        verify(userRepository).save(any(UserEntity.class));
+    }
+
+
+    @Test
     void testUpdateUser() throws Exception {
         UserUpdateDto updateDto = new UserUpdateDto();
         updateDto.setName("Updated Name");

@@ -314,6 +314,26 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    void getProductsByFilterWithoutMinMaxPriceTest() throws Exception {
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+        when(productRepositoryMock.findProductByFilter(categoryEntityTest, null, null,
+                true, "sort=price,desc")).thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/products/filter?sort=price,desc"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProductsByFilterWithoutSortTest() throws Exception {
+        when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
+        when(productRepositoryMock.findProductByFilter(categoryEntityTest, 9.99, 12.99,
+                true, "price,desc")).thenReturn(List.of(productEntityTest));
+        this.mockMvc.perform(get("/products/filter?min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void getProductsByFilterExceptionMinMaxPriceTest() throws Exception {
         when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
         when(productRepositoryMock.findProductByFilter(categoryEntityTest, 12.99, 9.99,

@@ -3,7 +3,6 @@ package de.telran.gartenshop.service;
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
-import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.exception.BadRequestException;
 import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.mapper.Mappers;
@@ -23,9 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
