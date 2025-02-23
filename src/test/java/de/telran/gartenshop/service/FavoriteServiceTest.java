@@ -83,6 +83,7 @@ class FavoriteServiceTest {
                 "+4975644333",
                 "hgfgjfdlgjflg",
                 Role.CLIENT,
+                "refreshToken",
                 null,
                 null,
                 null);
@@ -125,7 +126,8 @@ class FavoriteServiceTest {
                 "ts@gmail.com",
                 "+4975644333",
                 "hgfgjfdlgjflg",
-                Role.CLIENT);
+                Role.CLIENT,
+                "refreshToken");
 
         ProductResponseDto productResponseDtoTest = new ProductResponseDto(
                 1L,
@@ -173,7 +175,7 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findById(userIdTestFalse)).thenReturn(Optional.empty());
         userNotFoundException = assertThrows(UserNotFoundException.class,
                 () -> favoriteServiceMock.getFavoritesByUserId(userIdTestFalse));
-        assertEquals(" This user not found ", userNotFoundException.getMessage());
+        assertEquals("User not found with Id: "+userIdTestFalse, userNotFoundException.getMessage());
     }
 
     @Test
@@ -198,7 +200,7 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findByEmail(emailTestFalse)).thenReturn(null);
         userNotFoundException = assertThrows(UserNotFoundException.class,
                 () -> favoriteServiceMock.getFavorites(emailTestFalse));
-        assertEquals(" This user not found ", userNotFoundException.getMessage());
+        assertEquals("User not found with email: "+emailTestFalse, userNotFoundException.getMessage());
     }
 
     @Test

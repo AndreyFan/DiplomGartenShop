@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
@@ -65,8 +64,6 @@ public class UserController {
 
         return userService.updateUser(userUpdateDto, userId);
     }
-
-
     @DeleteMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteUser(@PathVariable Long userId) {

@@ -3,11 +3,9 @@ package de.telran.gartenshop.controller;
 import de.telran.gartenshop.dto.requestDto.CartItemRequestDto;
 import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
 import de.telran.gartenshop.service.CartService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +18,7 @@ public class CartController implements CartControllerInterface {
     private final CartService cartService;
 
     //получить все товары во всех корзинах //localhost:8088/cart/get
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping(value = "/get")
     @ResponseStatus(HttpStatus.OK)
     public List<CartItemResponseDto> getAllCartItems() {

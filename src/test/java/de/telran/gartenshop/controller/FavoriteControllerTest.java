@@ -7,13 +7,17 @@ import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.dto.responseDto.UserResponseDto;
 import de.telran.gartenshop.entity.enums.Role;
+import de.telran.gartenshop.security.configure.SecurityConfig;
+import de.telran.gartenshop.security.jwt.JwtProvider;
 import de.telran.gartenshop.service.FavoriteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -29,6 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(FavoriteController.class)
+@Import(SecurityConfig.class)
+@WithMockUser(roles = {"CLIENT","ADMINISTRATOR"})
 class FavoriteControllerTest {
 
     @Autowired
@@ -36,6 +42,8 @@ class FavoriteControllerTest {
 
     @MockBean
     private FavoriteService favoriteServiceMock;
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -68,7 +76,9 @@ class FavoriteControllerTest {
                 "ts@gmail.com",
                 "+4975644333",
                 "hgfgjfdlgjflg",
-                Role.CLIENT);
+                Role.CLIENT,
+                null
+        );
 
         favoriteResponseDtoTest = new FavoriteResponseDto(
                 1L,
