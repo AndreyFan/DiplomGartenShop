@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
 @Validated
-public class ProductController {
+public class ProductController implements ProductControllerInterface{
     private final ProductService productService;
 
     //Просмотр всех товаров каталога //localhost:8088/products/1
