@@ -20,7 +20,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/orders")
-public class OrderController {
+public class OrderController implements OrderControllerInterface{
 
     private final OrderService orderService;
 
