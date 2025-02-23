@@ -39,5 +39,6 @@ public interface FavoriteControllerInterface {
 
     @Operation(summary = "Delete a Favorite", description = "Removes a favorite based on the" +
             " data provided in the request body")
+
     public Boolean deleteFavorite(@RequestBody @Valid FavoriteRequestDto favoriteRequestDto);
 }

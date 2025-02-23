@@ -22,7 +22,7 @@ import java.util.Set;
 )
 @Validated
 public interface CartControllerInterface {
-    @Operation(summary = "All cartItems", description = "Let`s get all the cartItems")
+    @Operation(summary = "All cartItems", description = "Get all the cartItems")
     public List<CartItemResponseDto> getAllCartItems();
 
     @Operation(summary = "Find CartItems by UserId", description = "Retrieves all cartItems for a user based on their userId. " +
