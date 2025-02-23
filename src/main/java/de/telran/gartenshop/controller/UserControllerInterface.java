@@ -8,6 +8,10 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,29 +21,37 @@ import org.springframework.web.bind.annotation.RequestParam;
                 "documentation in German language", url = "https://gartenshopExDoc.de"
         )
 )
+@Validated
 public interface UserControllerInterface {
 
     @Operation(summary = "User", description = "User")
-    public Boolean registerUser(@RequestBody UserRequestDto userRequestDto);
+    public Boolean registerUser(@RequestBody @Valid UserRequestDto userRequestDto);
 
     @Operation(summary = "Admin", description = "Admin")
-    public Boolean registerAdmin(@RequestBody UserRequestDto userRequestDto);
+    public Boolean registerAdmin(@RequestBody @Valid UserRequestDto userRequestDto);
 
     @Operation(summary = "User", description = "User")
     public UserResponseDto getUserById(
             @Parameter(description = "Identifier", required = true, example = "1")
-            @PathVariable Long userId);
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
     @Operation(summary = "User", description = "User")
-    public UserResponseDto getUserByEmail(@RequestParam String email);
+    public UserResponseDto getUserByEmail(
+            @RequestParam
+            @Email(message = "Invalid email format. Please provide a valid email.") String email);
 
     @Operation(summary = "Update", description = "Update")
-    public Boolean updateUser(@RequestBody UserUpdateDto userUpdateDto, @PathVariable Long userId);
+    public Boolean updateUser(
+            @RequestBody @Valid UserUpdateDto userUpdateDto,
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
     @Operation(summary = "Delete", description = "Delete")
     public void deleteUser(
             @Parameter(description = "Identifier", required = true, example = "1")
-            @PathVariable Long userId);
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
 
 }
