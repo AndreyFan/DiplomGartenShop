@@ -6,7 +6,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +33,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
         filterPrice = cb.between(root.get("price"), minPrice, maxPrice); // price BETWEEN (minPrice,maxPrice)
 
-        if (filterPrice != null) {
-            predicates.add(filterPrice); // добавляем в предикат условие по цене
-        }
+        predicates.add(filterPrice); // добавляем в предикат условие по цене
 
         // ORDER BY (SORT) ("price", "name,DESC")
         Order sortOrder = null;
@@ -52,10 +49,6 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 sortOrder = cb.asc(root.get(sortArr[0]));
             }
         } else { //сортировка по умолчанию
-            sortOrder = cb.asc(root.get("name"));
-        }
-
-        if (sortOrder == null) { //сортировка по умолчанию
             sortOrder = cb.asc(root.get("name"));
         }
 
