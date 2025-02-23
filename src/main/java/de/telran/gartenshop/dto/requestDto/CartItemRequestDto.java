@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//4) CartItems - товары в корзине
+//CartItems - товары в корзине
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
