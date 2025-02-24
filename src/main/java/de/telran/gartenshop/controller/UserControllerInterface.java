@@ -19,24 +19,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 )
 public interface UserControllerInterface {
 
-    @Operation(summary = "User", description = "User")
-    public Boolean registerUser(@RequestBody UserRequestDto userRequestDto);
+    @Operation(summary = "Register a new user", description = "This endpoint allows a new user (Client) to register" +
+            " by providing necessary information such as name, email, phone, and password")
+    public Boolean registerUser(
+            @Parameter(description = "User details for registration", required = true)
+            @RequestBody UserRequestDto userRequestDto);
 
-    @Operation(summary = "Admin", description = "Admin")
-    public Boolean registerAdmin(@RequestBody UserRequestDto userRequestDto);
+    @Operation(summary = "Register a new admin", description = "This endpoint allows the registration of a new admin" +
+            " user by providing necessary information such as name, email, phone, and password.")
+    public Boolean registerAdmin(
+            @Parameter(description = "Admin details for registration", required = true)
+            @RequestBody UserRequestDto userRequestDto);
 
-    @Operation(summary = "User", description = "User")
+    @Operation(summary = "Get user details by user ID", description = "This endpoint retrieves the details of a specific" +
+            " user by their unique user ID")
     public UserResponseDto getUserById(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable Long userId);
 
-    @Operation(summary = "User", description = "User")
-    public UserResponseDto getUserByEmail(@RequestParam String email);
+    @Operation(summary = "Get user details by email", description = "This endpoint allows you to search for a user by" +
+            " their email address and retrieve their details")
+    public UserResponseDto getUserByEmail(
+            @Parameter(description = "The email of the user to retrieve", required = true)
+            @RequestParam String email);
 
-    @Operation(summary = "Update", description = "Update")
-    public Boolean updateUser(@RequestBody UserUpdateDto userUpdateDto, @PathVariable Long userId);
+    @Operation(summary = "Update user details by user ID", description = "This endpoint allows the updating of a user's " +
+            "details by providing the user ID and the updated user information")
+    public Boolean updateUser(
+            @Parameter(description = "The details of the user to update", required = true)
+            @RequestBody UserUpdateDto userUpdateDto,
+            @Parameter(description = "Identifier", required = true, example = "1")
+            @PathVariable Long userId);
 
-    @Operation(summary = "Delete", description = "Delete")
+    @Operation(summary = "Delete user by user ID", description = "This endpoint allows the deletion of a user by " +
+            "their unique user ID")
     public void deleteUser(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable Long userId);
