@@ -133,7 +133,7 @@ public class AdviceController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", "Contact your system administrator: " + ex.getClass() + " " + ex.getMessage());
+        response.put("error", "Something went wrong, please try again later: " + ex.getClass() + " " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(response);
     }
 }
