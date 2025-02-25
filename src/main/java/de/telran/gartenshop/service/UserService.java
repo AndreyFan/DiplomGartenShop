@@ -31,7 +31,7 @@ public class UserService {
     private final Mappers mappers;
     private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
-
+    @Transactional
     public Boolean registerUser(UserRequestDto userRequestDto) {
         // checking : if user already exist ?
         UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail());
@@ -57,6 +57,7 @@ public class UserService {
     }
 
     // метод служит для регистрации нового Администратора
+    @Transactional
     public Boolean registerAdmin(UserRequestDto userRequestDto) {
         // checking : if user already exist ?
         UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail());
@@ -115,7 +116,7 @@ public class UserService {
         return foundedUser;
     }
 
-
+    @Transactional
     public void deleteUser(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
@@ -134,7 +135,6 @@ public class UserService {
             throw new UserDeleteException("Unexpected error occurred while deleting user with ID " + userId, e);
         }
     }
-
     public UserResponseDto getByRefreshToken(String token) {
         UserEntity usersEntity = userRepository.getByRefreshToken(token).stream().findFirst().orElse(null);
         return mappers.convertToUserResponseDto(usersEntity);
