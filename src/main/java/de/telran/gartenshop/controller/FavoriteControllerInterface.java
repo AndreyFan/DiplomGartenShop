@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import java.util.Set;
                 url = "https://gartenshopExDoc.de"
         )
 )
+@Validated
 public interface FavoriteControllerInterface {
     @Operation(summary = "Get Favorites by UserId", description = "Request the list of favorite products " +
             "for a user by their userId")

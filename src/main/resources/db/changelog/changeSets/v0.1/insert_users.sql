@@ -22,4 +22,4 @@ values
     ('Quincy Turner', 'quincy.turner@example.com', '1234567806', 'hashpassword17',  'CLIENT'),
     ('Rachel Miller', 'rachel.miller@example.com', '1234567807', 'hashpassword18',  'CLIENT'),
     ('Steve Carter', 'steve.carter@example.com', '1234567808', 'hashpassword19',   'CLIENT'),
-    ('Tina Martinez', 'tina.martinez@example.com', '1234567809', 'hashpassword20', 'CLIENT');
+    ('Tina Martinez', 'tina.martinez@example.com', '1234567809', 'c072b3ba0de7c09246b7987c2f221966', 'CLIENT');
