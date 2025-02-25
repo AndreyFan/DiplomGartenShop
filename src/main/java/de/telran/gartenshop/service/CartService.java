@@ -4,6 +4,8 @@ import de.telran.gartenshop.configure.MapperUtil;
 import de.telran.gartenshop.dto.requestDto.CartItemRequestDto;
 import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
 import de.telran.gartenshop.entity.*;
+import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
+import de.telran.gartenshop.exception.UserNotFoundException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CartItemRepository;
 import de.telran.gartenshop.repository.CartRepository;
@@ -38,7 +40,7 @@ public class CartService {
 
             return MapperUtil.convertSet(cartItemEntitySet, mappers::convertToCartItemResponseDto);
         } else {
-            throw new IllegalArgumentException("User with Id: " + userId + " not found.");
+            throw new UserNotFoundException("User with Id: " + userId + " not found.");
         }
     }
 
@@ -48,7 +50,7 @@ public class CartService {
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
         ProductEntity productEntity = productRepository.findById(cartItemRequestDto.getProductId()).orElse(null);
         if (productEntity == null) {
-            throw new IllegalArgumentException("Product with Id " + cartItemRequestDto.getProductId() + " not found and not added to the Cart");
+            throw new DataNotFoundInDataBaseException("Product with Id " + cartItemRequestDto.getProductId() + " not found and not added to the Cart");
         }
 
         createCartItemEntity.setCartItemId(null);
@@ -65,7 +67,7 @@ public class CartService {
         if (deleteCartItemEntity != null) {
             cartItemRepository.delete(deleteCartItemEntity);
         } else {
-            throw new IllegalArgumentException("CartItem not found with Id: " + cartItemId);
+            throw new DataNotFoundInDataBaseException("CartItem not found with Id: " + cartItemId);
         }
     }
 
@@ -79,7 +81,7 @@ public class CartService {
                 cartItemRepository.delete(cartItem);
             }
         } else {
-            throw new IllegalArgumentException("User not found with Id: " + userId);
+            throw new UserNotFoundException("User not found with Id: " + userId);
         }
     }
 }

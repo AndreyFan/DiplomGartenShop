@@ -3,8 +3,8 @@
 -- changeset Konstantin:insert_users
 insert into Users (Name, Email, PhoneNumber, PasswordHash, Role)
 values
-    ('Alice Smith', 'alice.smith@example.com', '1234567890', 'hashpassword1',  'CLIENT'),
-    ('Bob Johnson', 'bob.johnson@example.com', '1234567891', 'hashpassword2', 'ADMINISTRATOR'),
+    ('Alice Smith', 'alice.smith@example.com', '1234567890', '$2a$10$5BCRjMPhpKmS5oQjMN5lO.n0nJIdESnU2LyvuIbc/mVskUFOSkCua',  'CLIENT'),
+    ('Bob Johnson', 'bob.johnson@example.com', '1234567891', '$2a$10$5BCRjMPhpKmS5oQjMN5lO.n0nJIdESnU2LyvuIbc/mVskUFOSkCua', 'ADMINISTRATOR'),
     ('Charlie Brown', 'charlie.brown@example.com', '1234567892', 'hashpassword3',   'CLIENT'),
     ('David Wilson', 'david.wilson@example.com', '1234567893', 'hashpassword4',   'CLIENT'),
     ('Emma Davis', 'emma.davis@example.com', '1234567894', 'hashpassword5',  'CLIENT'),
@@ -22,4 +22,4 @@ values
     ('Quincy Turner', 'quincy.turner@example.com', '1234567806', 'hashpassword17',  'CLIENT'),
     ('Rachel Miller', 'rachel.miller@example.com', '1234567807', 'hashpassword18',  'CLIENT'),
     ('Steve Carter', 'steve.carter@example.com', '1234567808', 'hashpassword19',   'CLIENT'),
-    ('Tina Martinez', 'tina.martinez@example.com', '1234567809', 'hashpassword20', 'CLIENT');
+    ('Tina Martinez', 'tina.martinez@example.com', '1234567809', 'c072b3ba0de7c09246b7987c2f221966', 'CLIENT');

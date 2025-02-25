@@ -6,6 +6,8 @@ import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
 import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.UserEntity;
+import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
+import de.telran.gartenshop.exception.UserNotFoundException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.FavoriteRepository;
 import de.telran.gartenshop.repository.ProductRepository;
@@ -28,7 +30,7 @@ public class FavoriteService {
         UserEntity user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            throw new RuntimeException(" This user not found ");
+            throw new UserNotFoundException("User not found with Id: " + userId);
         } else {
             Set<FavoriteEntity> favorites = user.getFavorites();
             return MapperUtil.convertSet(favorites, mappers::convertToFavoriteResponseDto);
@@ -39,7 +41,7 @@ public class FavoriteService {
         UserEntity user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new RuntimeException(" This user not found ");
+            throw new UserNotFoundException("User not found with email: " + email);
         } else {
             Set<FavoriteEntity> favorites = user.getFavorites();
             return MapperUtil.convertSet(favorites, mappers::convertToFavoriteResponseDto);
@@ -68,10 +70,10 @@ public class FavoriteService {
                 favoriteEntitySet.add(favorite);
                 return favorite != null;
             } else {
-                throw new RuntimeException(" This Product is not in the database");
+                throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
             }
         } else {
-            throw new RuntimeException(" User not found");
+            throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
         }
     }
 
@@ -87,9 +89,9 @@ public class FavoriteService {
                         return true;
                     }
                 }
-                throw new RuntimeException(" This Product is not in favorites ");
+                throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
         } else {
-            throw new RuntimeException("User not found in database");
+            throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
         }
     }
 }

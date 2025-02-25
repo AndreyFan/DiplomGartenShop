@@ -7,6 +7,8 @@ import de.telran.gartenshop.dto.responseDto.*;
 import de.telran.gartenshop.entity.*;
 
 import de.telran.gartenshop.entity.enums.OrderStatus;
+import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
+import de.telran.gartenshop.exception.UserNotFoundException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,6 @@ import java.sql.Timestamp;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static de.telran.gartenshop.entity.enums.OrderStatus.*;
 
@@ -44,9 +45,9 @@ public class OrderService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    public List<OrderResponseDto> getTop10PaidProducts() {
-        List<OrderEntity> orders = orderRepository.findTop10PaidOrders();
-        return MapperUtil.convertList(orders, mappers::convertToOrderResponseDto);
+    public List<ProductResponseDto> getTop10PaidProducts() {
+        List<ProductEntity> orders = orderRepository.findTop10PaidOrders();
+        return MapperUtil.convertList(orders, mappers::convertToProductResponseDto);
     }
 
 
@@ -56,9 +57,10 @@ public class OrderService {
     }
 
 
-    public List<OrderResponseDto> getOrdersAwaitingPayment(int days) {
-        List<OrderEntity> orders = orderRepository.findOrdersAwaitingPayment(days);
-        return MapperUtil.convertList(orders, mappers::convertToOrderResponseDto);
+    public List<ProductResponseDto> getOrdersAwaitingPayment(int days) {
+        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
+        List<ProductEntity> products = orderRepository.findOrdersAwaitingPayment(cutoffDate);
+        return MapperUtil.convertList(products, mappers::convertToProductResponseDto);
     }
 
 
@@ -107,7 +109,7 @@ public class OrderService {
             orderEntity.setUpdatedAt(timestamp);
             createOrderEntity = orderRepository.save(orderEntity);
         } else {
-            throw new IllegalArgumentException("User with Id: " + userId + " not found.");
+            throw new UserNotFoundException("User with Id: " + userId + " not found.");
         }
 
         //2. Заполнение товаров в заказе (преобразование CartItems в OrderItems)
@@ -131,7 +133,7 @@ public class OrderService {
 
                     orderItemEntitySet.add(createOrderItem);
                 } else {
-                    throw new IllegalArgumentException("Product " + orderItem.getProduct().getName() + " not found.");
+                    throw new DataNotFoundInDataBaseException("Product " + orderItem.getProduct().getName() + " not found.");
                 }
 
                 createOrderEntity.setOrderItems(orderItemEntitySet);
@@ -144,7 +146,7 @@ public class OrderService {
                 }
             }
         } else {
-            throw new IllegalArgumentException("Cart for UserId: " + userId + " not found.");
+            throw new DataNotFoundInDataBaseException("Cart for UserId: " + userId + " not found.");
         }
         return mappers.convertToOrderResponseDto(orderEntity);
     }
@@ -153,7 +155,7 @@ public class OrderService {
     public Set<OrderResponseDto> getUsersOrders(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new IllegalArgumentException("This User not found ");
+            throw new UserNotFoundException("This User not found ");
         } else {
             Set<OrderEntity> orderEntityList = user.getOrderEntities();
             // исключим из всех orderEntity юзера информацию о нем самом
@@ -175,10 +177,10 @@ public class OrderService {
                 orderEntity.setUpdatedAt(timestamp);
                 updateOrderEntity = orderRepository.save(orderEntity);
             } else {
-                throw new IllegalArgumentException("Order with Id: " + +orderId + " could not be cancel");
+                throw new DataNotFoundInDataBaseException("Order with Id: " + +orderId + " could not be cancel");
             }
         } else {
-            throw new IllegalArgumentException("Order not found with Id: " + orderId);
+            throw new DataNotFoundInDataBaseException("Order not found with Id: " + orderId);
         }
         return mappers.convertToOrderResponseDto(updateOrderEntity);
     }

@@ -4,17 +4,13 @@ import de.telran.gartenshop.dto.requestDto.UserRequestDto;
 import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
 import de.telran.gartenshop.dto.responseDto.UserResponseDto;
 import de.telran.gartenshop.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/users")
-public class UserController {
+public class UserController implements UserControllerInterface{
 
     private UserService userService;
 
@@ -48,7 +44,7 @@ public class UserController {
 
     @GetMapping(value = "/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public UserRequestDto getUserById(@PathVariable Long userId) {
+    public UserResponseDto getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }
 
@@ -65,8 +61,6 @@ public class UserController {
 
         return userService.updateUser(userUpdateDto, userId);
     }
-
-
     @DeleteMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteUser(@PathVariable Long userId) {

@@ -30,17 +30,10 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         }
 
         Predicate filterPrice = null;
-        if (minPrice != null && maxPrice != null && minPrice < maxPrice) {
-            filterPrice = cb.between(root.get("price"), minPrice, maxPrice); // price BETWEEN (1,100)
-        } else if (minPrice != null && maxPrice == null) { //>minPrice
-            filterPrice = cb.gt(root.get("price"), minPrice); // price > 1
-        } else if (maxPrice != null && minPrice == null) { //<maxPrice
-            filterPrice = cb.lt(root.get("price"), maxPrice); // price < 10
-        }
 
-        if (filterPrice != null) {
-            predicates.add(filterPrice); // добавляем в предикат условие по цене
-        }
+        filterPrice = cb.between(root.get("price"), minPrice, maxPrice); // price BETWEEN (minPrice,maxPrice)
+
+        predicates.add(filterPrice); // добавляем в предикат условие по цене
 
         // ORDER BY (SORT) ("price", "name,DESC")
         Order sortOrder = null;
@@ -56,10 +49,6 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 sortOrder = cb.asc(root.get(sortArr[0]));
             }
         } else { //сортировка по умолчанию
-            sortOrder = cb.asc(root.get("name"));
-        }
-
-        if (sortOrder == null) { //сортировка по умолчанию
             sortOrder = cb.asc(root.get("name"));
         }
 

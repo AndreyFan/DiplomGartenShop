@@ -1,4 +1,12 @@
 -- liquibase formatted sql
+drop table if exists Favorites;
+drop table if exists OrderItems;
+drop table if exists Orders;
+drop table if exists CartItems;
+drop table if exists Cart;
+drop table if exists Users;
+drop table if exists Products;
+drop table if exists Categories;
 
 -- changeset Konstantin:create_table_categories
 CREATE TABLE Categories
@@ -34,6 +42,7 @@ CREATE TABLE Users
     PhoneNumber  VARCHAR(255)                     NULL,
     PasswordHash VARCHAR(255)                     NULL,
     Role         ENUM ('CLIENT', 'ADMINISTRATOR') NULL,
+    RefreshToken VARCHAR(255)                     NULL,
     CONSTRAINT PK_USERS PRIMARY KEY (UserID)
 );
 

@@ -1,12 +1,12 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.aspect.LogAnnotation;
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import de.telran.gartenshop.service.CategoryService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/categories")
-public class CategoryController {
+public class CategoryController implements CategoryControllerInterface {
     private final CategoryService categoryService;
 
     //Просмотр всех категорий товаров //localhost:8088/categories
@@ -25,6 +25,7 @@ public class CategoryController {
     }
 
     //Добавление новой категории товаров //localhost:8088/categories
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public boolean createCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
@@ -32,6 +33,7 @@ public class CategoryController {
     }
 
     //Редактирование категории товаров по Id //localhost:8088/categories/3
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryResponseDto updateCategory(@RequestBody CategoryRequestDto categoryRequestDto, @PathVariable Long categoryId) {
@@ -39,9 +41,10 @@ public class CategoryController {
     }
 
     //Удаление категории товаров по Id //localhost:8088/categories/11
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @DeleteMapping(value = "/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategory(@PathVariable Long categoryId) { //delete
+    public void deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
     }
 }

@@ -4,14 +4,12 @@ import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
 import de.telran.gartenshop.dto.responseDto.OrderItemResponseDto;
 import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
-import de.telran.gartenshop.entity.OrderEntity;
-import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/orders")
-public class OrderController {
+public class OrderController implements OrderControllerInterface{
 
     private final OrderService orderService;
 
@@ -30,28 +28,29 @@ public class OrderController {
     }
 
     @GetMapping("/top-products")
-    public ResponseEntity<List<OrderResponseDto>> getTop10PaidProducts() {
-        List<OrderResponseDto> products = orderService.getTop10PaidProducts();
+    public ResponseEntity<List<ProductResponseDto>> getTop10PaidProducts() {
+        List<ProductResponseDto> products = orderService.getTop10PaidProducts();
         return ResponseEntity.ok(products);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/top-canceled")
     public ResponseEntity<List<ProductResponseDto>> getTopCanceled() {
         List<ProductResponseDto> products = orderService.getTop10CanceledProducts();
         return ResponseEntity.ok(products);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/awaiting-payment-products")
-    public ResponseEntity<List<OrderResponseDto>> getAwaitingPaymentProducts(@RequestParam(name = "days",
+    public ResponseEntity<List<ProductResponseDto>> getAwaitingPaymentProducts(@RequestParam(name = "days",
             defaultValue = "10") int days) {
-        List<OrderResponseDto> products = orderService.getOrdersAwaitingPayment(days);
+        List<ProductResponseDto> products = orderService.getOrdersAwaitingPayment(days);
         return ResponseEntity.ok(products);
     }
 
 
     //Просмотр всех заказов //localhost:8088/orders/get
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponseDto> getAllOrders() {
@@ -59,6 +58,7 @@ public class OrderController {
     }
 
     //Просмотр товаров во всех заказах //localhost:8088/orders/get/items
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping(value = "/get/items")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderItemResponseDto> getAllOrderItems() {

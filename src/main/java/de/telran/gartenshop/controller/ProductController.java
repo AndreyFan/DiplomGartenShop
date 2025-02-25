@@ -1,10 +1,15 @@
 package de.telran.gartenshop.controller;
 
+import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
-public class ProductController {
+public class ProductController implements ProductControllerInterface{
     private final ProductService productService;
 
     //Просмотр всех товаров каталога //localhost:8088/products/1
@@ -45,35 +50,48 @@ public class ProductController {
     //Просмотр товара по Id //localhost:8088/products/1
     @GetMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductById(@PathVariable Long productId) {
+    public ProductResponseDto getProductById(
+            @PathVariable Long productId) {
         return productService.getProductById(productId);
     }
 
     //Добавление нового товара //localhost:8088/products
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean createProduct(@RequestBody ProductRequestDto productRequestDto) {
+    public boolean createProduct(
+            @RequestBody ProductRequestDto productRequestDto) {
         return productService.createProduct(productRequestDto);
     }
 
     //Редактирование товара по Id //localhost:8088/products/1
     @PutMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto updateProduct(@RequestBody ProductRequestDto productRequestDto, @PathVariable Long productId) {
+    public ProductResponseDto updateProduct(
+            @RequestBody ProductRequestDto productRequestDto,
+            @PathVariable Long productId) {
         return productService.updateProduct(productRequestDto, productId);
     }
 
     //Добавить скидку на товар по productId //localhost:8088/products/discount/1
+    // тело запроса
+//    {
+//        "discountPrice": 100.99
+//    }
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping(value = "/discount/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto updateDiscountPrice(@RequestBody ProductRequestDto productRequestDto, @PathVariable Long productId) {
+    public ProductResponseDto updateDiscountPrice(
+            @RequestBody ProductRequestDto productRequestDto,
+            @PathVariable Long productId) {
         return productService.updateDiscountPrice(productRequestDto, productId);
     }
 
     //Удаление товара по Id //localhost:8088/products/1
     @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProduct(@PathVariable Long productId) { //delete
+    public void deleteProduct(
+            @PathVariable Long productId) {
         productService.deleteProduct(productId);
     }
 
@@ -82,6 +100,15 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getProductOfDay() {
         return productService.getProductOfDay();
+    }
+
+    //Прибыль с группировкой по периодам
+    @GetMapping(value = "/profit")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductProfitDto> getProfitByPeriod(
+            @RequestParam("period") String period,
+            @RequestParam("value") Integer value) {
+        return productService.getProductProfitByPeriod(period, value);
     }
 }
 
