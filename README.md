@@ -6,13 +6,13 @@ This project is the final project of Tel-Ran back-end developer course.
 
 ##  <span style="color:violet;">General Description</span>
 
-The application allows customers:
+**<u>The application allows customers:</u>**
 - to select a product from the catalog;
 - add a product to the cart; 
 - place an order;
 - track an order status in real time. 
 
-The application vor administrators: 
+**<u>The application vor administrators:</u>** 
 - product catalog management;
 - control
   orders, 
