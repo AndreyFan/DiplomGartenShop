@@ -22,7 +22,7 @@ This project is the final project of Tel-Ran backend developer course.
 
  
 ## <span style="color:violet;">Detailed Project Documentation</span>
-- [Technical Specification](docs/Specification)
+- [Technical Specification](docs/Specification.md)
 - [Database Structure](docs/DB.png)
 - [Swagger](http://localhost:8088/swagger-ui/index.html#/)
 - [Docker Specification](docs/Docker.md)
