@@ -13,7 +13,7 @@ public class ChangeOrderStatusScheduler {
 
     private final OrderService orderService;
 
-    @Scheduled(initialDelay = 10000, fixedRate = 30000)
+    @Scheduled(initialDelayString = "${initialDelay}", fixedRateString ="${fixedRate}")
     public void changingOrderStatus() {
         log.info("Запускается изменение статуса заказа");
         orderService.changeStatus();
