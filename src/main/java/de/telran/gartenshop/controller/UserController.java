@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-public class UserController implements UserControllerInterface{
+public class UserController implements UserControllerInterface {
 
     private UserService userService;
 
@@ -61,10 +61,10 @@ public class UserController implements UserControllerInterface{
 
         return userService.updateUser(userUpdateDto, userId);
     }
+
     @DeleteMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
     }
-
 }

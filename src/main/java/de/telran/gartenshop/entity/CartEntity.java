@@ -1,7 +1,6 @@
 package de.telran.gartenshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,5 +29,4 @@ public class CartEntity {
 
     @OneToMany(mappedBy = "cart")
     private Set<CartItemEntity> cartItems = new HashSet<>();
-
 }

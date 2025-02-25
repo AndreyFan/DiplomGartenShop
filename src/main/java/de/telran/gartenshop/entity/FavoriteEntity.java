@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.modelmapper.internal.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 @Entity
 @Table(name = "Favorites")
@@ -14,18 +13,16 @@ import org.modelmapper.internal.bytebuddy.dynamic.loading.InjectionClassLoader;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FavoriteEntity {
-
     @Id
     @Column(name = "FavoriteID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long favoriteId;
 
     @ManyToOne
-    @JoinColumn(name = "UserID",nullable = false)
+    @JoinColumn(name = "UserID", nullable = false)
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(name = "ProductID",nullable = false)
+    @JoinColumn(name = "ProductID", nullable = false)
     private ProductEntity product;
-
 }

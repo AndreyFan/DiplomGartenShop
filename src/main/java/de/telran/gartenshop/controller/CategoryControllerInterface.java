@@ -1,6 +1,5 @@
 package de.telran.gartenshop.controller;
 
-
 import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -29,7 +28,6 @@ public interface CategoryControllerInterface {
             " category details to the system")
     public boolean createCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto);
 
-
     @Operation(summary = "Update a Category", description = "Opportunity to update an existing Category " +
             "with the provided details.")
     public CategoryResponseDto updateCategory(
@@ -41,5 +39,4 @@ public interface CategoryControllerInterface {
     public void deleteCategory(
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long categoryId);
-
 }

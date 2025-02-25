@@ -18,5 +18,4 @@ public class UserResponseDto {
     private String passwordHash;
     private Role role;
     private String refreshToken;
-
 }

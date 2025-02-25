@@ -1,6 +1,5 @@
 package de.telran.gartenshop.controller;
 
-
 import de.telran.gartenshop.dto.requestDto.UserRequestDto;
 import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
 import de.telran.gartenshop.dto.responseDto.UserResponseDto;
@@ -47,7 +46,7 @@ public interface UserControllerInterface {
             " their email address and retrieve their details")
     public UserResponseDto getUserByEmail(
             @Parameter(description = "The email of the user to retrieve", required = true)
-            @RequestParam 
+            @RequestParam
             @Email(message = "Invalid email format. Please provide a valid email.") String email);
 
     @Operation(summary = "Update user details by user ID", description = "This endpoint allows the updating of a user's " +
@@ -56,7 +55,7 @@ public interface UserControllerInterface {
             @Parameter(description = "The details of the user to update", required = true)
             @RequestBody @Valid UserUpdateDto userUpdateDto,
             @Parameter(description = "Identifier", required = true, example = "1")
-            @PathVariable 
+            @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
     @Operation(summary = "Delete user by user ID", description = "This endpoint allows the deletion of a user by " +

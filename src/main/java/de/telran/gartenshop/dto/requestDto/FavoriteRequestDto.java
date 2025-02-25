@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FavoriteRequestDto {
-
     @NotNull(message = "ProductId cannot be null")
     @Min(value = 1, message = "Invalid productId: productId must be >= 1")
     private Long productId;

@@ -48,7 +48,6 @@ public class OrderController implements OrderControllerInterface{
         return ResponseEntity.ok(products);
     }
 
-
     //Просмотр всех заказов //localhost:8088/orders/get
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/get")

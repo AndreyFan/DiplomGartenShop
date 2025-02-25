@@ -12,7 +12,6 @@ import lombok.*;
 @Getter
 @Setter
 public class CartItemEntity {
-
     @Id
     @Column(name = "CartItemID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

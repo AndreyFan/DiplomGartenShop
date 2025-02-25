@@ -1,6 +1,5 @@
 package de.telran.gartenshop.mapper;
 
-import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.*;
 import de.telran.gartenshop.dto.responseDto.*;
 

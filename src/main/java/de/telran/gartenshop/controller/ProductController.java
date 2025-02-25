@@ -4,12 +4,9 @@ import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
 import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
 import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
-public class ProductController implements ProductControllerInterface{
+public class ProductController implements ProductControllerInterface {
     private final ProductService productService;
 
     //Просмотр всех товаров каталога //localhost:8088/products/1
@@ -56,7 +53,6 @@ public class ProductController implements ProductControllerInterface{
     }
 
     //Добавление нового товара //localhost:8088/products
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public boolean createProduct(
