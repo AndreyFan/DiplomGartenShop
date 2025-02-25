@@ -13,8 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-//@EqualsAndHashCode
-//@ToString
 public class CategoryEntity {
     @Id
     @Column(name = "CategoryID")
@@ -27,5 +25,4 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "category")
     @JsonManagedReference
     private Set<ProductEntity> products = new HashSet<>();
-
 }

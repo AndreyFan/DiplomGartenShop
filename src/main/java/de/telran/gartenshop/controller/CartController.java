@@ -36,8 +36,7 @@ public class CartController implements CartControllerInterface {
     @Override
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean createCartItem(
-            @RequestBody CartItemRequestDto cartItemRequestDto, @PathVariable Long userId) {
+    public boolean createCartItem(@RequestBody CartItemRequestDto cartItemRequestDto, @PathVariable Long userId) {
         return cartService.createCartItem(cartItemRequestDto, userId);
     }
 

@@ -6,8 +6,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "Products")
@@ -15,8 +13,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-//@EqualsAndHashCode
-//@ToString(exclude = {"category"})
 public class ProductEntity {
     @Id
     @Column(name = "ProductID")
@@ -48,8 +44,4 @@ public class ProductEntity {
     @JoinColumn(name = "CategoryID")
     @JsonBackReference
     private CategoryEntity category;
-
-
-//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-//    private Set<CartItemEntity> cartItems = new HashSet<>();
 }

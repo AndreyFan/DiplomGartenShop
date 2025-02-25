@@ -73,5 +73,4 @@ public interface OrderControllerInterface {
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long orderId);
-
 }

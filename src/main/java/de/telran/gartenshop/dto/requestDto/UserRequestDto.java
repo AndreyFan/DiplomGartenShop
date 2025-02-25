@@ -27,6 +27,6 @@ public class UserRequestDto {
     private String phone;
 
     @NotBlank(message = "Invalid password: Empty password")
-    @Size(min = 3, max = 15, message = "Invalid password: Password must be of 3 - 15 characters")
+    @Size(min = 5, max = 15, message = "Invalid password: Password must be of 5 - 15 characters")
     private String password;
 }

@@ -28,120 +28,112 @@ import java.util.List;
 @Validated
 public interface ProductControllerInterface {
 
-        @Operation(summary = "Retrieve all products", description = "This endpoint retrieves all products in the catalog")
-        public List<ProductResponseDto> getAllProducts();
+    @Operation(summary = "Retrieve all products", description = "This endpoint retrieves all products in the catalog")
+    public List<ProductResponseDto> getAllProducts();
+
+    @Operation(
+            summary = "Retrieve filtered products",
+            description = "This endpoint allows you to filter products by various criteria such as category, price" +
+                    " range, discount status, and sorting.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of filtered products successfully retrieved",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ProductResponseDto.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request - Invalid query parameters",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            )
+                    )
+            }
+    )
+    public List<ProductResponseDto> getProductsByFilter(
+            @Parameter(description = "The category ID to filter products by. Optional, default is all categories.")
+            @RequestParam(value = "category", required = false)
+            @Min(value = 1, message = "Invalid category Id: category Id must be >= 1") Long categoryId,
+
+            @Parameter(description = "The minimum price to filter products by. Optional, default is no minimum price.")
+            @RequestParam(value = "min_price", required = false)
+            @DecimalMin(value = "0.00", message = "Invalid min_price: Must be > 0.")
+            @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits" +
+                    " before and 2 after the decimal.") Double minPrice,
+
+            @Parameter(description = "The maximum price to filter products by. Optional, default is no maximum price.")
+            @RequestParam(value = "max_price", required = false)
+            @DecimalMin(value = "0.00", message = "Invalid max_price: Must be > 0.")
+            @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits " +
+                    "before and 2 after the decimal.") Double maxPrice,
+
+            @Parameter(description = "Filter products by discount status. Optional, default is false (no discount).")
+            @RequestParam(value = "is_discount", required = false, defaultValue = "false")
+            @NotNull(message = "is_discount can not be null, must be true/false.") Boolean isDiscount,
+
+            @Parameter(description = "Sort the products by a specific field (name, price, discountPrice, createdAt," +
+                    " updatedAt), followed by the sorting order (asc or desc). Optional, default is no sorting.")
+            @RequestParam(value = "sort", required = false)
+            @Pattern(regexp = "^(name|price|discountPrice|createdAt|updatedAt)(,(asc|desc))?$",
+                    message = "Invalid parameter definition: parameter must be = name|price|discountPrice|createdAt|updatedAt. " +
+                            "Invalid sorting definition: must be in form '<sort parameter>,<sort order>'") String sort);
 
 
-        @Operation(
-                summary = "Retrieve filtered products",
-                description = "This endpoint allows you to filter products by various criteria such as category, price" +
-                        " range, discount status, and sorting.",
-                responses = {
-                        @ApiResponse(
-                                responseCode = "200",
-                                description = "List of filtered products successfully retrieved",
-                                content = @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = ProductResponseDto.class)
-                                )
-                        ),
-                        @ApiResponse(
-                                responseCode = "400",
-                                description = "Bad Request - Invalid query parameters",
-                                content = @Content(
-                                        mediaType = "application/json"
-                                )
-                        )
-                }
-        )
-        public List<ProductResponseDto> getProductsByFilter(
-                @Parameter(description = "The category ID to filter products by. Optional, default is all categories.")
-                @RequestParam(value = "category", required = false)
-                @Min(value = 1, message = "Invalid category Id: category Id must be >= 1") Long categoryId,
+    @Operation(summary = "Retrieve product by ID", description = "This endpoint retrieves a product from the catalog" +
+            " using the specified product ID")
+    public ProductResponseDto getProductById(
+            @Parameter(description = "Identifier", required = true, example = "1")
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
 
-                @Parameter(description = "The minimum price to filter products by. Optional, default is no minimum price.")
-                @RequestParam(value = "min_price", required = false)
-                @DecimalMin(value = "0.00", message = "Invalid min_price: Must be > 0.")
-                @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits" +
-                        " before and 2 after the decimal.") Double minPrice,
+    @Operation(summary = "Create a new product", description = "This endpoint allows you to create a new product " +
+            "in the catalog by providing the product details")
+    public boolean createProduct(
+            @Parameter(description = "The product details to be created", required = true)
+            @RequestBody @Valid ProductRequestDto productRequestDto);
 
-                @Parameter(description = "The maximum price to filter products by. Optional, default is no maximum price.")
-                @RequestParam(value = "max_price", required = false)
-                @DecimalMin(value = "0.00", message = "Invalid max_price: Must be > 0.")
-                @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits " +
-                        "before and 2 after the decimal.") Double maxPrice,
+    @Operation(summary = "Update product by ID", description = "This endpoint allows you to update the details" +
+            " of an existing product using the specified product ID")
+    public ProductResponseDto updateProduct(
+            @Parameter(description = "The updated product details", required = true)
+            @RequestBody @Valid ProductRequestDto productRequestDto,
+            @Parameter(description = "Identifier", required = true, example = "1")
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
 
-                @Parameter(description = "Filter products by discount status. Optional, default is false (no discount).")
-                @RequestParam(value = "is_discount", required = false, defaultValue = "false")
-                @NotNull(message = "is_discount can not be null, must be true/false.") Boolean isDiscount,
+    @Operation(summary = "Apply discount to a product", description = "This endpoint allows an administrator" +
+            " to apply a discount to a specific product identified by the product ID." +
+            " The discount price is set through the request body")
+    public ProductResponseDto updateDiscountPrice(
+            @Parameter(description = "The updated product discount details", required = true)
+            @RequestBody @Valid ProductRequestDto productRequestDto,
+            @Parameter(description = "Identifier", required = true, example = "1")
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
 
-                @Parameter(description = "Sort the products by a specific field (name, price, discountPrice, createdAt," +
-                        " updatedAt), followed by the sorting order (asc or desc). Optional, default is no sorting.")
-                @RequestParam(value = "sort", required = false)
-                @Pattern(regexp = "^(name|price|discountPrice|createdAt|updatedAt)(,(asc|desc))?$",
-                        message = "Invalid parameter definition: parameter must be = name|price|discountPrice|createdAt|updatedAt. " +
-                                "Invalid sorting definition: must be in form '<sort parameter>,<sort order>'") String sort);
+    @Operation(summary = "Delete a product by ID", description = "This endpoint allows you to delete a " +
+            "product from the catalog using the specified product ID")
+    public void deleteProduct(
+            @Parameter(description = "Identifier", required = true, example = "1")
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
 
+    @Operation(summary = "Get the product of the day", description = "This endpoint retrieves the product with " +
+            "the highest discount, marked as the product of the day")
+    public ProductResponseDto getProductOfDay();
 
-        @Operation(summary = "Retrieve product by ID", description = "This endpoint retrieves a product from the catalog" +
-                " using the specified product ID")
-        public ProductResponseDto getProductById(
-                @Parameter(description = "Identifier", required = true, example = "1")
-                @PathVariable
-                @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
-
-
-        @Operation(summary = "Create a new product", description = "This endpoint allows you to create a new product " +
-                "in the catalog by providing the product details")
-        public boolean createProduct(
-                @Parameter(description = "The product details to be created", required = true)
-                @RequestBody @Valid ProductRequestDto productRequestDto);
-
-        @Operation(summary = "Update product by ID", description = "This endpoint allows you to update the details" +
-                " of an existing product using the specified product ID")
-        public ProductResponseDto updateProduct(
-                @Parameter(description = "The updated product details", required = true)
-                @RequestBody @Valid ProductRequestDto productRequestDto,
-                @Parameter(description = "Identifier", required = true, example = "1")
-                @PathVariable
-                @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
-
-        @Operation(summary = "Apply discount to a product", description = "This endpoint allows an administrator" +
-                " to apply a discount to a specific product identified by the product ID." +
-                " The discount price is set through the request body")
-        public ProductResponseDto updateDiscountPrice(
-                @Parameter(description = "The updated product discount details", required = true)
-                @RequestBody @Valid ProductRequestDto productRequestDto,
-                @Parameter(description = "Identifier", required = true, example = "1")
-                @PathVariable
-                @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
-
-        @Operation(summary = "Delete a product by ID", description = "This endpoint allows you to delete a " +
-                "product from the catalog using the specified product ID")
-        public void deleteProduct(
-                @Parameter(description = "Identifier", required = true, example = "1")
-                @PathVariable
-                @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
-
-
-        @Operation(summary = "Get the product of the day", description = "This endpoint retrieves the product with " +
-                "the highest discount, marked as the product of the day")
-        public ProductResponseDto getProductOfDay();
-
-
-        @Operation(summary = "Get product profit by period", description = "This endpoint calculates the product profit " +
-                "grouped by specified time periods (e.g., days, months, years) and a value to define the range")
-        public List<ProductProfitDto> getProfitByPeriod(
-                @Parameter(description = "The period for grouping the profit (e.g., 'day', 'month', 'year')", required = true)
-                @RequestParam("period")
-                @Pattern(regexp = "^(?i)(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH " +
-                        "(case insensitive)") String period,
-                @Parameter(description = "The value to define the range for the specified period (e.g., the number " +
-                        "of days, months, or years)", required = true)
-                @RequestParam("value")
-                @Positive(message = "Period length must be a positive number") Integer value);
-
-
-
-
+    @Operation(summary = "Get product profit by period", description = "This endpoint calculates the product profit " +
+            "grouped by specified time periods (e.g., days, week, months) and a value to define the range")
+    public List<ProductProfitDto> getProfitByPeriod(
+            @Parameter(description = "The period for grouping the profit (e.g., 'day', 'week', 'month')", required = true)
+            @RequestParam("period")
+            @Pattern(regexp = "^(?i)(DAY|WEEK|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH " +
+                    "(case insensitive)") String period,
+            @Parameter(description = "The value to define the range for the specified period (e.g., the number " +
+                    "of days, months, or years)", required = true)
+            @RequestParam("value")
+            @Positive(message = "Period length must be a positive number") Integer value);
 }
