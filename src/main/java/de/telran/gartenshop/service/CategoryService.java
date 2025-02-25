@@ -25,12 +25,13 @@ public class CategoryService {
     }
 
     public boolean createCategory(CategoryRequestDto categoryRequestDto) {
-        CategoryEntity createCategoryEntity = mappers.convertToCategoryEntity(categoryRequestDto);
-        CategoryEntity savedCategoryEntity = categoryRepository.save(createCategoryEntity);
-        if (savedCategoryEntity == null) {
-            throw new BadRequestException("Category " + categoryRequestDto.getName() + " not created");
+        try {
+            CategoryEntity createCategoryEntity = mappers.convertToCategoryEntity(categoryRequestDto);
+            CategoryEntity savedCategoryEntity = categoryRepository.save(createCategoryEntity);
+            return savedCategoryEntity.getCategoryId() != null;
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to create category: " + e.getMessage());
         }
-        return savedCategoryEntity.getCategoryId() != null;
     }
 
     public CategoryResponseDto updateCategory(CategoryRequestDto categoryRequestDto, Long categoryId) {
@@ -51,7 +52,7 @@ public class CategoryService {
             try {
                 categoryRepository.delete(deleteCategoryEntity);
             } catch (Exception exception) {
-                throw new NullPointerException("Cannot delete due to integrity constraints Category with Id: " + categoryId);
+                throw new IllegalArgumentException("Cannot delete due to integrity constraints Category with Id: " + categoryId);
             }
         } else {
             throw new DataNotFoundInDataBaseException("Category not found with Id: " + categoryId);

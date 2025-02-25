@@ -15,13 +15,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -39,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @ActiveProfiles(profiles = {"dev"})
 @Import(SecurityConfig.class)
-@WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
+@WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
 public class OrderIntegrationTest {
     @Autowired
     private MockMvc mockMvc; // для имитации запросов пользователей
@@ -231,7 +229,7 @@ public class OrderIntegrationTest {
                 .andExpect(jsonPath("$..productId").value(1));
     }
 
-   @Test
+    @Test
     void getAwaitingPaymentProductsTest() throws Exception {
         when(orderRepositoryMock.findOrdersAwaitingPayment(any(LocalDateTime.class)))
                 .thenReturn(List.of(productEntityTest));
@@ -335,6 +333,19 @@ public class OrderIntegrationTest {
     }
 
     @Test
+    void cancelOrderAwaitingPaymentTest() throws Exception {
+        orderEntityTest.setOrderStatus(OrderStatus.AWAITING_PAYMENT);
+        when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.of(orderEntityTest));
+        when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
+        this.mockMvc.perform(put("/orders/{orderId}", orderIdTest))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..orderId").exists())
+                .andExpect(jsonPath("$.orderId").value(1L))
+                .andExpect(jsonPath("$.orderStatus").value("CANCELED"));
+    }
+
+    @Test
     void cancelOrderExceptionByOrderTest() throws Exception {
         when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.empty());
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
@@ -345,8 +356,8 @@ public class OrderIntegrationTest {
 
     @Test
     void cancelOrderExceptionByStatusOrderTest() throws Exception {
-        when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.of(orderEntityTest));
         orderEntityTest.setOrderStatus(OrderStatus.DELIVERED);
+        when(orderRepositoryMock.findById(orderIdTest)).thenReturn(Optional.of(orderEntityTest));
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
         this.mockMvc.perform(put("/orders/{orderId}", orderIdTest))
                 .andDo(print())
