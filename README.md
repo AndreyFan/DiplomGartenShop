@@ -39,4 +39,3 @@ The project was designed as Spring Boot Web Application:
 - Spring Data/Liquibase
 - MySQL 9.x
 - Docker
-
