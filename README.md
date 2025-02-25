@@ -1,7 +1,7 @@
 # <span style="color:#6A0DAD;">Home and Garden Online Shop</span>
 This web-application implements the basic functionality of an online-store backend in Java Spring.
 
-This project is the final project of Tel-Ran back-end developer course.
+This project is the final project of Tel-Ran backend developer course.
 
 
 ##  <span style="color:violet;">General Description</span>
@@ -12,7 +12,7 @@ This project is the final project of Tel-Ran back-end developer course.
 - place an order;
 - track an order status in real time. 
 
-**<u>The application vor administrators:</u>** 
+**<u>The application allows administrators:</u>** 
 - product catalog management;
 - control
   orders, 
