@@ -1,7 +1,7 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.dto.requestDto.CartItemRequestDto;
-import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
+import de.telran.gartenshop.dto.requestdto.CartItemRequestDto;
+import de.telran.gartenshop.dto.responsedto.CartItemResponseDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

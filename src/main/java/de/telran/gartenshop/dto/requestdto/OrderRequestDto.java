@@ -1,4 +1,4 @@
-package de.telran.gartenshop.dto.requestDto;
+package de.telran.gartenshop.dto.requestdto;
 
 import de.telran.gartenshop.entity.enums.DeliveryMethod;
 import jakarta.validation.constraints.NotNull;

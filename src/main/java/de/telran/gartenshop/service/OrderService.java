@@ -1,9 +1,9 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
-import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
+import de.telran.gartenshop.dto.requestdto.OrderRequestDto;
 
-import de.telran.gartenshop.dto.responseDto.*;
+import de.telran.gartenshop.dto.responsedto.*;
 import de.telran.gartenshop.entity.*;
 
 import de.telran.gartenshop.entity.enums.OrderStatus;

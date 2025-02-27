@@ -1,9 +1,9 @@
 package de.telran.gartenshop.controller;
 
 
-import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
-import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
+import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

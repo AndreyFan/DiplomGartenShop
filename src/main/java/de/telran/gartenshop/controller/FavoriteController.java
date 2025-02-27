@@ -1,7 +1,7 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.dto.requestDto.FavoriteRequestDto;
-import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
+import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
+import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
 import de.telran.gartenshop.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,11 +33,6 @@ public class FavoriteController implements FavoriteControllerInterface {
 
     // добавление товара в избранное (фавориты)
     // http://localhost:8088/favorites
-    // тело запроса
-    // {
-    //    "productId": 5,
-    //    "userId": 3
-    //}
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Boolean createFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto) {

@@ -1,8 +1,8 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
-import de.telran.gartenshop.dto.requestDto.FavoriteRequestDto;
-import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
+import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
+import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
 import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.UserEntity;

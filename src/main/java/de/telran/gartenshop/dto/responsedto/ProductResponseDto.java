@@ -1,6 +1,5 @@
-package de.telran.gartenshop.dto.responseDto;
+package de.telran.gartenshop.dto.responsedto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -2,7 +2,7 @@ package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.telran.gartenshop.dto.requestDto.UserRequestDto;
+import de.telran.gartenshop.dto.requestdto.UserRequestDto;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.UserRepository;

@@ -1,7 +1,7 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
+import de.telran.gartenshop.dto.requestdto.CategoryRequestDto;
+import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

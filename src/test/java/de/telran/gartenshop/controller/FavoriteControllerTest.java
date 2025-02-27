@@ -1,11 +1,11 @@
 package de.telran.gartenshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.telran.gartenshop.dto.requestDto.FavoriteRequestDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
-import de.telran.gartenshop.dto.responseDto.UserResponseDto;
+import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
+import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
+import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
+import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
+import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import de.telran.gartenshop.entity.enums.Role;
 import de.telran.gartenshop.security.configure.SecurityConfig;
 import de.telran.gartenshop.security.jwt.JwtProvider;

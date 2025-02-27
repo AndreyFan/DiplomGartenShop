@@ -1,4 +1,4 @@
-package de.telran.gartenshop.dto.responseDto;
+package de.telran.gartenshop.dto.responsedto;
 
 import de.telran.gartenshop.entity.enums.Role;
 import lombok.AllArgsConstructor;
