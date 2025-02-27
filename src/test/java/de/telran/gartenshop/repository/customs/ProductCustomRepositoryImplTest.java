@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class ProductCustomRepositoryImplTest {
+class ProductCustomRepositoryImplTest {
 
     @Autowired
     private ProductRepository productRepositoryTest;
@@ -26,7 +26,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter1Test() {
+    void getProductsByFilter1Test() {
         Double minPrice = 9.99;
         Double maxPrice = 12.99;
         Boolean isDiscount = true;
@@ -37,7 +37,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter2Test() {
+    void getProductsByFilter2Test() {
         Double minPrice = 9.99;
         Double maxPrice = 12.99;
         Boolean isDiscount = true;
@@ -48,7 +48,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter3Test() {
+    void getProductsByFilter3Test() {
         Double minPrice = 9.99;
         Double maxPrice = 12.99;
         Boolean isDiscount = true;
@@ -59,7 +59,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter4Test() {
+    void getProductsByFilter4Test() {
         Double minPrice = 9.99;
         Double maxPrice = 12.99;
         Boolean isDiscount = true;
@@ -70,7 +70,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter5Test() {
+    void getProductsByFilter5Test() {
         Double minPrice = 9.99;
         Double maxPrice = null;
         Boolean isDiscount = true;
@@ -81,7 +81,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter6Test() {
+    void getProductsByFilter6Test() {
         Double minPrice = null;
         Double maxPrice = 12.99;
         Boolean isDiscount = true;
@@ -92,7 +92,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter7Test() {
+    void getProductsByFilter7Test() {
         Double minPrice = 12.99;
         Double maxPrice = 9.99;
         Boolean isDiscount = true;
@@ -103,7 +103,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter8Test() {
+    void getProductsByFilter8Test() {
         Double minPrice = null;
         Double maxPrice = null;
         Boolean isDiscount = true;
@@ -114,7 +114,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter9Test() {
+    void getProductsByFilter9Test() {
         Double minPrice = 9.99;
         Double maxPrice = 12.99;
         Boolean isDiscount = true;
@@ -125,7 +125,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter10Test() {
+    void getProductsByFilter10Test() {
         Double minPrice = 9.99;
         Double maxPrice = 12.99;
         Boolean isDiscount = false;
@@ -136,7 +136,7 @@ public class ProductCustomRepositoryImplTest {
     }
 
     @Test
-    public void getProductsByFilter11Test() {
+    void getProductsByFilter11Test() {
         Double minPrice = 9.99;
         Double maxPrice = 12.99;
         Boolean isDiscount = null;

@@ -23,8 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @Import(SecurityConfig.class)
 @WithMockUser(roles = {"CLIENT","ADMINISTRATOR"})
-public class UserIntegrationTest {
+class UserIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -113,7 +111,6 @@ public class UserIntegrationTest {
         verify(userRepository).findByEmail("testName@example.com");
         verify(userRepository).save(any(UserEntity.class));
     }
-
 
     @Test
     void testUpdateUser() throws Exception {

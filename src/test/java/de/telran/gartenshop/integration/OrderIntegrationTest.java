@@ -2,7 +2,6 @@ package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.telran.gartenshop.dto.requestdto.OrderRequestDto;
-import de.telran.gartenshop.dto.responsedto.*;
 import de.telran.gartenshop.entity.*;
 import de.telran.gartenshop.entity.enums.DeliveryMethod;
 import de.telran.gartenshop.entity.enums.OrderStatus;
@@ -38,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = {"dev"})
 @Import(SecurityConfig.class)
 @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
-public class OrderIntegrationTest {
+class OrderIntegrationTest {
     @Autowired
     private MockMvc mockMvc; // для имитации запросов пользователей
 
@@ -87,17 +86,6 @@ public class OrderIntegrationTest {
                 "Berlin",
                 DeliveryMethod.SELF_DELIVERY);
 
-        OrderResponseDto orderResponseDtoTest = new OrderResponseDto(
-                1L,
-                timestamp,
-                "Berlin",
-                "+49049544663",
-                DeliveryMethod.SELF_DELIVERY,
-                OrderStatus.CREATED,
-                timestamp,
-                new HashSet<OrderItemResponseDto>(),
-                new UserResponseDto());
-
         orderEntityTest = new OrderEntity(
                 1L,
                 timestamp,
@@ -121,31 +109,12 @@ public class OrderIntegrationTest {
                 timestamp,
                 categoryEntityTest);
 
-        CategoryResponseDto categoryResponseDtoTest = new CategoryResponseDto(1L, "CategoryName");
-        ProductResponseDto productResponseDtoTest = new ProductResponseDto(
-                1L,
-                "ProductName",
-                "ProductDescription",
-                new BigDecimal("10.25"),
-                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
-                new BigDecimal("8.50"),
-                timestamp,
-                timestamp,
-                categoryResponseDtoTest);
-
         orderItemEntityTest = new OrderItemEntity(
                 1L,
                 100,
                 new BigDecimal("8.50"),
                 productEntityTest,
                 orderEntityTest);
-
-        OrderItemResponseDto orderItemResponseDtoTest = new OrderItemResponseDto(
-                1L,
-                100,
-                new BigDecimal("8.50"),
-                productResponseDtoTest);
-
 
         Set<OrderEntity> orderEntitySet = new HashSet<>();
         orderEntitySet.add(orderEntityTest);

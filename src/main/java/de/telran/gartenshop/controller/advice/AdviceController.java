@@ -2,6 +2,7 @@ package de.telran.gartenshop.controller.advice;
 
 import de.telran.gartenshop.exception.*;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -19,11 +20,12 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Hidden
 @RestControllerAdvice
 public class AdviceController {
+
+    String errorStr = "error";
 
     // альтернативная обработка ошибочной ситуации Exception
     @ExceptionHandler({IllegalArgumentException.class, FileNotFoundException.class})
@@ -44,7 +46,7 @@ public class AdviceController {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", ex.getMessage());
+        response.put(errorStr, ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
@@ -52,7 +54,7 @@ public class AdviceController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleUserNotFoundException(UserNotFoundException ex) {
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "User not found");
+        errorResponse.put(errorStr, "User not found");
         errorResponse.put("message", ex.getMessage());
         return errorResponse;
     }
@@ -60,28 +62,28 @@ public class AdviceController {
     @ExceptionHandler(UserSaveException.class)
     public ResponseEntity<Map<String, String>> handleUserSaveException(UserSaveException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", "User registration failed: " + ex.getMessage());
+        response.put(errorStr, "User registration failed: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
     @ExceptionHandler(UserDeleteException.class)
     public ResponseEntity<Map<String, String>> handleUserDeleteException(UserDeleteException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", ex.getMessage());
+        response.put(errorStr, ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(DataNotFoundInDataBaseException.class)
     public ResponseEntity<Map<String, String>> handleDataNotFoundInDataBaseException(DataNotFoundInDataBaseException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", ex.getMessage());
+        response.put(errorStr, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Map<String, String>> handleBadRequestException(BadRequestException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", ex.getMessage());
+        response.put(errorStr, ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -89,13 +91,14 @@ public class AdviceController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors()
-                .stream().map(fe -> fe.getDefaultMessage()).collect(Collectors.toList());
+                .stream().map(fe -> fe.getDefaultMessage()).toList();
+
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
         Map<String, List<String>> errorResponse = new HashMap<>();
-        errorResponse.put("errors", errors);
+        errorResponse.put(errorStr, errors);
         return errorResponse;
     }
 
@@ -103,7 +106,7 @@ public class AdviceController {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<Map<String, String>> handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", ex.getMessage());
+        response.put(errorStr, ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -112,8 +115,9 @@ public class AdviceController {
     public ResponseEntity<List<String>> handleConstraintViolationException(ConstraintViolationException ex) {
         List<String> errorMessages = ex.getConstraintViolations()
                 .stream()
-                .map(violation -> violation.getMessage())
-                .collect(Collectors.toList());
+                .map(ConstraintViolation::getMessage)  // Replaced lambda with method reference
+                .toList();
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessages);
     }
 
@@ -126,14 +130,14 @@ public class AdviceController {
         if (ex.getRequiredType() != null) {
             errorMessage = String.format("The parameter '%s' should be of type '%s'", parameterName, ex.getRequiredType().getSimpleName());
         }
-        errors.put("errors", errorMessage);
+        errors.put(errorStr, errorMessage);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", "Something went wrong, please try again later: " + ex.getClass() + " " + ex.getMessage());
+        response.put(errorStr, "Something went wrong, please try again later: " + ex.getClass() + " " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(response);
     }
 }

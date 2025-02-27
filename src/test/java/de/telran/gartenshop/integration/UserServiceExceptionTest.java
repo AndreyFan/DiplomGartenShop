@@ -3,8 +3,8 @@ package de.telran.gartenshop.integration;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import de.telran.gartenshop.dto.requestDto.UserRequestDto;
-import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
+import de.telran.gartenshop.dto.requestdto.UserRequestDto;
+import de.telran.gartenshop.dto.requestdto.UserUpdateDto;
 import de.telran.gartenshop.entity.CartEntity;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.entity.enums.Role;
@@ -16,7 +16,6 @@ import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CartRepository;
 import de.telran.gartenshop.repository.UserRepository;
 import de.telran.gartenshop.security.configure.SecurityConfig;
-import de.telran.gartenshop.security.jwt.JwtProvider;
 import de.telran.gartenshop.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,8 +32,8 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @Import(SecurityConfig.class)
-@WithMockUser(roles = {"CLIENT","ADMINISTRATOR"})
-public class UserServiceExceptionTest {
+@WithMockUser(roles = {"CLIENT", "ADMINISTRATOR"})
+class UserServiceExceptionTest {
     @Mock
     private UserRepository userRepository;
 
@@ -73,6 +72,7 @@ public class UserServiceExceptionTest {
         when(userRepository.findByEmail(userRequestDto.getEmail())).thenReturn(userEntity);
         assertThrows(UserAlreadyExistsException.class, () -> userService.registerUser(userRequestDto));
     }
+
     @Test
     void testRegisterAdmin_negative_UserAlreadyExists() {
         UserRequestDto userRequest = new UserRequestDto();
