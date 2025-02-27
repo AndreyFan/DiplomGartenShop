@@ -37,6 +37,8 @@ public class OrderService {
     private final CartItemRepository cartItemRepository;
     private final Mappers mappers;
 
+    OrderStatus nextStatus;
+
     public ResponseEntity<OrderStatus> getOrderStatus(Long orderId) {
         Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
         if (orderEntity.isPresent()) {
@@ -50,19 +52,16 @@ public class OrderService {
         return MapperUtil.convertList(orders, mappers::convertToProductResponseDto);
     }
 
-
     public List<ProductResponseDto> getTop10CanceledProducts() {
         List<ProductEntity> orders = orderRepository.findTop10CanceledProducts();
         return MapperUtil.convertList(orders, mappers::convertToProductResponseDto);
     }
-
 
     public List<ProductResponseDto> getOrdersAwaitingPayment(int days) {
         LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
         List<ProductEntity> products = orderRepository.findOrdersAwaitingPayment(cutoffDate);
         return MapperUtil.convertList(products, mappers::convertToProductResponseDto);
     }
-
 
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
@@ -82,20 +81,21 @@ public class OrderService {
         // first change all statuses and only then save as a list
         orderEntityList.forEach(order -> {
             OrderStatus currentStatus = order.getOrderStatus();
-            OrderStatus nextStatus = switch (currentStatus) {
+            nextStatus = switch (currentStatus) {
                 case PAID -> ON_THE_WAY;
                 case ON_THE_WAY -> DELIVERED;
                 default -> currentStatus;
             };
-
         });
         // Save everything with one request
         orderRepository.saveAll(orderEntityList);
     }
 
     //Оформление заказа
-    //1. Создание заказа (Orders)
+    @Transactional
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, Long userId) {
+
+        //1. Создание заказа (Orders)
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
         OrderEntity orderEntity = mappers.convertToOrderEntity(orderRequestDto);
         OrderEntity createOrderEntity;
@@ -109,10 +109,18 @@ public class OrderService {
             orderEntity.setUpdatedAt(timestamp);
             createOrderEntity = orderRepository.save(orderEntity);
         } else {
-            throw new UserNotFoundException("User with Id: " + userId + " not found.");
+            throw new UserNotFoundException("User not found with Id: " + userId);
         }
 
         //2. Заполнение товаров в заказе (преобразование CartItems в OrderItems)
+        createOrderItems(createOrderEntity, userEntity);
+
+        return mappers.convertToOrderResponseDto(orderEntity);
+    }
+
+    //2. Заполнение товаров в заказе (преобразование CartItems в OrderItems)
+    public void createOrderItems(OrderEntity createOrderEntity, UserEntity userEntity) {
+
         CartEntity cartEntity = userEntity.getCart();
         if (cartEntity != null) {
             Set<CartItemEntity> cartItemEntitySet = userEntity.getCart().getCartItems();
@@ -139,16 +147,20 @@ public class OrderService {
                 createOrderEntity.setOrderItems(orderItemEntitySet);
                 orderRepository.save(createOrderEntity);
 
-                //3. Очищение товаров в корзине (удаление CartItems)
-                Set<CartItemEntity> cartItemSet = cartEntity.getCartItems();
-                for (CartItemEntity item : cartItemSet) {
-                    cartItemRepository.delete(item);
-                }
+                //Очищение товаров в корзине (удаление CartItems)
+                deleteCartItems(cartEntity);
             }
         } else {
-            throw new DataNotFoundInDataBaseException("Cart for UserId: " + userId + " not found.");
+            throw new DataNotFoundInDataBaseException("Cart for UserId: " + userEntity.getUserId() + " not found.");
         }
-        return mappers.convertToOrderResponseDto(orderEntity);
+    }
+
+    //3. Очищение товаров в корзине (удаление CartItems)
+    public void deleteCartItems(CartEntity cartEntity) {
+        Set<CartItemEntity> cartItemSet = cartEntity.getCartItems();
+        for (CartItemEntity item : cartItemSet) {
+            cartItemRepository.delete(item);
+        }
     }
 
     // История покупок пользователя
@@ -159,9 +171,7 @@ public class OrderService {
         } else {
             Set<OrderEntity> orderEntityList = user.getOrderEntities();
             // исключим из всех orderEntity юзера информацию о нем самом
-            orderEntityList.forEach(order -> {
-                order.setUser(null);
-            });
+            orderEntityList.forEach(order -> order.setUser(null));
             return MapperUtil.convertSet(orderEntityList, mappers::convertToOrderResponseDto);
         }
     }
