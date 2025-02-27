@@ -21,13 +21,6 @@ public class UserController implements UserControllerInterface {
 
     // метод служит для регистрации нового Client
     // http://localhost:8088/users/register
-    // body:
-    // {
-    //  "name": "string_name",
-    //  "email": "string_email",
-    //  "phone": "string_phone",
-    //  "password": "123"
-    //}
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Boolean registerUser(@RequestBody UserRequestDto userRequestDto) {

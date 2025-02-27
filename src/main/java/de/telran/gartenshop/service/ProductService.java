@@ -26,6 +26,10 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
 
+    String categoryNotFoundInDataBaseException = "Category not found with Id: ";
+    String productNotFoundInDataBaseException = "Product not found with Id: ";
+    Random random;
+
     public List<ProductResponseDto> getAllProducts() {
         List<ProductEntity> productEntityList = productRepository.findAll();
         return MapperUtil.convertList(productEntityList, mappers::convertToProductResponseDto);
@@ -46,18 +50,17 @@ public class ProductService {
         CategoryEntity categoryEntity = null;
         if (categoryId != null) {
             categoryEntity = categoryRepository.findById(categoryId).
-                    orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + categoryId));
+                    orElseThrow(() -> new DataNotFoundInDataBaseException(categoryNotFoundInDataBaseException + categoryId));
         }
 
         List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
                 isDiscount, sort);
-        List<ProductResponseDto> productResponseDtoList = MapperUtil.convertList(productEntity, mappers::convertToProductResponseDto);
-        return productResponseDtoList;
+        return MapperUtil.convertList(productEntity, mappers::convertToProductResponseDto);
     }
 
     public ProductResponseDto getProductById(Long productId) {
         ProductEntity productEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(productNotFoundInDataBaseException + productId));
         return mappers.convertToProductResponseDto(productEntity);
     }
 
@@ -67,7 +70,7 @@ public class ProductService {
         Long categoryId = productRequestDto.getCategoryId();
 
         CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + categoryId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(categoryNotFoundInDataBaseException + categoryId));
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
@@ -81,9 +84,9 @@ public class ProductService {
 
     public ProductResponseDto updateProduct(ProductRequestDto productRequestDto, Long productId) {
         ProductEntity updateProductEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(productNotFoundInDataBaseException + productId));
         CategoryEntity categoryEntity = categoryRepository.findById(productRequestDto.getCategoryId())
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + productRequestDto.getCategoryId()));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(categoryNotFoundInDataBaseException + productRequestDto.getCategoryId()));
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
@@ -100,7 +103,7 @@ public class ProductService {
 
     public ProductResponseDto updateDiscountPrice(ProductRequestDto productRequestDto, Long productId) {
         ProductEntity updateProductEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(productNotFoundInDataBaseException + productId));
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
@@ -112,14 +115,14 @@ public class ProductService {
 
     public void deleteProduct(Long productId) {
         ProductEntity deleteProductEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(productNotFoundInDataBaseException + productId));
         productRepository.delete(deleteProductEntity);
     }
 
     public ProductResponseDto getProductOfDay() {
         List<ProductEntity> productOfDayList = productRepository.getProductOfDay();
         if (productOfDayList.size() > 1) {
-            Random random = new Random();
+            random = new Random();
             int randomNum = random.nextInt(productOfDayList.size());
             return mappers.convertToProductResponseDto(productOfDayList.get(randomNum));
         } else {
