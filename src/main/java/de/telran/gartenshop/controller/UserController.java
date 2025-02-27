@@ -19,7 +19,9 @@ public class UserController implements UserControllerInterface {
         this.userService = userService;
     }
 
+
     // The method is used to register a new Client
+    // http://localhost:8088/users/register
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Boolean registerUser(@RequestBody UserRequestDto userRequestDto) {

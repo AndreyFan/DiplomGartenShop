@@ -8,7 +8,6 @@ import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.exception.UserNotFoundException;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.CartItemRepository;
-import de.telran.gartenshop.repository.CartRepository;
 import de.telran.gartenshop.repository.ProductRepository;
 import de.telran.gartenshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CartService {
     private final UserRepository userRepository;
-    private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
 
@@ -48,18 +46,23 @@ public class CartService {
     public boolean createCartItem(CartItemRequestDto cartItemRequestDto, Long userId) {
         CartItemEntity createCartItemEntity = mappers.convertToCartItemEntity(cartItemRequestDto);
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
-        ProductEntity productEntity = productRepository.findById(cartItemRequestDto.getProductId()).orElse(null);
-        if (productEntity == null) {
-            throw new DataNotFoundInDataBaseException("Product with Id " + cartItemRequestDto.getProductId() + " not found and not added to the Cart");
+        if (userEntity != null) {
+            ProductEntity productEntity = productRepository.findById(cartItemRequestDto.getProductId()).orElse(null);
+            if (productEntity == null) {
+                throw new DataNotFoundInDataBaseException("Product with Id " + cartItemRequestDto.getProductId() + " not found and not added to the Cart");
+            }
+
+            createCartItemEntity.setCartItemId(null);
+
+            createCartItemEntity.setCart(userEntity.getCart());
+
+            createCartItemEntity.setProduct(productEntity);
+
+            CartItemEntity savedCartItemEntity = cartItemRepository.save(createCartItemEntity);
+            return savedCartItemEntity.getCartItemId() != null;
+        } else {
+            throw new UserNotFoundException("User not found with Id: " + userId);
         }
-
-        createCartItemEntity.setCartItemId(null);
-        createCartItemEntity.setCart(userEntity.getCart());
-        createCartItemEntity.setProduct(productEntity);
-
-        CartItemEntity savedCartItemEntity = cartItemRepository.save(createCartItemEntity);
-
-        return savedCartItemEntity.getCartItemId() != null;
     }
 
     public void deleteCartItem(Long cartItemId) {
