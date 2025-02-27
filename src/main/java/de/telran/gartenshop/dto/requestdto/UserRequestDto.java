@@ -23,8 +23,8 @@ public class UserRequestDto {
     private String email;
 
     @NotBlank(message = "Invalid Phone number: Empty number")
-    @Pattern(regexp = "^\\d{10}$", message = "Invalid phone number: Phone number must be 10 digits long.") //10 цифр без символов и пробелов
-    private String phone;
+    @Pattern(regexp = "^\\d{10}$", message = "Invalid phone number: Phone number must be 10 digits long.")
+    private String phone;  //10 digits without symbols and spaces
 
     @NotBlank(message = "Invalid password: Empty password")
     @Size(min = 5, max = 15, message = "Invalid password: Password must be of 5 - 15 characters")

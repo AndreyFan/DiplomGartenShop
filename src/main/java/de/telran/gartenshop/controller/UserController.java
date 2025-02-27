@@ -19,7 +19,8 @@ public class UserController implements UserControllerInterface {
         this.userService = userService;
     }
 
-    // метод служит для регистрации нового Client
+
+    // The method is used to register a new Client
     // http://localhost:8088/users/register
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -27,7 +28,7 @@ public class UserController implements UserControllerInterface {
         return userService.registerUser(userRequestDto);
     }
 
-    // метод служит для регистрации нового Admina
+    // The method is used to register a new Admin
     // http://localhost:8088/users/registerAdmin
     @PostMapping("/registerAdmin")
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -41,7 +42,7 @@ public class UserController implements UserControllerInterface {
         return userService.getUserById(userId);
     }
 
-    // поиск юзера по его email
+    // search for user by his email
     // http://localhost:8088/users/get?email=alice.smith@example.com
     @GetMapping(value = "/get")
     public UserResponseDto getUserByEmail(@RequestParam String email) {

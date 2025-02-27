@@ -56,10 +56,10 @@ public class FavoriteService {
             if (product != null) {
                 Set<FavoriteEntity> favoriteEntitySet = user.getFavorites();
                 for (FavoriteEntity f : favoriteEntitySet) {
-                    if (f.getProduct().getProductId() == favoriteRequestDto.getProductId()) {
+                    if (f.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
                         return true;
-                        // логика такая: если у конкретного юзера этот товар уже есть в избранном -
-                        // просто вернём true без генерации ошибок
+                        // if a specific user already has this product in their favorites -
+                        // just return true without generating errors
                     }
                 }
 
@@ -81,15 +81,15 @@ public class FavoriteService {
 
         UserEntity user = userRepository.findById(favoriteRequestDto.getUserId()).orElse(null);
         if (user != null) {
-             Set<FavoriteEntity> favoriteEntitySet = user.getFavorites();
-                for (FavoriteEntity f : favoriteEntitySet) {
-                    if (f.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
-                        favoriteEntitySet.remove(f);
-                        favoriteRepository.deleteById(f.getFavoriteId());
-                        return true;
-                    }
+            Set<FavoriteEntity> favoriteEntitySet = user.getFavorites();
+            for (FavoriteEntity f : favoriteEntitySet) {
+                if (f.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
+                    favoriteEntitySet.remove(f);
+                    favoriteRepository.deleteById(f.getFavoriteId());
+                    return true;
                 }
-                throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
+            }
+            throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
         } else {
             throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
         }

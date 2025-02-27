@@ -2,13 +2,8 @@
 
 -- changeset Konstantin:insert_categories
 INSERT INTO Categories (Name)
-VALUES ('Garden Furniture'),
-       ('Fertilizer'),
+VALUES ('Fertilizer'),
        ('Protective products and septic tanks'),
-       ('Fences and Gates'),
-       ('Planting materia'),
-       ('Garden Lighting'),
-       ('BBQs and Grills'),
+       ('Planting material'),
        ('Tools and equipment'),
-       ('Garden Decor'),
        ('Pots and planters');
