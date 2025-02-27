@@ -42,6 +42,7 @@ class FavoriteControllerTest {
 
     @MockBean
     private FavoriteService favoriteServiceMock;
+
     @MockBean
     private JwtProvider jwtProvider;
 

@@ -26,11 +26,13 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final Mappers mappers;
 
+    String userNotFoundException = "User not found with Id: ";
+
     public Set<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            throw new UserNotFoundException("User not found with Id: " + userId);
+            throw new UserNotFoundException(userNotFoundException + userId);
         } else {
             Set<FavoriteEntity> favorites = user.getFavorites();
             return MapperUtil.convertSet(favorites, mappers::convertToFavoriteResponseDto);
@@ -73,7 +75,7 @@ public class FavoriteService {
                 throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
             }
         } else {
-            throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
+            throw new UserNotFoundException(userNotFoundException + favoriteRequestDto.getUserId());
         }
     }
 
@@ -91,7 +93,7 @@ public class FavoriteService {
             }
             throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
         } else {
-            throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
+            throw new UserNotFoundException(userNotFoundException + favoriteRequestDto.getUserId());
         }
     }
 }

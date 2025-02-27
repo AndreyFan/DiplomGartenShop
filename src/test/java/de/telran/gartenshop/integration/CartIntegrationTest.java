@@ -2,7 +2,6 @@ package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.telran.gartenshop.dto.requestdto.CartItemRequestDto;
-import de.telran.gartenshop.dto.responsedto.*;
 import de.telran.gartenshop.entity.*;
 import de.telran.gartenshop.entity.enums.Role;
 import de.telran.gartenshop.repository.*;
@@ -34,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = {"dev"})
 @Import(SecurityConfig.class)
 @WithMockUser(roles = {"CLIENT"})
-public class CartIntegrationTest {
+class CartIntegrationTest {
     @Autowired
     private MockMvc mockMvc; // для имитации запросов пользователей
 
@@ -67,7 +66,6 @@ public class CartIntegrationTest {
     private CartItemRequestDto cartItemRequestDtoTest;
 
     Timestamp timestamp;
-    Long cartIdTest = 1L;
     Long userIdTest = 1L;
     Long cartItemIdTest = 1L;
 
@@ -86,18 +84,6 @@ public class CartIntegrationTest {
                 timestamp,
                 timestamp,
                 categoryEntityTest);
-
-        CategoryResponseDto categoryResponseDtoTest = new CategoryResponseDto(1L, "CategoryName");
-        ProductResponseDto productResponseDtoTest = new ProductResponseDto(
-                1L,
-                "ProductName",
-                "ProductDescription",
-                new BigDecimal("10.25"),
-                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
-                new BigDecimal("8.50"),
-                timestamp,
-                timestamp,
-                categoryResponseDtoTest);
 
         cartItemEntityTest = new CartItemEntity(
                 1L,
@@ -132,6 +118,7 @@ public class CartIntegrationTest {
                 1L,
                 1);
     }
+
     @WithMockUser(roles = {"ADMINISTRATOR"})
     @Test
     void getAllCartItemsTest() throws Exception {
@@ -191,6 +178,19 @@ public class CartIntegrationTest {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
         when(cartItemRepositoryMock.save(any(CartItemEntity.class))).thenReturn(cartItemEntityTest);
         when(productRepositoryMock.findById(cartItemEntityTest.getProduct().getProductId())).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(post("/cart/{userId}", userIdTest)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartItemRequestDtoTest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createCartItemExceptionByUserTest() throws Exception {
+        when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.empty());
+        when(cartItemRepositoryMock.save(any(CartItemEntity.class))).thenReturn(cartItemEntityTest);
+        when(productRepositoryMock.findById(cartItemEntityTest.getProduct().getProductId())).thenReturn(Optional.of(productEntityTest));
 
         this.mockMvc.perform(post("/cart/{userId}", userIdTest)
                         .contentType(MediaType.APPLICATION_JSON)

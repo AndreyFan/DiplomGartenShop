@@ -2,10 +2,7 @@ package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
-import de.telran.gartenshop.dto.requestdto.CategoryRequestDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
-import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
-import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.repository.CategoryRepository;
@@ -29,7 +26,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @ActiveProfiles(profiles = {"dev"})
 @Import(SecurityConfig.class)
-public class ProductIntegrationTest {
+class ProductIntegrationTest {
     @Autowired
     private MockMvc mockMvc; // для имитации запросов пользователей
 
@@ -59,10 +55,6 @@ public class ProductIntegrationTest {
     private CategoryEntity categoryEntityTest;
 
     private ProductRequestDto productRequestDtoTest;
-    private CategoryRequestDto categoryRequestDtoTest;
-
-    private ProductResponseDto productResponseDtoTest;
-    private CategoryResponseDto categoryResponseDtoTest;
 
     List<ProductEntity> productEntityList = new ArrayList<>();
 
@@ -107,18 +99,6 @@ public class ProductIntegrationTest {
                 1L,
                 "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
                 new BigDecimal("8.50"));
-
-        categoryResponseDtoTest = new CategoryResponseDto(1L, "CategoryName");
-        productResponseDtoTest = new ProductResponseDto(
-                1L,
-                "ProductName",
-                "ProductDescription",
-                new BigDecimal("10.25"),
-                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
-                new BigDecimal("8.50"),
-                timestamp,
-                timestamp,
-                categoryResponseDtoTest);
     }
 
     @Test
@@ -212,7 +192,6 @@ public class ProductIntegrationTest {
                         .content(objectMapper.writeValueAsString(productRequestDtoTest))) // jackson: object -> json
                 .andDo(print())
                 .andExpect(content().string("false"));
-        ;
     }
 
     @Test
@@ -277,9 +256,6 @@ public class ProductIntegrationTest {
         this.mockMvc.perform(get("/products/filter?category=1&min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
                 .andDo(print())
                 .andExpect(status().isOk());
-//                .andExpect(jsonPath("$..productId").exists())
-//                .andExpect(jsonPath("$..name").exists())
-//                .andExpect(jsonPath("$..productId").value(1));
     }
 
     @Test
