@@ -1,8 +1,8 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
-import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
+import de.telran.gartenshop.dto.requestdto.CategoryRequestDto;
+import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.exception.BadRequestException;
 import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;

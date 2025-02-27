@@ -1,4 +1,4 @@
-package de.telran.gartenshop.dto.responseDto;
+package de.telran.gartenshop.dto.responsedto;
 
 import lombok.*;
 

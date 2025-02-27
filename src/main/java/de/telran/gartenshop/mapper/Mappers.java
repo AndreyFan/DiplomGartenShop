@@ -1,7 +1,7 @@
 package de.telran.gartenshop.mapper;
 
-import de.telran.gartenshop.dto.requestDto.*;
-import de.telran.gartenshop.dto.responseDto.*;
+import de.telran.gartenshop.dto.requestdto.*;
+import de.telran.gartenshop.dto.responsedto.*;
 
 import de.telran.gartenshop.entity.*;
 import lombok.RequiredArgsConstructor;

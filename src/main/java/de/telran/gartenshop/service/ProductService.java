@@ -1,9 +1,9 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
-import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
-import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
+import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.exception.BadRequestException;

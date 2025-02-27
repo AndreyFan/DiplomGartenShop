@@ -1,9 +1,9 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
-import de.telran.gartenshop.dto.responseDto.OrderItemResponseDto;
-import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.dto.requestdto.OrderRequestDto;
+import de.telran.gartenshop.dto.responsedto.OrderItemResponseDto;
+import de.telran.gartenshop.dto.responsedto.OrderResponseDto;
+import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
 import lombok.RequiredArgsConstructor;

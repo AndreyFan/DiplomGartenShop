@@ -1,8 +1,8 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
-import de.telran.gartenshop.dto.requestDto.CartItemRequestDto;
-import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
+import de.telran.gartenshop.dto.requestdto.CartItemRequestDto;
+import de.telran.gartenshop.dto.responsedto.CartItemResponseDto;
 import de.telran.gartenshop.entity.*;
 import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
 import de.telran.gartenshop.exception.UserNotFoundException;

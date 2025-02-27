@@ -1,8 +1,8 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
-import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
+import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,14 +34,8 @@ public class ProductController implements ProductControllerInterface {
             @RequestParam(value = "max_price", required = false) Double maxPrice,
             @RequestParam(value = "is_discount", required = false, defaultValue = "false") Boolean isDiscount,
             @RequestParam(value = "sort", required = false) String sort) {
-        List<ProductResponseDto> productList = productService.getProductsByFilter(
-                categoryId,
-                minPrice,
-                maxPrice,
-                isDiscount,
-                sort
-        );
-        return productList;
+
+        return productService.getProductsByFilter(categoryId, minPrice, maxPrice, isDiscount, sort);
     }
 
     //Просмотр товара по Id //localhost:8088/products/1
@@ -70,10 +64,6 @@ public class ProductController implements ProductControllerInterface {
     }
 
     //Добавить скидку на товар по productId //localhost:8088/products/discount/1
-    // тело запроса
-//    {
-//        "discountPrice": 100.99
-//    }
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping(value = "/discount/{productId}")
     @ResponseStatus(HttpStatus.OK)

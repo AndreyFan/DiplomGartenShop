@@ -1,4 +1,4 @@
-package de.telran.gartenshop.dto.responseDto;
+package de.telran.gartenshop.dto.responsedto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.telran.gartenshop.entity.enums.DeliveryMethod;

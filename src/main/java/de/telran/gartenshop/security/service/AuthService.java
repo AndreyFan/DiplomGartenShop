@@ -1,8 +1,7 @@
 package de.telran.gartenshop.security.service;
 
 
-import de.telran.gartenshop.dto.requestDto.UserRequestDto;
-import de.telran.gartenshop.dto.responseDto.UserResponseDto;
+import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.UserRepository;
@@ -18,9 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package de.telran.gartenshop.repository;
 
-import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
+import de.telran.gartenshop.dto.querydto.ProductProfitDto;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.repository.customs.ProductCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;

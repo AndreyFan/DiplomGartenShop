@@ -1,4 +1,4 @@
-package de.telran.gartenshop.dto.requestDto;
+package de.telran.gartenshop.dto.requestdto;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

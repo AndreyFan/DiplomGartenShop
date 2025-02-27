@@ -1,15 +1,17 @@
-package de.telran.gartenshop.dto.responseDto;
+package de.telran.gartenshop.dto.querydto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartResponseDto {
-    private Long cartId;
-    private Long userId;
+public class ProductProfitDto {
+    private String period;
+    private BigDecimal profit;
 }
