@@ -15,23 +15,23 @@ import java.util.Set;
 public class FavoriteController implements FavoriteControllerInterface {
     private final FavoriteService favoriteService;
 
-    // запрос списка товаров-фаворитов для юзера (по его userId)
-    // http://localhost:8088/favorites/3   - список фаворитов для юзера с userId=3
+    // request a list of favorite products for a user (by his userId)
+    // http://localhost:8088/favorites/3   - list of favorites for user with userId=3
     @GetMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public Set<FavoriteResponseDto> getFavoritesByUserId(@PathVariable Long userId) {
         return favoriteService.getFavoritesByUserId(userId);
     }
 
-    // запрос списка товаров-фаворитов для юзера (по его email)
-    // пример запроса: http://localhost:8088/favorites/get?email=henry.lewis@example.com
+    // request a list of favorite products for a user (by his email)
+    // example request: http://localhost:8088/favorites/get?email=henry.lewis@example.com
     @GetMapping(value = "/get")
     @ResponseStatus(HttpStatus.OK)
     public Set<FavoriteResponseDto> getFavorites(@RequestParam String email) {
         return favoriteService.getFavorites(email);
     }
 
-    // добавление товара в избранное (фавориты)
+    // adding a product to favorites
     // http://localhost:8088/favorites
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

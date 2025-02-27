@@ -16,6 +16,6 @@ public class UserUpdateDto {
     private String name;
 
     @NotBlank(message = "Invalid Phone number: Empty number")
-    @Pattern(regexp = "^\\d{10}$", message = "Invalid phone number: Phone number must be 10 digits long.") //10 цифр без символов и пробелов
-    private String phone;
+    @Pattern(regexp = "^\\d{10}$", message = "Invalid phone number: Phone number must be 10 digits long.")
+    private String phone;  //10 digits without symbols and spaces
 }
