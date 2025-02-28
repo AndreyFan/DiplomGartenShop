@@ -235,7 +235,7 @@ class OrderIntegrationTest {
 
     @Test
     void createOrderDiscountPriceNullTest() throws Exception {
-        ProductEntity productEntityTest = new ProductEntity(
+        productEntityTest = new ProductEntity(
                 1L,
                 "ProductName",
                 "ProductDescription",
