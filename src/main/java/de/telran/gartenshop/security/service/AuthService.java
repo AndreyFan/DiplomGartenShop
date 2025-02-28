@@ -25,9 +25,6 @@ public class AuthService {
     private final UserService usersService;
     private final UserRepository userRepository;
     private final Mappers mappers;
-   //  private final Map<String, String> refreshStorage = new HashMap<>();
-
-     // The JWT provider for generating and validating JWT tokens.
     private final JwtProvider jwtProvider;
 
     private final PasswordEncoder passwordEncoder;
