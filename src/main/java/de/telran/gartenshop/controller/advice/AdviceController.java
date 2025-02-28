@@ -29,7 +29,7 @@ public class AdviceController {
 
     // альтернативная обработка ошибочной ситуации Exception
     @ExceptionHandler({IllegalArgumentException.class, FileNotFoundException.class})
-    public ResponseEntity handleTwoExceptionNotFound(Exception exception) {
+    public ResponseEntity<String> handleTwoExceptionNotFound(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
@@ -37,7 +37,7 @@ public class AdviceController {
 
     // альтернативная обработка ошибочной ситуации Exception
     @ExceptionHandler({HttpMessageConversionException.class, DataIntegrityViolationException.class, NullPointerException.class})
-    public ResponseEntity handleTwoExceptionBadRequest(Exception exception) {
+    public ResponseEntity<String> handleTwoExceptionBadRequest(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(exception.getMessage());
@@ -126,10 +126,16 @@ public class AdviceController {
     public ResponseEntity<Map<String, String>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         Map<String, String> errors = new HashMap<>();
         String parameterName = ex.getParameter().getParameterName();
-        String errorMessage = "Invalid parameter type";
-        if (ex.getRequiredType() != null) {
-            errorMessage = String.format("The parameter '%s' should be of type '%s'", parameterName, ex.getRequiredType().getSimpleName());
+        String errorMessage;
+        Class<?> requiredType = ex.getRequiredType();
+
+        if (requiredType != null) {
+            errorMessage = String.format("The parameter '%s' should be of type '%s'", parameterName, requiredType.getSimpleName());
+        } else {
+
+            errorMessage = String.format("The parameter '%s' has an invalid type (expected type could not be determined)", parameterName);
         }
+
         errors.put(errorStr, errorMessage);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
