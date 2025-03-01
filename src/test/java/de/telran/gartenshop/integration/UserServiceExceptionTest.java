@@ -90,6 +90,7 @@ class UserServiceExceptionTest {
     @Test
     void registerUser_ShouldThrowUserSaveException_WhenDatabaseFails() {
         when(userRepository.findByEmail(userRequestDto.getEmail())).thenReturn(null);
+        when(mappers.convertToUserEntity(userRequestDto)).thenReturn(userEntity);
         when(passwordEncoder.encode(userRequestDto.getPassword())).thenReturn("encodedPassword"); // ✅ Добавили заглушку
         when(userRepository.save(any(UserEntity.class))).thenThrow(new RuntimeException());
 
