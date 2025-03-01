@@ -24,7 +24,7 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
     @PostMapping("/token")
-    public ResponseEntity<JwtResponseDto> getNewAccessToken(@RequestBody JwtRequestRefreshDto request) throws AuthException {
+    public ResponseEntity<JwtResponseDto> getNewAccessToken(@RequestBody JwtRequestRefreshDto request) throws AuthException{
         final JwtResponseDto token = authService.getAccessToken(request.getRefreshToken());
         return ResponseEntity.ok(token);
     }

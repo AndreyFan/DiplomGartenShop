@@ -15,6 +15,7 @@ import de.telran.gartenshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -25,6 +26,10 @@ public class FavoriteService {
     private final ProductRepository productRepository;
     private final FavoriteRepository favoriteRepository;
     private final Mappers mappers;
+    public List<FavoriteResponseDto> getAllFavorites(){
+        List<FavoriteEntity> favoriteEntityList=favoriteRepository.findAll();
+       return MapperUtil.convertList(favoriteEntityList,mappers::convertToFavoriteResponseDto);
+    }
 
     String userNotFoundException = "User not found with Id: ";
 
