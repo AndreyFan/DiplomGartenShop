@@ -132,7 +132,6 @@ public class AdviceController {
         if (requiredType != null) {
             errorMessage = String.format("The parameter '%s' should be of type '%s'", parameterName, requiredType.getSimpleName());
         } else {
-
             errorMessage = String.format("The parameter '%s' has an invalid type (expected type could not be determined)", parameterName);
         }
 

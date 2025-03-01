@@ -68,11 +68,6 @@ public class OrderService {
         return MapperUtil.convertList(orderEntityList, mappers::convertToOrderResponseDto);
     }
 
-    public List<OrderItemResponseDto> getAllOrderItems() {
-        List<OrderItemEntity> orderItemEntityList = orderItemRepository.findAll();
-        return MapperUtil.convertList(orderItemEntityList, mappers::convertToOrderItemResponseDto);
-    }
-
     // changing orderStatus ( scheduler: period - 30 s )
     @Transactional
     public void changeStatus() {
@@ -147,7 +142,7 @@ public class OrderService {
                 createOrderEntity.setOrderItems(orderItemEntitySet);
                 orderRepository.save(createOrderEntity);
 
-                //Очищение товаров в корзине (удаление CartItems)
+                //3. Очищение товаров в корзине (удаление CartItems)
                 deleteCartItems(cartEntity);
             }
         } else {

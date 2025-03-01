@@ -20,10 +20,8 @@ public class OrderResponseDto {
     private DeliveryMethod deliveryMethod;
     private OrderStatus orderStatus;
     private Timestamp updatedAt;
+    private Long userId;
 
     @JsonProperty("items")
     private Set<OrderItemResponseDto> orderItemsSet;
-
-    @JsonProperty("user")
-    private UserResponseDto user;
 }

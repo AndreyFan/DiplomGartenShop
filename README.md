@@ -8,6 +8,7 @@ This project is the final assignment of Tel-Ran backend developer course.
 
 **<u>The application allows customers:</u>**
 - select a product from the catalog;
+- add a product to the favorites
 - add a product to the cart; 
 - place an order;
 - track order status in real time. 
