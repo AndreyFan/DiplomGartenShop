@@ -18,7 +18,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/orders")
-public class OrderController implements OrderControllerInterface{
+public class OrderController implements OrderControllerInterface {
 
     private final OrderService orderService;
 
@@ -54,14 +54,6 @@ public class OrderController implements OrderControllerInterface{
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponseDto> getAllOrders() {
         return orderService.getAllOrders();
-    }
-
-    //Просмотр товаров во всех заказах //localhost:8088/orders/get/items
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    @GetMapping(value = "/get/items")
-    @ResponseStatus(HttpStatus.OK)
-    public List<OrderItemResponseDto> getAllOrderItems() {
-        return orderService.getAllOrderItems();
     }
 
     //Оформление заказа (поиск по userId), все товары из CartItems переходят в OrderItems //localhost:8088/orders/1

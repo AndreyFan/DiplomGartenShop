@@ -51,9 +51,6 @@ public interface OrderControllerInterface {
     @Operation(summary = "All Orders", description = "Retrieves all orders")
     public List<OrderResponseDto> getAllOrders();
 
-    @Operation(summary = "All OrderItems", description = "Retrieves all orderItems")
-    public List<OrderItemResponseDto> getAllOrderItems();
-
     @Operation(summary = "Create a new Order", description = "Order placement, search by userId, all items from " +
             "CartItems are moved to OrderItems")
     public OrderResponseDto createOrder(

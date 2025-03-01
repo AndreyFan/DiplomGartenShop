@@ -211,16 +211,6 @@ class OrderIntegrationTest {
     }
 
     @Test
-    void getAllOrderItemsTest() throws Exception {
-        when(orderItemRepositoryMock.findAll()).thenReturn(List.of(orderItemEntityTest));
-        this.mockMvc.perform(get("/orders/get/items"))
-                .andDo(print()) //печать лога вызова
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..orderItemId").exists())
-                .andExpect(jsonPath("$..orderItemId").value(1));
-    }
-
-    @Test
     void createOrderTest() throws Exception {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
