@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 public class UserController implements UserControllerInterface {
-
+private static final String STARS = "******";
     private UserService userService;
 
     @Autowired
@@ -39,14 +39,20 @@ public class UserController implements UserControllerInterface {
     @GetMapping(value = "/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
     public UserResponseDto getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId);
+        UserResponseDto userResponseDto =userService.getUserById(userId);
+        userResponseDto.setPasswordHash(STARS);
+        userResponseDto.setRefreshToken(STARS);
+        return userResponseDto;
     }
 
     // search for user by his email
     // http://localhost:8088/users/get?email=alice.smith@example.com
     @GetMapping(value = "/get")
     public UserResponseDto getUserByEmail(@RequestParam String email) {
-        return userService.getUserByEmail(email);
+        UserResponseDto userResponseDto =userService.getUserByEmail(email);
+        userResponseDto.setPasswordHash(STARS);
+        userResponseDto.setRefreshToken(STARS);
+        return userResponseDto;
     }
 
     @PutMapping("/{userId}")

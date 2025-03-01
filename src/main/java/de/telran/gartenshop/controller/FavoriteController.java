@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -14,6 +15,12 @@ import java.util.Set;
 @RequestMapping(value = "/favorites")
 public class FavoriteController implements FavoriteControllerInterface {
     private final FavoriteService favoriteService;
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<FavoriteResponseDto> getAllFavorites(){
+        return favoriteService.getAllFavorites();
+    }
 
     // request a list of favorite products for a user (by his userId)
     // http://localhost:8088/favorites/3   - list of favorites for user with userId=3

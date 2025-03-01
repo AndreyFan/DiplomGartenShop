@@ -29,24 +29,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                // Своего рода отключение CORS (разрешение запросов со всех доменов)
-//                .cors(cors -> cors.configurationSource(request -> {
-//                    var corsConfiguration = new CorsConfiguration();
-//                    corsConfiguration.setAllowedOriginPatterns(List.of("*"));
-//                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//                    corsConfiguration.setAllowedHeaders(List.of("*"));
-//                    corsConfiguration.setAllowCredentials(true);
-//                    return corsConfiguration;
-//                }))
-                // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(
                         authz -> authz
-//                                .requestMatchers(
-//                                        "/**"
-//                                )
                                 .requestMatchers(
                                         "/products","/products/*",
-                                        "/favorites","/favorites/*",
                                         "/auth/login", "/auth/token",
                                         "/users/register",
                                         "/users/registerAdmin",
