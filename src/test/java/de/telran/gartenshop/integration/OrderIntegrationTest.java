@@ -177,39 +177,6 @@ class OrderIntegrationTest {
     }
 
 
-//    @Test
-//    void getTop10PaidProductsTest() throws Exception {
-//        when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(productEntityTest));
-//        this.mockMvc.perform(get("/orders/top-products"))
-//                .andDo(print()) //печать лога вызова
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$..productId").exists())
-//                .andExpect(jsonPath("$..productId").value(1));
-//    }
-
-    @Test
-    void getTopCanceledTest() throws Exception {
-        when(orderRepositoryMock.findTop10CanceledProducts()).thenReturn(List.of(productEntityTest));
-        this.mockMvc.perform(get("/orders/top-canceled"))
-                .andDo(print()) //печать лога вызова
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..productId").exists())
-                .andExpect(jsonPath("$..name").exists())
-                .andExpect(jsonPath("$..productId").value(1));
-    }
-
-    @Test
-    void getAwaitingPaymentProductsTest() throws Exception {
-        when(orderRepositoryMock.findOrdersAwaitingPayment(any(LocalDateTime.class)))
-                .thenReturn(List.of(productEntityTest));
-        this.mockMvc.perform(get("/orders/awaiting-payment-products")
-                        .param("days", "10"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..productId").exists())
-                .andExpect(jsonPath("$..productId").value(1));
-    }
-
     @Test
     void createOrderTest() throws Exception {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));

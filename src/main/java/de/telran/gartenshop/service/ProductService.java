@@ -1,8 +1,9 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
+import de.telran.gartenshop.dto.querydto.ProductAwaitingPaymentDto;
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
-import de.telran.gartenshop.dto.querydto.ProductTopPaidDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidCanceledDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -135,7 +137,16 @@ public class ProductService {
         return productRepository.getProductProfitByPeriod(period, value);
     }
 
-    public List<ProductTopPaidDto> getTop10PaidProducts() {
+    public List<ProductTopPaidCanceledDto> getTop10PaidProducts() {
         return productRepository.getTop10PaidProducts();
+    }
+
+    public List<ProductTopPaidCanceledDto> getTop10CanceledProducts() {
+        return productRepository.getTop10CanceledProducts();
+    }
+
+    public List<ProductAwaitingPaymentDto> getAwaitingPaymentProducts(int days) {
+        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
+               return productRepository.getAwaitingPaymentProducts(cutoffDate);
     }
 }

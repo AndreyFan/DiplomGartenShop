@@ -1,8 +1,9 @@
 package de.telran.gartenshop.controller;
 
 
+import de.telran.gartenshop.dto.querydto.ProductAwaitingPaymentDto;
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
-import de.telran.gartenshop.dto.querydto.ProductTopPaidDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidCanceledDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -140,5 +141,15 @@ public interface ProductControllerInterface {
             @Positive(message = "Period length must be a positive number") Integer value);
 
     @Operation(summary = "Get top ten products", description = "Allows to retrieve the top 10 most purchased products")
-    public List<ProductTopPaidDto> getTop10PaidProducts();
+    public List<ProductTopPaidCanceledDto> getTop10PaidProducts();
+
+    @Operation(summary = "Get top ten canceled products", description = "Allows to retrieve top 10 most" +
+            " frequently canceled products")
+    public List<ProductTopPaidCanceledDto> getTop10CanceledProducts();
+
+    @Operation(summary = "Get products in the 'Awaiting payment' status ", description = "Retrieves a list of products that have been in the" +
+            " 'Awaiting payment' status for more than N days")
+    public List<ProductAwaitingPaymentDto> getAwaitingPaymentProducts(
+            @RequestParam(name = "days", defaultValue = "10")
+            @Positive(message = "Number of days must be > 0") int days);
 }
