@@ -132,12 +132,13 @@ public interface ProductControllerInterface {
     @Operation(summary = "Get product profit by period", description = "This endpoint calculates the product profit " +
             "grouped by specified time periods (e.g., days, week, months) and a value to define the range")
     public List<ProductProfitDto> getProfitByPeriod(
-            @Parameter(description = "The period for grouping the profit (e.g., 'day', 'week', 'month')", required = true)
+            @Parameter(description = "The period for grouping the profit (e.g., 'day', 'week', 'month')",
+                    required = true, example = "DAY")
             @RequestParam("period")
             @Pattern(regexp = "^(?i)(DAY|WEEK|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH " +
                     "(case insensitive)") String period,
             @Parameter(description = "The value to define the range for the specified period (e.g., the number " +
-                    "of days, months, or years)", required = true)
+                    "of days, months, or years)", required = true, example = "60")
             @RequestParam("value")
             @Positive(message = "Period length must be a positive number") Integer value);
 

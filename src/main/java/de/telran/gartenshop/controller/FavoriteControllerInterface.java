@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Set;
 
 @Tag(name = "Favorites", description = "Controller for managing favorites",
@@ -23,6 +24,10 @@ import java.util.Set;
 )
 @Validated
 public interface FavoriteControllerInterface {
+    @Operation(summary = "Get all Favorites", description = "Retrieves a list of all favorite items" +
+            " for the user")
+    public List<FavoriteResponseDto> getAllFavorites();
+
     @Operation(summary = "Get Favorites by UserId", description = "Request the list of favorite products " +
             "for a user by their userId")
     public Set<FavoriteResponseDto> getFavoritesByUserId(
