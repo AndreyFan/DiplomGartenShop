@@ -27,12 +27,6 @@ public class OrderController implements OrderControllerInterface {
         return orderService.getOrderStatus(id);
     }
 
-    @GetMapping("/top-products")
-    public ResponseEntity<List<ProductResponseDto>> getTop10PaidProducts() {
-        List<ProductResponseDto> products = orderService.getTop10PaidProducts();
-        return ResponseEntity.ok(products);
-    }
-
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/top-canceled")
     public ResponseEntity<List<ProductResponseDto>> getTopCanceled() {

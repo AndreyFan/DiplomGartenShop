@@ -19,16 +19,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     @Query("""
                 SELECT oi.product FROM OrderItemEntity oi
                 JOIN oi.order o
-                WHERE o.orderStatus = 'PAID'
-                GROUP BY oi.product
-                ORDER BY COUNT(oi) DESC
-                LIMIT 10
-            """)
-    List<ProductEntity> findTop10PaidOrders();
-
-    @Query("""
-                SELECT oi.product FROM OrderItemEntity oi
-                JOIN oi.order o
                 WHERE o.orderStatus = 'CANCELED'
                 GROUP BY oi.product
                 ORDER BY COUNT(oi) DESC

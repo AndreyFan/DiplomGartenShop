@@ -1,11 +1,13 @@
 package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,12 +91,20 @@ public class ProductController implements ProductControllerInterface {
     }
 
     //Прибыль с группировкой по периодам
+    //localhost:8088/products/profit?period=DAY&value=60
     @GetMapping(value = "/profit")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductProfitDto> getProfitByPeriod(
             @RequestParam("period") String period,
             @RequestParam("value") Integer value) {
         return productService.getProductProfitByPeriod(period, value);
+    }
+
+    //localhost:8088/products/top-products
+    @GetMapping(value = "/top10paid")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductTopPaidDto> getTop10PaidProducts() {
+        return productService.getTop10PaidProducts();
     }
 }
 

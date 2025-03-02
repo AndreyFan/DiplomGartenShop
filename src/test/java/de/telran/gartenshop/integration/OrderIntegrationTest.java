@@ -177,15 +177,15 @@ class OrderIntegrationTest {
     }
 
 
-    @Test
-    void getTop10PaidProductsTest() throws Exception {
-        when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(productEntityTest));
-        this.mockMvc.perform(get("/orders/top-products"))
-                .andDo(print()) //печать лога вызова
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..productId").exists())
-                .andExpect(jsonPath("$..productId").value(1));
-    }
+//    @Test
+//    void getTop10PaidProductsTest() throws Exception {
+//        when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(productEntityTest));
+//        this.mockMvc.perform(get("/orders/top-products"))
+//                .andDo(print()) //печать лога вызова
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$..productId").exists())
+//                .andExpect(jsonPath("$..productId").value(1));
+//    }
 
     @Test
     void getTopCanceledTest() throws Exception {

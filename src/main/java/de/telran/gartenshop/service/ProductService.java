@@ -2,6 +2,7 @@ package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
@@ -132,5 +133,9 @@ public class ProductService {
 
     public List<ProductProfitDto> getProductProfitByPeriod(String period, Integer value) {
         return productRepository.getProductProfitByPeriod(period, value);
+    }
+
+    public List<ProductTopPaidDto> getTop10PaidProducts() {
+        return productRepository.getTop10PaidProducts();
     }
 }
