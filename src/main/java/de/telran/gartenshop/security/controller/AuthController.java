@@ -15,19 +15,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerInterface {
 
     private final AuthService authService;
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponseDto> login(@RequestBody JwtRequestDto authRequest) throws AuthException {
         final JwtResponseDto token = authService.login(authRequest);
         return ResponseEntity.ok(token);
     }
+
     @PostMapping("/token")
-    public ResponseEntity<JwtResponseDto> getNewAccessToken(@RequestBody JwtRequestRefreshDto request) throws AuthException{
+    public ResponseEntity<JwtResponseDto> getNewAccessToken(@RequestBody JwtRequestRefreshDto request) throws AuthException {
         final JwtResponseDto token = authService.getAccessToken(request.getRefreshToken());
         return ResponseEntity.ok(token);
     }
+
     @PostMapping("/refresh")
     public ResponseEntity<JwtResponseDto> getNewRefreshToken(@RequestBody JwtRequestRefreshDto request) throws AuthException {
         final JwtResponseDto token = authService.refresh(request.getRefreshToken());

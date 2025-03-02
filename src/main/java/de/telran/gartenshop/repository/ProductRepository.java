@@ -76,14 +76,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, P
             nativeQuery = true)
     List<ProductTopPaidCanceledDto> getTop10CanceledProducts();
 
-//    @Query("""
-//                SELECT oi.product FROM OrderItemEntity oi
-//                JOIN oi.order o
-//                WHERE o.orderStatus = 'AWAITING_PAYMENT'
-//                AND o.createdAt < :cutoffDate
-//            """)
-//    List<ProductEntity> findOrdersAwaitingPayment(@Param("cutoffDate") LocalDateTime cutoffDate);
-
     @Query(value =
             "SELECT  oi.ProductID as productId, p.Name as productName, o.OrderID as OrderId, " +
                     " o.CreatedAt as createdAt, oi.Quantity as quantity " +
