@@ -1,7 +1,9 @@
 package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.telran.gartenshop.dto.querydto.ProductAwaitingPaymentDto;
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidCanceledDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -55,6 +58,8 @@ class ProductIntegrationTest {
     private CategoryEntity categoryEntityTest;
 
     private ProductRequestDto productRequestDtoTest;
+    private ProductTopPaidCanceledDto productTopPaidCanceledDtoTest;
+    private ProductAwaitingPaymentDto productAwaitingPaymentDtoTest;
 
     List<ProductEntity> productEntityList = new ArrayList<>();
 
@@ -99,6 +104,20 @@ class ProductIntegrationTest {
                 1L,
                 "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
                 new BigDecimal("8.50"));
+
+        productTopPaidCanceledDtoTest = new ProductTopPaidCanceledDto(
+                1,
+                "ProductName",
+                5L,
+                new BigDecimal("10.00"),
+                new BigDecimal("100.00"));
+
+        productAwaitingPaymentDtoTest = new ProductAwaitingPaymentDto(
+                1,
+                "ProductName",
+                1,
+                new Timestamp(2024-12-31),
+                5);
     }
 
     @Test
@@ -335,4 +354,43 @@ class ProductIntegrationTest {
                 .andExpect(jsonPath("$..profit").exists())
                 .andExpect(jsonPath("$..profit").value(100.00));
     }
+
+    @Test
+    void getTop10PaidProductsTest() throws Exception {
+        when(productRepositoryMock.getTop10PaidProducts()).thenReturn(List.of(productTopPaidCanceledDtoTest));
+        this.mockMvc.perform(get("/products/top10paid"))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productId").value(1))
+                .andExpect(jsonPath("$..productName").value("ProductName"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
+    void getTopCanceledTest() throws Exception {
+        when(productRepositoryMock.getTop10CanceledProducts()).thenReturn(List.of(productTopPaidCanceledDtoTest));
+        this.mockMvc.perform(get("/products/top10canceled"))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productName").exists())
+                .andExpect(jsonPath("$..productId").value(1))
+                .andExpect(jsonPath("$..productName").value("ProductName"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
+    void getAwaitingPaymentProductsTest() throws Exception {
+        when(productRepositoryMock.getAwaitingPaymentProducts(any(LocalDateTime.class)))
+                .thenReturn(List.of(productAwaitingPaymentDtoTest));
+        this.mockMvc.perform(get("/products/awaiting-payment-products")
+                        .param("days", "10"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productId").value(1))
+                .andExpect(jsonPath("$..productName").value("ProductName"));
+    }
+
 }

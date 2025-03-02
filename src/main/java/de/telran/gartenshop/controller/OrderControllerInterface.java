@@ -35,16 +35,6 @@ public interface OrderControllerInterface {
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long id);
 
-    @Operation(summary = "Get top ten canceled products", description = "Allows to retrieve top 10 most" +
-            " frequently canceled products")
-    public ResponseEntity<List<ProductResponseDto>> getTopCanceled();
-
-    @Operation(summary = "Get products in the 'Awaiting payment' status ", description = "Retrieves a list of products that have been in the" +
-            " 'Awaiting payment' status for more than N days")
-    public ResponseEntity<List<ProductResponseDto>> getAwaitingPaymentProducts(
-            @RequestParam(name = "days", defaultValue = "10")
-            @Positive(message = "Number of days must be > 0") int days);
-
     @Operation(summary = "All Orders", description = "Retrieves all orders")
     public List<OrderResponseDto> getAllOrders();
 

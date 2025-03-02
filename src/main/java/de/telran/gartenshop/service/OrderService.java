@@ -47,17 +47,6 @@ public class OrderService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    public List<ProductResponseDto> getTop10CanceledProducts() {
-        List<ProductEntity> orders = orderRepository.findTop10CanceledProducts();
-        return MapperUtil.convertList(orders, mappers::convertToProductResponseDto);
-    }
-
-    public List<ProductResponseDto> getOrdersAwaitingPayment(int days) {
-        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
-        List<ProductEntity> products = orderRepository.findOrdersAwaitingPayment(cutoffDate);
-        return MapperUtil.convertList(products, mappers::convertToProductResponseDto);
-    }
-
     public List<OrderResponseDto> getAllOrders() {
         List<OrderEntity> orderEntityList = orderRepository.findAll();
         return MapperUtil.convertList(orderEntityList, mappers::convertToOrderResponseDto);

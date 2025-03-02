@@ -27,21 +27,6 @@ public class OrderController implements OrderControllerInterface {
         return orderService.getOrderStatus(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    @GetMapping("/top-canceled")
-    public ResponseEntity<List<ProductResponseDto>> getTopCanceled() {
-        List<ProductResponseDto> products = orderService.getTop10CanceledProducts();
-        return ResponseEntity.ok(products);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    @GetMapping("/awaiting-payment-products")
-    public ResponseEntity<List<ProductResponseDto>> getAwaitingPaymentProducts(@RequestParam(name = "days",
-            defaultValue = "10") int days) {
-        List<ProductResponseDto> products = orderService.getOrdersAwaitingPayment(days);
-        return ResponseEntity.ok(products);
-    }
-
     //Просмотр всех заказов //localhost:8088/orders/get
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/get")

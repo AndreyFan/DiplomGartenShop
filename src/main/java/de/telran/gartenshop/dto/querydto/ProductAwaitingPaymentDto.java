@@ -5,16 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductTopPaidDto {
+public class ProductAwaitingPaymentDto {
     private Integer productId;
     private String productName;
-    private Long saleFrequency;
-    private BigDecimal saleQuantity;
-    private BigDecimal saleSumma;
+    private Integer orderId;
+    private Timestamp createdAt;
+    private Integer quantity;
 }

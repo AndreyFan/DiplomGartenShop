@@ -1,7 +1,8 @@
 package de.telran.gartenshop.controller;
 
+import de.telran.gartenshop.dto.querydto.ProductAwaitingPaymentDto;
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
-import de.telran.gartenshop.dto.querydto.ProductTopPaidDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidCanceledDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.service.ProductService;
@@ -100,11 +101,31 @@ public class ProductController implements ProductControllerInterface {
         return productService.getProductProfitByPeriod(period, value);
     }
 
-    //localhost:8088/products/top-products
+    //Топ 10 купленных товаров
+    //localhost:8088/products/top10paid
     @GetMapping(value = "/top10paid")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductTopPaidDto> getTop10PaidProducts() {
+    public List<ProductTopPaidCanceledDto> getTop10PaidProducts() {
         return productService.getTop10PaidProducts();
+    }
+
+    //Топ 10 часто отменяемых товаров
+    //localhost:8088/products/top10canceled
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
+    @GetMapping("/top10canceled")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductTopPaidCanceledDto> getTop10CanceledProducts() {
+        return productService.getTop10CanceledProducts();
+    }
+
+    //Список товаров, которые находятся в статусе Ожидает оплаты более N дней
+    //localhost:8088/products/awaiting-payment-products?days=10
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
+    @GetMapping("/awaiting-payment-products")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductAwaitingPaymentDto> getAwaitingPaymentProducts(@RequestParam(name = "days",
+            defaultValue = "10") int days) {
+        return productService.getAwaitingPaymentProducts(days);
     }
 }
 
