@@ -37,15 +37,11 @@ public class SecurityConfig {
                                         "/users/register",
                                         "/users/registerAdmin",
                                         "/manage/**",
-////                                        "/users/**",
                                         "/swagger-ui.html", "/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**"
-//                                        /*",/**"*/
                                 )
                                 .permitAll()
-                                .requestMatchers(PathRequest.toH2Console()).permitAll() //Allows access to /h2-console
                                 .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))  // Allows access to /h2-console frameset/frame pages
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
