@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerInterface{
 
     private final AuthService authService;
     @PostMapping("/login")

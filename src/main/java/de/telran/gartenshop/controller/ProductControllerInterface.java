@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Tag(name = "Products-Endpoint", description = "Controller for adding Products",
+@Tag(name = "Products", description = "Controller for adding Products",
         externalDocs = @ExternalDocumentation(description = "Link for external " +
                 "documentation in German language", url = "https://gartenshopExDoc.de"
         )
@@ -54,17 +54,18 @@ public interface ProductControllerInterface {
             }
     )
     public List<ProductResponseDto> getProductsByFilter(
-            @Parameter(description = "The category ID to filter products by. Optional, default is all categories.")
+            @Parameter(description = "The category ID to filter products by. Optional, default is all categories", example = "1")
             @RequestParam(value = "category", required = false)
             @Min(value = 1, message = "Invalid category Id: category Id must be >= 1") Long categoryId,
 
-            @Parameter(description = "The minimum price to filter products by. Optional, default is no minimum price.")
+            @Parameter(description = "The minimum price to filter products by. Optional, default is no minimum price", example = "10.99")
             @RequestParam(value = "min_price", required = false)
             @DecimalMin(value = "0.00", message = "Invalid min_price: Must be > 0.")
             @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits" +
                     " before and 2 after the decimal.") Double minPrice,
 
-            @Parameter(description = "The maximum price to filter products by. Optional, default is no maximum price.")
+            @Parameter(description = "The maximum price to filter products by. Optional, default is no maximum " +
+                    "price", example = "199.99")
             @RequestParam(value = "max_price", required = false)
             @DecimalMin(value = "0.00", message = "Invalid max_price: Must be > 0.")
             @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits " +
@@ -75,10 +76,11 @@ public interface ProductControllerInterface {
             @NotNull(message = "is_discount can not be null, must be true/false.") Boolean isDiscount,
 
             @Parameter(description = "Sort the products by a specific field (name, price, discountPrice, createdAt," +
-                    " updatedAt), followed by the sorting order (asc or desc). Optional, default is no sorting.")
+                    " updatedAt), followed by the sorting order (asc or desc). Optional, default is no sorting",
+                    example = "discountPrice,asc")
             @RequestParam(value = "sort", required = false)
             @Pattern(regexp = "^(name|price|discountPrice|createdAt|updatedAt)(,(asc|desc))?$",
-                    message = "Invalid parameter definition: parameter must be = name|price|discountPrice|createdAt|updatedAt. " +
+                    message = "Invalid parameter definition: parameter must be = name|price|discountPrice|createdAt|updatedAt" +
                             "Invalid sorting definition: must be in form '<sort parameter>,<sort order>'") String sort);
 
 

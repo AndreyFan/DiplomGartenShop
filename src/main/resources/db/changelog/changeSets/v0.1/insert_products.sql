@@ -5,7 +5,7 @@ INSERT INTO Products (Name, Description, Price,  CategoryId, ImageURL, DiscountP
 VALUES
     ('Garden Shovel', 'Heavy duty garden shovel for digging', 15.99, 1, 'images/garden_shovel.jpg', 13.99, '2025-01-01', '2025-01-01'),
     ('Garden Rake', 'Durable garden rake for cleaning up leaves', 12.99,  1, 'images/garden_rake.jpg', 10.99, '2025-01-01', '2025-01-01'),
-    ('Watering Can', 'Large capacity watering can for plants', 9.99, 1, 'images/watering_can.jpg', 8.49, '2025-01-01', '2025-01-01'),
+    ('Watering Can', 'Large capacity watering can for plants', 9.99, 1, 'https://example.com/images/watering_can.jpg', 8.49, '2025-01-01', '2025-01-01'),
     ('Garden Hoe', 'Sturdy garden hoe for weeding', 11.99,1, 'images/garden_hoe.jpg', 9.99, '2025-01-01', '2025-01-01'),
     ('Pruning Shears', 'High quality pruning shears for trimming', 14.99, 1, 'images/pruning_shears.jpg', 12.99, '2025-01-01', '2025-01-01'),
     ('Lawn Mower', 'Electric lawn mower for cutting grass', 199.99, 2, 'images/lawn_mower.jpg', 179.99, '2025-01-01', '2025-01-01'),

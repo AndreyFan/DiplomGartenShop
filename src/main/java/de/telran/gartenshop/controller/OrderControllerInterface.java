@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Set;
 
-@Tag(name = "Orders-Endpoint", description = "Controller for working with Orders",
+@Tag(name = "Orders", description = "Controller for working with Orders",
         externalDocs = @ExternalDocumentation(description = "Link for external " +
                 "documentation in German language", url = "https://gartenshopExDoc.de"
         )
@@ -57,8 +57,8 @@ public interface OrderControllerInterface {
     @Operation(summary = "Create a new Order", description = "Order placement, search by userId, all items from " +
             "CartItems are moved to OrderItems")
     public OrderResponseDto createOrder(
-            @Parameter(description = "Identifier", required = true, example = "1")
             @RequestBody @Valid OrderRequestDto orderRequestDto,
+            @Parameter(description = "Identifier", required = true, example = "3")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
