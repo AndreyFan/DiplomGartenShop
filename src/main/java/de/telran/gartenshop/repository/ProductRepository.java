@@ -1,6 +1,7 @@
 package de.telran.gartenshop.repository;
 
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidDto;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.repository.customs.ProductCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -45,4 +46,17 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, P
                     "    END",
             nativeQuery = true)
     List<ProductProfitDto> getProductProfitByPeriod(String period, Integer value);
+
+    @Query(value =
+            "SELECT  oi.ProductID as productId, p.Name as productName, COUNT(oi.ProductID) as saleFrequency, " +
+                    " SUM(oi.Quantity) as saleQuantity, SUM(oi.Quantity*oi.PriceAtPurchase) as saleSumma " +
+                    " FROM OrderItems oi " +
+                    " JOIN Products p ON oi.ProductID = p.ProductID" +
+                    " JOIN Orders o ON oi.OrderId = o.OrderID" +
+                    " WHERE o.status = 'PAID' " +
+                    " GROUP BY oi.ProductID " +
+                    " ORDER BY saleFrequency DESC, saleSumma DESC " +
+                    " LIMIT 10 ",
+            nativeQuery = true)
+    List<ProductTopPaidDto> getTop10PaidProducts();
 }

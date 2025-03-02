@@ -2,6 +2,7 @@ package de.telran.gartenshop.controller;
 
 
 import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -136,4 +138,7 @@ public interface ProductControllerInterface {
                     "of days, months, or years)", required = true)
             @RequestParam("value")
             @Positive(message = "Period length must be a positive number") Integer value);
+
+    @Operation(summary = "Get top ten products", description = "Allows to retrieve the top 10 most purchased products")
+    public List<ProductTopPaidDto> getTop10PaidProducts();
 }

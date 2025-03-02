@@ -47,11 +47,6 @@ public class OrderService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    public List<ProductResponseDto> getTop10PaidProducts() {
-        List<ProductEntity> orders = orderRepository.findTop10PaidOrders();
-        return MapperUtil.convertList(orders, mappers::convertToProductResponseDto);
-    }
-
     public List<ProductResponseDto> getTop10CanceledProducts() {
         List<ProductEntity> orders = orderRepository.findTop10CanceledProducts();
         return MapperUtil.convertList(orders, mappers::convertToProductResponseDto);

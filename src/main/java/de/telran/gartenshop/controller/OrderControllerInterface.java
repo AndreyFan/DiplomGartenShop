@@ -35,9 +35,6 @@ public interface OrderControllerInterface {
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long id);
 
-    @Operation(summary = "Get top ten products", description = "Allows to retrieve the top 10 most purchased products")
-    public ResponseEntity<List<ProductResponseDto>> getTop10PaidProducts();
-
     @Operation(summary = "Get top ten canceled products", description = "Allows to retrieve top 10 most" +
             " frequently canceled products")
     public ResponseEntity<List<ProductResponseDto>> getTopCanceled();
