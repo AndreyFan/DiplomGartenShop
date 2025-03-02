@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Set;
 
-@Tag(name = "Favorites-Endpoint", description = "Controller for managing favorites",
+@Tag(name = "Favorites", description = "Controller for managing favorites",
         externalDocs = @ExternalDocumentation(description = "Link to external documentation in German",
                 url = "https://gartenshopExDoc.de"
         )
@@ -32,6 +32,7 @@ public interface FavoriteControllerInterface {
 
     @Operation(summary = "Get Favorites", description = "Request a list of favorite products for the user by their email")
     public Set<FavoriteResponseDto> getFavorites(
+            @Parameter(description = "E-Mail", required = true, example = "charlie.brown@example.com")
             @RequestParam
             @Email(message = "Invalid email format. Please provide a valid email.") String email);
 

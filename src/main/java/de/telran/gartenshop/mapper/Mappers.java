@@ -26,10 +26,6 @@ public class Mappers {
         return modelMapper.map(userRequestDto, UserEntity.class);
     }
 
-    public CartEntity convertToCartEntity(CartRequestDto cartRequestDto) {
-        return modelMapper.map(cartRequestDto, CartEntity.class);
-    }
-
     public CartResponseDto convertToCartResponseDto(CartEntity cartEntity) {
         return modelMapper.map(cartEntity, CartResponseDto.class);
     }
@@ -69,12 +65,6 @@ public class Mappers {
 
     public UserResponseDto convertToUserResponseDto(UserEntity userEntity) {
         return modelMapper.map(userEntity, UserResponseDto.class);
-    }
-
-    public OrderItemResponseDto convertToOrderItemResponseDto(OrderItemEntity orderItemEntity) {
-        OrderItemResponseDto orderItemResponseDto = modelMapper.map(orderItemEntity, OrderItemResponseDto.class);
-        orderItemResponseDto.setProduct(convertToProductResponseDto(orderItemEntity.getProduct())); //связанный объект
-        return orderItemResponseDto;
     }
 
     public OrderResponseDto convertToOrderResponseDto(OrderEntity orderEntity) {

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "Users-Endpoint", description = "Controller for working with Users",
+@Tag(name = "Users", description = "Controller for working with Users",
         externalDocs = @ExternalDocumentation(description = "Link for external " +
                 "documentation in German language", url = "https://gartenshopExDoc.de"
         )
@@ -38,14 +38,14 @@ public interface UserControllerInterface {
     @Operation(summary = "Get user details by user ID", description = "This endpoint retrieves the details of a specific" +
             " user by their unique user ID")
     public UserResponseDto getUserById(
-            @Parameter(description = "Identifier", required = true, example = "1")
+            @Parameter(description = "Identifier", required = true, example = "3")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
     @Operation(summary = "Get user details by email", description = "This endpoint allows you to search for a user by" +
             " their email address and retrieve their details")
     public UserResponseDto getUserByEmail(
-            @Parameter(description = "The email of the user to retrieve", required = true)
+            @Parameter(description = "The email of the user to retrieve", required = true, example = "charlie.brown@example.com")
             @RequestParam
             @Email(message = "Invalid email format. Please provide a valid email.") String email);
 
@@ -54,14 +54,14 @@ public interface UserControllerInterface {
     public Boolean updateUser(
             @Parameter(description = "The details of the user to update", required = true)
             @RequestBody @Valid UserUpdateDto userUpdateDto,
-            @Parameter(description = "Identifier", required = true, example = "1")
+            @Parameter(description = "Identifier", required = true, example = "3")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
     @Operation(summary = "Delete user by user ID", description = "This endpoint allows the deletion of a user by " +
             "their unique user ID")
     public void deleteUser(
-            @Parameter(description = "Identifier", required = true, example = "1")
+            @Parameter(description = "Identifier", required = true, example = "3")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 }

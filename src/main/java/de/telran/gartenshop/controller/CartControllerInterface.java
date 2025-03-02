@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.Set;
 
-@Tag(name = "Carts-Endpoint", description = "Controller for adding CartItems",
+@Tag(name = "Carts", description = "Controller for adding CartItems",
         externalDocs = @ExternalDocumentation(description = "Link for external " +
                 "documentation in German language", url = "https://gartenshopExDoc.de"
         )
@@ -35,15 +35,20 @@ public interface CartControllerInterface {
     @Operation(summary = "Create a new CartItem", description = "Creates a new cartItem for the specified user by adding " +
             "the provided product details to their cart")
     public boolean createCartItem(@RequestBody @Valid CartItemRequestDto cartItemRequestDto,
+                                  @Parameter(description = "Identifier", required = true, example = "1")
                                   @PathVariable
                                   @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
     @Operation(summary = "Delete a CartItem", description = "Removes the specified cartItem from the user's cart based on the provided cartItemId")
-    public void deleteCartItem(@PathVariable
-                               @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long cartItemId);
+    public void deleteCartItem(
+            @Parameter(description = "Identifier", required = true, example = "1")
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long cartItemId);
 
     @Operation(summary = "Delete all CartItems", description = "Removes all items from the user's cart based on the provided userId")
-    public void deleteAllCartItems(@PathVariable
-                                   @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
+    public void deleteAllCartItems(
+            @Parameter(description = "Identifier", required = true, example = "1")
+            @PathVariable
+            @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 }
 
