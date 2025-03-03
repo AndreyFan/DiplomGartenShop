@@ -2,6 +2,7 @@ package de.telran.gartenshop.controller.advice;
 
 import de.telran.gartenshop.exception.*;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.security.auth.message.AuthException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -50,6 +51,13 @@ public class AdviceController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<Map<String, String>> handleAuthException(AuthException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put(errorStr, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleUserNotFoundException(UserNotFoundException ex) {
@@ -58,6 +66,7 @@ public class AdviceController {
         errorResponse.put("message", ex.getMessage());
         return errorResponse;
     }
+
 
     @ExceptionHandler(UserSaveException.class)
     public ResponseEntity<Map<String, String>> handleUserSaveException(UserSaveException ex) {
