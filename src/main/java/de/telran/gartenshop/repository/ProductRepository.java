@@ -65,13 +65,13 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, P
 
     @Query(value =
             "SELECT  oi.ProductID as productId, p.Name as productName, COUNT(oi.ProductID) as saleFrequency, " +
-                    " SUM(oi.Quantity) as saleQuantity, SUM(oi.Quantity*oi.PriceAtPurchase) as saleSumma " +
+                    " SUM(oi.Quantity) as saleQuantity, SUM(oi.Quantity*oi.PriceAtPurchase) as saleSum " +
                     " FROM OrderItems oi " +
                     " JOIN Products p ON oi.ProductID = p.ProductID" +
                     " JOIN Orders o ON oi.OrderId = o.OrderID" +
                     " WHERE o.Status = 'CANCELED' " +
                     " GROUP BY oi.ProductID " +
-                    " ORDER BY saleFrequency DESC, saleSumma DESC " +
+                    " ORDER BY saleFrequency DESC, saleSum DESC " +
                     " LIMIT 10 ",
             nativeQuery = true)
     List<ProductTopPaidCanceledDto> getTop10CanceledProducts();
