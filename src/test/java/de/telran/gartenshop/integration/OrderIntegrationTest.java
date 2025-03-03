@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest // запускаем контейнер Spring для тестирования
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
-@ActiveProfiles(profiles = {"dev"})
+@ActiveProfiles(profiles = {"test"})
 @Import(SecurityConfig.class)
 @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
 class OrderIntegrationTest {

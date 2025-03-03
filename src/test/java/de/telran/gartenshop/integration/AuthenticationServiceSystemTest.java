@@ -49,7 +49,7 @@ class AuthenticationServiceSystemTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private Mappers mappersTest;
+    private Mappers mappers;
 
     @Autowired
     private ObjectMapper objectMapper;
