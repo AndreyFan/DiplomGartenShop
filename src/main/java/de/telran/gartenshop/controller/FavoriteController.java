@@ -5,6 +5,7 @@ import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
 import de.telran.gartenshop.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class FavoriteController implements FavoriteControllerInterface {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     public List<FavoriteResponseDto> getAllFavorites(){
         return favoriteService.getAllFavorites();
     }

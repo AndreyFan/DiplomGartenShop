@@ -51,6 +51,7 @@ public class ProductController implements ProductControllerInterface {
     //Добавление нового товара //localhost:8088/products
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     public boolean createProduct(
             @RequestBody ProductRequestDto productRequestDto) {
         return productService.createProduct(productRequestDto);
@@ -59,6 +60,7 @@ public class ProductController implements ProductControllerInterface {
     //Редактирование товара по Id //localhost:8088/products/1
     @PutMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     public ProductResponseDto updateProduct(
             @RequestBody ProductRequestDto productRequestDto,
             @PathVariable Long productId) {
@@ -78,6 +80,7 @@ public class ProductController implements ProductControllerInterface {
     //Удаление товара по Id //localhost:8088/products/1
     @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     public void deleteProduct(
             @PathVariable Long productId) {
         productService.deleteProduct(productId);
@@ -94,6 +97,7 @@ public class ProductController implements ProductControllerInterface {
     //localhost:8088/products/profit?period=DAY&value=60
     @GetMapping(value = "/profit")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     public List<ProductProfitDto> getProfitByPeriod(
             @RequestParam("period") String period,
             @RequestParam("value") Integer value) {
@@ -104,6 +108,7 @@ public class ProductController implements ProductControllerInterface {
     //localhost:8088/products/top10paid
     @GetMapping(value = "/top10paid")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     public List<ProductTopPaidCanceledDto> getTop10PaidProducts() {
         return productService.getTop10PaidProducts();
     }
