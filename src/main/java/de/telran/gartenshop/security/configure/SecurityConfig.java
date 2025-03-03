@@ -33,6 +33,7 @@ public class SecurityConfig {
                         authz -> authz
                                 .requestMatchers(
                                         "/products","/products/*",
+                                        "/categories",
                                         "/auth/login", "/auth/token",
                                         "/users/register",
                                         "/users/registerAdmin",

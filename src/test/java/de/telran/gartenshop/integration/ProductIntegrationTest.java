@@ -21,7 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest // запускаем контейнер Spring для тестирования
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
-@ActiveProfiles(profiles = {"dev"})
+@TestPropertySource(locations = "classpath:application-test.properties")
 @Import(SecurityConfig.class)
 class ProductIntegrationTest {
     @Autowired
@@ -164,6 +164,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void getProductOfDayListTest() throws Exception {
         when(productRepositoryMock.getProductOfDay()).thenReturn(productEntityList);
         this.mockMvc.perform(get("/products/productOfDay"))
@@ -174,6 +175,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void deleteProductTest() throws Exception {
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
         doNothing().when(productRepositoryMock).delete(productEntityTest);
@@ -183,6 +185,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void deleteProductExceptionByProductTest() throws Exception {
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(delete("/products/{productId}", productIdTest))
@@ -191,6 +194,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void createProductTest() throws Exception {
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(productEntityTest);
         when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
@@ -203,6 +207,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void createProductReturnFalseTest() throws Exception {
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(new ProductEntity());
         when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
@@ -214,6 +219,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void updateProductTest() throws Exception {
         when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
@@ -230,6 +236,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void updateProductExceptionByProductTest() throws Exception {
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(put("/products/{productId}", productIdTest)
@@ -338,6 +345,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void getProfitByPeriodTest() throws Exception {
         String periodTest = "WEEK";
         Integer valueTest = 5;
@@ -356,6 +364,7 @@ class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void getTop10PaidProductsTest() throws Exception {
         when(productRepositoryMock.getTop10PaidProducts()).thenReturn(List.of(productTopPaidCanceledDtoTest));
         this.mockMvc.perform(get("/products/top10paid"))

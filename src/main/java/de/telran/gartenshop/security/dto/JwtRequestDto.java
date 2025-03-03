@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class JwtRequestDto {
-    @Schema(description = "E-Mail", example = "bob.johnsonAndJohnson@example.com")
+    @Schema(description = "E-Mail", example = "bob.johnson@example.com")
     private String email;
 
     @Schema(description = "Password", example = "12345")
