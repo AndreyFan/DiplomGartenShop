@@ -14,9 +14,11 @@ import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class AuthService {
                 usersService.updateUserRefreshToken(userResponseDto, refreshToken); // сохраняем в БД новый refreshToken
                 return new JwtResponseDto(accessToken, refreshToken);
             } else {
-                throw new AuthException("Wrong password");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
             }
         } else {
             throw new AuthException("User not found");
