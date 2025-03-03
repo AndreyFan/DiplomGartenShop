@@ -4,6 +4,7 @@ import de.telran.gartenshop.dto.requestdto.UserRequestDto;
 import de.telran.gartenshop.dto.requestdto.UserUpdateDto;
 import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,10 +59,11 @@ public interface UserControllerInterface {
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
+    @Hidden
     @Operation(summary = "Delete user by user ID", description = "This endpoint allows the deletion of a user by " +
             "their unique user ID")
     public void deleteUser(
-            @Parameter(description = "Identifier", required = true, example = "3")
+            @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 }
