@@ -67,12 +67,14 @@ class CategoryServiceTest {
 
     @Test
     void createCategoryTest() {
-        when(mappers.convertToCategoryEntity(any())).thenReturn(categoryEntity);
+        when(mappers.convertToCategoryEntity(categoryRequestDto)).thenReturn(categoryEntity);
         when(categoryRepository.save(any())).thenReturn(categoryEntity);
 
         boolean isCreated = categoryService.createCategory(categoryRequestDto);
         assertTrue(isCreated);
+        assertEquals(categoryEntity.getName(), categoryRequestDto.getName());
         verify(categoryRepository, times(1)).save(any(CategoryEntity.class));
+        verify(mappers, times(1)).convertToCategoryEntity(categoryRequestDto);
     }
 
     @Test
