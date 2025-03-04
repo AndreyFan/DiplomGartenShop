@@ -39,6 +39,7 @@ public interface CategoryControllerInterface {
 
     @Operation(summary = "Delete a Category from DB", description = "Finds and deletes an existing Category from the database.")
     public void deleteCategory(
+            @Parameter(description = "Identifier", example = "1", required = true)
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long categoryId);
 }

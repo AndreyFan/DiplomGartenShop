@@ -2,6 +2,7 @@ package de.telran.gartenshop.controller.advice;
 
 import de.telran.gartenshop.exception.*;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.security.auth.message.AuthException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -56,9 +57,10 @@ public class AdviceController {
         response.put(errorStr, ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
-
+  
     // Обрабатывает ситуацию, когда пользователь не найден (404 Not Found)
     // Handles the case when the user is not found (404 Not Found)
+
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleUserNotFoundException(UserNotFoundException ex) {
@@ -67,6 +69,7 @@ public class AdviceController {
         errorResponse.put("message", ex.getMessage());
         return errorResponse;
     }
+
 
     // Обрабатывает ошибку при сохранении пользователя (500 Internal Server Error)
     // Handles an error when saving a user (500 Internal Server Error)
