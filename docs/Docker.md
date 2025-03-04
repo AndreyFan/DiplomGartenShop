@@ -9,9 +9,9 @@ services:
       - "23306:3306"
     environment:
       MYSQL_DATABASE: gartenshop
-      MYSQL_ROOT_PASSWORD: 220606
+      MYSQL_ROOT_PASSWORD: chemnitz2023
     healthcheck:
-      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root -p'220606'" ]
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root -p'chemnitz2023'" ]
       timeout: 20s
       retries: 10
 
@@ -28,7 +28,7 @@ services:
       MYSQL_HOST: host.docker.internal
       MYSQL_DB_NAME: gartenshop
       MYSQL_USER: root
-      MYSQL_PASSWORD: 220606
+      MYSQL_PASSWORD: chemnitz2023
       MYSQL_PORT: 23306    ## we are in same network so_ we connect internally.
     depends_on:
       mysqldb:
