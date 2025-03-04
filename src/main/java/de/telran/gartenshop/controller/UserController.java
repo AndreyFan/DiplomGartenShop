@@ -6,6 +6,7 @@ import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import de.telran.gartenshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,6 +32,7 @@ private static final String STARS = "******";
     // The method is used to register a new Admin
     // http://localhost:8088/users/registerAdmin
     @PostMapping("/registerAdmin")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Boolean registerAdmin(@RequestBody UserRequestDto userRequestDto) {
         return userService.registerAdmin(userRequestDto);

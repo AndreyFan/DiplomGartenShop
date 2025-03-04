@@ -54,7 +54,6 @@ public class Mappers {
     public CartItemEntity convertToCartItemEntity(CartItemRequestDto cartItemRequestDto) {
         return modelMapper.map(cartItemRequestDto, CartItemEntity.class);
     }
-
     public FavoriteResponseDto convertToFavoriteResponseDto(FavoriteEntity favorite) {
         FavoriteResponseDto favoriteResponseDto = modelMapper.map(favorite, FavoriteResponseDto.class);
         modelMapper.typeMap(FavoriteEntity.class, FavoriteResponseDto.class)
@@ -62,7 +61,6 @@ public class Mappers {
         favoriteResponseDto.setProductResponseDto(convertToProductResponseDto(favorite.getProduct()));
         return favoriteResponseDto;
     }
-
     public UserResponseDto convertToUserResponseDto(UserEntity userEntity) {
         return modelMapper.map(userEntity, UserResponseDto.class);
     }
