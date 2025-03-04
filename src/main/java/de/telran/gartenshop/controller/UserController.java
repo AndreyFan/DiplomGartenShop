@@ -39,6 +39,7 @@ private static final String STARS = "******";
     }
 
     @GetMapping(value = "/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @ResponseStatus(value = HttpStatus.OK)
     public UserResponseDto getUserById(@PathVariable Long userId) {
         UserResponseDto userResponseDto =userService.getUserById(userId);
@@ -65,6 +66,7 @@ private static final String STARS = "******";
     }
 
     @DeleteMapping("/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);

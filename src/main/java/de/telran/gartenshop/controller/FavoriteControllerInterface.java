@@ -2,9 +2,9 @@ package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
 import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -17,15 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Set;
 
-@Tag(name = "Favorites", description = "Controller for managing favorites",
-        externalDocs = @ExternalDocumentation(description = "Link to external documentation in German",
-                url = "https://gartenshopExDoc.de"
-        )
-)
+@Tag(name = "Favorites", description = "Controller for managing favorites")
 @Validated
 public interface FavoriteControllerInterface {
     @Operation(summary = "Get all Favorites", description = "Retrieves a list of all favorite items" +
-            " for the user")
+            " for the user",
+              security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<FavoriteResponseDto> getAllFavorites();
 
     @Operation(summary = "Get Favorites by UserId", description = "Request the list of favorite products " +

@@ -4,6 +4,7 @@ import de.telran.gartenshop.dto.requestdto.CategoryRequestDto;
 import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
 import de.telran.gartenshop.service.CategoryService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ public class CategoryController implements CategoryControllerInterface {
 
     //Просмотр всех категорий товаров //localhost:8088/categories
     @GetMapping
+    @SecurityRequirement(name = "")
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryResponseDto> getAllCategories() {
         return categoryService.getAllCategories();

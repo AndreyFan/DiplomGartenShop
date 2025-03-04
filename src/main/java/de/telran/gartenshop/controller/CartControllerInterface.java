@@ -2,9 +2,9 @@ package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestdto.CartItemRequestDto;
 import de.telran.gartenshop.dto.responsedto.CartItemResponseDto;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -15,14 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.Set;
 
-@Tag(name = "Carts", description = "Controller for adding CartItems",
-        externalDocs = @ExternalDocumentation(description = "Link for external " +
-                "documentation in German language", url = "https://gartenshopExDoc.de"
-        )
-)
+@Tag(name = "Carts", description = "Controller for adding CartItems")
 @Validated
 public interface CartControllerInterface {
-    @Operation(summary = "All cartItems", description = "Get all the cartItems")
+    @Operation(summary = "All cartItems", description = "Get all the cartItems",
+                security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<CartItemResponseDto> getAllCartItems();
 
     @Operation(summary = "Find CartItems by UserId", description = "Retrieves all cartItems for a user based on their userId. " +

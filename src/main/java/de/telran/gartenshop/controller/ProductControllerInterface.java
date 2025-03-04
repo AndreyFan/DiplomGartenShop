@@ -6,12 +6,12 @@ import de.telran.gartenshop.dto.querydto.ProductProfitDto;
 import de.telran.gartenshop.dto.querydto.ProductTopPaidCanceledDto;
 import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -22,11 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Tag(name = "Products", description = "Controller for adding Products",
-        externalDocs = @ExternalDocumentation(description = "Link for external " +
-                "documentation in German language", url = "https://gartenshopExDoc.de"
-        )
-)
+@Tag(name = "Products", description = "Controller for adding Products")
 @Validated
 public interface ProductControllerInterface {
 
@@ -94,13 +90,15 @@ public interface ProductControllerInterface {
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
 
     @Operation(summary = "Create a new product", description = "This endpoint allows you to create a new product " +
-            "in the catalog by providing the product details")
+            "in the catalog by providing the product details",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public boolean createProduct(
             @Parameter(description = "The product details to be created", required = true)
             @RequestBody @Valid ProductRequestDto productRequestDto);
 
     @Operation(summary = "Update product by ID", description = "This endpoint allows you to update the details" +
-            " of an existing product using the specified product ID")
+            " of an existing product using the specified product ID",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public ProductResponseDto updateProduct(
             @Parameter(description = "The updated product details", required = true)
             @RequestBody @Valid ProductRequestDto productRequestDto,
@@ -110,7 +108,8 @@ public interface ProductControllerInterface {
 
     @Operation(summary = "Apply discount to a product", description = "This endpoint allows an administrator" +
             " to apply a discount to a specific product identified by the product ID." +
-            " The discount price is set through the request body")
+            " The discount price is set through the request body",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public ProductResponseDto updateDiscountPrice(
             @Parameter(description = "The updated product discount details", required = true)
             @RequestBody @Valid ProductRequestDto productRequestDto,
@@ -119,7 +118,8 @@ public interface ProductControllerInterface {
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long productId);
 
     @Operation(summary = "Delete a product by ID", description = "This endpoint allows you to delete a " +
-            "product from the catalog using the specified product ID")
+            "product from the catalog using the specified product ID",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public void deleteProduct(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
@@ -130,7 +130,8 @@ public interface ProductControllerInterface {
     public ProductResponseDto getProductOfDay();
 
     @Operation(summary = "Get product profit by period", description = "This endpoint calculates the product profit " +
-            "grouped by specified time periods (e.g., days, week, months) and a value to define the range")
+            "grouped by specified time periods (e.g., days, week, months) and a value to define the range",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductProfitDto> getProfitByPeriod(
             @Parameter(description = "The period for grouping the profit (e.g., 'day', 'week', 'month')",
                     required = true, example = "DAY")
@@ -142,15 +143,18 @@ public interface ProductControllerInterface {
             @RequestParam("value")
             @Positive(message = "Period length must be a positive number") Integer value);
 
-    @Operation(summary = "Get top ten products", description = "Allows to retrieve the top 10 most purchased products")
+    @Operation(summary = "Get top ten products", description = "Allows to retrieve the top 10 most purchased products",
+               security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductTopPaidCanceledDto> getTop10PaidProducts();
 
     @Operation(summary = "Get top ten canceled products", description = "Allows to retrieve top 10 most" +
-            " frequently canceled products")
+            " frequently canceled products",
+               security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductTopPaidCanceledDto> getTop10CanceledProducts();
 
     @Operation(summary = "Get products in the 'Awaiting payment' status ", description = "Retrieves a list of products that have been in the" +
-            " 'Awaiting payment' status for more than N days")
+            " 'Awaiting payment' status for more than N days",
+               security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductAwaitingPaymentDto> getAwaitingPaymentProducts(
             @RequestParam(name = "days", defaultValue = "10")
             @Positive(message = "Number of days must be > 0") int days);

@@ -4,6 +4,8 @@ import de.telran.gartenshop.security.dto.JwtRequestDto;
 import de.telran.gartenshop.security.dto.JwtRequestRefreshDto;
 import de.telran.gartenshop.security.dto.JwtResponseDto;
 import de.telran.gartenshop.security.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ public class AuthController implements AuthControllerInterface {
     }
 
     @PostMapping("/refresh")
+    @Operation(security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<JwtResponseDto> getNewRefreshToken(@RequestBody JwtRequestRefreshDto request) throws AuthException {
         final JwtResponseDto token = authService.refresh(request.getRefreshToken());
         return ResponseEntity.ok(token);
