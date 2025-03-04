@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest // запускаем контейнер Spring для тестирования
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
-@ActiveProfiles(profiles = {"dev"})
+@TestPropertySource(locations = "classpath:application-test.properties")
 @Import(SecurityConfig.class)
 @WithMockUser(roles = {"CLIENT"})
 class CartIntegrationTest {
