@@ -1,9 +1,11 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
-import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
-import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.dto.querydto.ProductAwaitingPaymentDto;
+import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidCanceledDto;
+import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
+import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.exception.BadRequestException;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +28,10 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
+
+    String categoryNotFoundInDataBaseException = "Category not found with Id: ";
+    String productNotFoundInDataBaseException = "Product not found with Id: ";
+    Random random;
 
     public List<ProductResponseDto> getAllProducts() {
         List<ProductEntity> productEntityList = productRepository.findAll();
@@ -46,18 +53,17 @@ public class ProductService {
         CategoryEntity categoryEntity = null;
         if (categoryId != null) {
             categoryEntity = categoryRepository.findById(categoryId).
-                    orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + categoryId));
+                    orElseThrow(() -> new DataNotFoundInDataBaseException(categoryNotFoundInDataBaseException + categoryId));
         }
 
         List<ProductEntity> productEntity = productRepository.findProductByFilter(categoryEntity, minPrice, maxPrice,
                 isDiscount, sort);
-        List<ProductResponseDto> productResponseDtoList = MapperUtil.convertList(productEntity, mappers::convertToProductResponseDto);
-        return productResponseDtoList;
+        return MapperUtil.convertList(productEntity, mappers::convertToProductResponseDto);
     }
 
     public ProductResponseDto getProductById(Long productId) {
         ProductEntity productEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(productNotFoundInDataBaseException + productId));
         return mappers.convertToProductResponseDto(productEntity);
     }
 
@@ -67,7 +73,7 @@ public class ProductService {
         Long categoryId = productRequestDto.getCategoryId();
 
         CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + categoryId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(categoryNotFoundInDataBaseException + categoryId));
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
@@ -81,9 +87,9 @@ public class ProductService {
 
     public ProductResponseDto updateProduct(ProductRequestDto productRequestDto, Long productId) {
         ProductEntity updateProductEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(productNotFoundInDataBaseException + productId));
         CategoryEntity categoryEntity = categoryRepository.findById(productRequestDto.getCategoryId())
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Category not found with Id: " + productRequestDto.getCategoryId()));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(categoryNotFoundInDataBaseException + productRequestDto.getCategoryId()));
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
@@ -100,7 +106,7 @@ public class ProductService {
 
     public ProductResponseDto updateDiscountPrice(ProductRequestDto productRequestDto, Long productId) {
         ProductEntity updateProductEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(productNotFoundInDataBaseException + productId));
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
 
@@ -112,14 +118,14 @@ public class ProductService {
 
     public void deleteProduct(Long productId) {
         ProductEntity deleteProductEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("Product not found with Id: " + productId));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException(productNotFoundInDataBaseException + productId));
         productRepository.delete(deleteProductEntity);
     }
 
     public ProductResponseDto getProductOfDay() {
         List<ProductEntity> productOfDayList = productRepository.getProductOfDay();
         if (productOfDayList.size() > 1) {
-            Random random = new Random();
+            random = new Random();
             int randomNum = random.nextInt(productOfDayList.size());
             return mappers.convertToProductResponseDto(productOfDayList.get(randomNum));
         } else {
@@ -129,5 +135,18 @@ public class ProductService {
 
     public List<ProductProfitDto> getProductProfitByPeriod(String period, Integer value) {
         return productRepository.getProductProfitByPeriod(period, value);
+    }
+
+    public List<ProductTopPaidCanceledDto> getTop10PaidProducts() {
+        return productRepository.getTop10PaidProducts();
+    }
+
+    public List<ProductTopPaidCanceledDto> getTop10CanceledProducts() {
+        return productRepository.getTop10CanceledProducts();
+    }
+
+    public List<ProductAwaitingPaymentDto> getAwaitingPaymentProducts(int days) {
+        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
+               return productRepository.getAwaitingPaymentProducts(cutoffDate);
     }
 }

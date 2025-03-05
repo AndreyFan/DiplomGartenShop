@@ -1,7 +1,7 @@
 package de.telran.gartenshop.service;
 
-import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
+import de.telran.gartenshop.dto.requestdto.CategoryRequestDto;
+import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.exception.BadRequestException;
 import de.telran.gartenshop.exception.DataNotFoundInDataBaseException;
@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryServiceTest {
+class CategoryServiceTest {
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -67,12 +67,14 @@ public class CategoryServiceTest {
 
     @Test
     void createCategoryTest() {
-        when(mappers.convertToCategoryEntity(any())).thenReturn(categoryEntity);
+        when(mappers.convertToCategoryEntity(categoryRequestDto)).thenReturn(categoryEntity);
         when(categoryRepository.save(any())).thenReturn(categoryEntity);
 
         boolean isCreated = categoryService.createCategory(categoryRequestDto);
         assertTrue(isCreated);
+        assertEquals(categoryEntity.getName(), categoryRequestDto.getName());
         verify(categoryRepository, times(1)).save(any(CategoryEntity.class));
+        verify(mappers, times(1)).convertToCategoryEntity(categoryRequestDto);
     }
 
     @Test

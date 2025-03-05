@@ -1,15 +1,12 @@
-# Use a base image with Java installed
-FROM openjdk:22
-
-# Creator
-MAINTAINER alex.com
-
-# Set the working directory in the container
+FROM maven:3.9.7-eclipse-temurin-22 as builder
 WORKDIR /app
+COPY . /app/.
+RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
 
-# Copy the JAR file into the container at /app
-COPY target/*.jar onlineshop.jar
+FROM eclipse-temurin:22-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar /app/*.jar
 
-# Specify the command to run your application
-#CMD ["java", "-jar", "app.jar"]
-ENTRYPOINT ["java", "-Dspring.profiles.active=dev", "-jar", "onlineshop.jar"]
+#EXPOSE 8181
+#ENTRYPOINT ["java", "-jar", "/app/*.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=dev", "-jar", "/app/*.jar"]

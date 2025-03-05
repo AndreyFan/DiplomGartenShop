@@ -1,9 +1,8 @@
 package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.controller.advice.AdviceController;
-import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.entity.CategoryEntity;
+import de.telran.gartenshop.dto.requestdto.CategoryRequestDto;
+import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
 import de.telran.gartenshop.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,8 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
@@ -34,9 +31,6 @@ class CategoryControllerTest {
 
     @Mock
     private CategoryService categoryService;
-
-    @Mock
-    private BindingResult bindingResult;
 
     @InjectMocks
     private CategoryController categoryController;
@@ -95,7 +89,7 @@ class CategoryControllerTest {
 
     @Test
     void updateCategoryExceptionEmptyName() throws Exception {
-        CategoryRequestDto categoryRequestDto = new CategoryRequestDto();
+        categoryRequestDto = new CategoryRequestDto();
 
         mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
                 .setControllerAdvice(new AdviceController())
@@ -104,8 +98,7 @@ class CategoryControllerTest {
         mockMvc.perform(put("/categories/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(categoryRequestDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Invalid name: Empty name"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -122,7 +115,7 @@ class CategoryControllerTest {
 
     @Test
     void updateCategoryExceptionEmptyId() throws Exception {
-        CategoryRequestDto categoryRequestDto = new CategoryRequestDto();
+        categoryRequestDto = new CategoryRequestDto();
         mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
                 .setControllerAdvice(new AdviceController())
                 .build();

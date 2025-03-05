@@ -1,17 +1,17 @@
 package de.telran.gartenshop.security.configure;
 
 import de.telran.gartenshop.security.jwt.JwtFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -29,37 +29,21 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                // Своего рода отключение CORS (разрешение запросов со всех доменов)
-//                .cors(cors -> cors.configurationSource(request -> {
-//                    var corsConfiguration = new CorsConfiguration();
-//                    corsConfiguration.setAllowedOriginPatterns(List.of("*"));
-//                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//                    corsConfiguration.setAllowedHeaders(List.of("*"));
-//                    corsConfiguration.setAllowCredentials(true);
-//                    return corsConfiguration;
-//                }))
-                // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(
                         authz -> authz
-//                                .requestMatchers(
-//                                        "/**"
-//                                )
                                 .requestMatchers(
                                         "/products","/products/*",
-                                        "/favorites","/favorites/*",
+                                        "/categories",
                                         "/auth/login", "/auth/token",
                                         "/users/register",
-                                        "/users/registerAdmin",
                                         "/manage/**",
-////                                        "/users/**",
                                         "/swagger-ui.html", "/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**"
-//                                        /*",/**"*/
-                                )
-                                .permitAll()
-                                .requestMatchers(PathRequest.toH2Console()).permitAll() //Allows access to /h2-console
+                                ).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))  // Allows access to /h2-console frameset/frame pages
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(unauthorizedEntryPoint()) // 👈 Обрабатываем 401
+                )
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -69,4 +53,12 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationEntryPoint unauthorizedEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Authentication required. Please log in.\"}");
+        };
+    }
 }

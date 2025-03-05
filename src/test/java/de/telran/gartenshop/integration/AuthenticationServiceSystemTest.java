@@ -2,7 +2,7 @@ package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.telran.gartenshop.dto.requestDto.UserRequestDto;
+import de.telran.gartenshop.dto.requestdto.UserRequestDto;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.UserRepository;
@@ -11,18 +11,15 @@ import de.telran.gartenshop.security.dto.JwtRequestRefreshDto;
 import de.telran.gartenshop.security.jwt.JwtProvider;
 import de.telran.gartenshop.security.service.AuthService;
 import de.telran.gartenshop.service.UserService;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,8 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest()
 @AutoConfigureMockMvc
+@TestPropertySource(locations = "classpath:application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthenticationServiceSystemTest {
+class AuthenticationServiceSystemTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,7 +49,7 @@ public class AuthenticationServiceSystemTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private Mappers mappersTest;
+    private Mappers mappers;
 
     @Autowired
     private ObjectMapper objectMapper;

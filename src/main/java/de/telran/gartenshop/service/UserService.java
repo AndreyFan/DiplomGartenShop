@@ -1,8 +1,8 @@
 package de.telran.gartenshop.service;
 
-import de.telran.gartenshop.dto.requestDto.UserRequestDto;
-import de.telran.gartenshop.dto.requestDto.UserUpdateDto;
-import de.telran.gartenshop.dto.responseDto.UserResponseDto;
+import de.telran.gartenshop.dto.requestdto.UserRequestDto;
+import de.telran.gartenshop.dto.requestdto.UserUpdateDto;
+import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import de.telran.gartenshop.entity.CartEntity;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.entity.enums.Role;
@@ -20,28 +20,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private static final  String USER_WITH_EMAIL ="User with email ";
+    private static final  String USER_WITH_ID ="User with ID ";
+    private static final  String NOT_FOUND=" not found";
 
     private final UserRepository userRepository;
     private final Mappers mappers;
     private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Boolean registerUser(UserRequestDto userRequestDto) {
         // checking : if user already exist ?
         UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail());
         if (userEntityExist != null) {
-            throw new UserAlreadyExistsException("User with email " + userRequestDto.getEmail() + " already exists");
+            throw new UserAlreadyExistsException(USER_WITH_EMAIL + userRequestDto.getEmail() + " already exists");
         }
-        UserEntity userEntity = new UserEntity();
-        userEntity.setName(userRequestDto.getName());
-        userEntity.setEmail(userRequestDto.getEmail());
-        userEntity.setPhone(userRequestDto.getPhone());
+        UserEntity userEntity = mappers.convertToUserEntity(userRequestDto);
         userEntity.setRole(Role.CLIENT);
         userEntity.setPasswordHash(passwordEncoder.encode(userRequestDto.getPassword()));
         CartEntity cart = new CartEntity();  // create Cart for this User
@@ -56,17 +54,15 @@ public class UserService {
 
     }
 
-    // метод служит для регистрации нового Администратора
+    // The method is used to register a new Admin
+    @Transactional
     public Boolean registerAdmin(UserRequestDto userRequestDto) {
         // checking : if user already exist ?
         UserEntity userEntityExist = userRepository.findByEmail(userRequestDto.getEmail());
         if (userEntityExist != null) {
-            throw new UserAlreadyExistsException("User with email " + userRequestDto.getEmail() + " already exists");
+            throw new UserAlreadyExistsException(USER_WITH_EMAIL + userRequestDto.getEmail() + " already exists");
         }
-        UserEntity userEntity = new UserEntity();
-        userEntity.setName(userRequestDto.getName());
-        userEntity.setEmail(userRequestDto.getEmail());
-        userEntity.setPhone(userRequestDto.getPhone());
+        UserEntity userEntity = mappers.convertToUserEntity(userRequestDto);
         userEntity.setRole(Role.ADMINISTRATOR);
         userEntity.setPasswordHash(passwordEncoder.encode(userRequestDto.getPassword()));
         CartEntity cart = new CartEntity();  // create Cart for this User
@@ -83,7 +79,7 @@ public class UserService {
     public Boolean updateUser(UserUpdateDto userUpdateDto, Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new UserNotFoundException("User with ID " + userId + " not found");
+            throw new UserNotFoundException(USER_WITH_ID + userId + NOT_FOUND);
         }
         user.setName(userUpdateDto.getName());
         user.setPhone(userUpdateDto.getPhone());
@@ -98,35 +94,31 @@ public class UserService {
     public UserResponseDto getUserByEmail(String email) {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UserNotFoundException("User with email " + email + " not found");
+            throw new UserNotFoundException(USER_WITH_EMAIL + email + NOT_FOUND);
         }
-        UserResponseDto foundedUser = mappers.convertToUserResponseDto(user);
-        foundedUser.setPasswordHash("******");
-        return foundedUser;
+        return mappers.convertToUserResponseDto(user);
     }
 
     public UserResponseDto getUserById(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new UserNotFoundException("User with ID " + userId + " not found");
+            throw new UserNotFoundException(USER_WITH_ID + userId + NOT_FOUND);
         }
-        UserResponseDto foundedUser = mappers.convertToUserResponseDto(user);
-        foundedUser.setPasswordHash("******");
-        return foundedUser;
+        return  mappers.convertToUserResponseDto(user);
     }
 
-
+    @Transactional
     public void deleteUser(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new UserNotFoundException("User with ID " + userId + " not found");
+            throw new UserNotFoundException(USER_WITH_ID + userId + NOT_FOUND);
         }
         try {
-            // Удаляем корзину пользователя, если она есть
+            // First, delete the user's recycle bin if it exists.
             if (user.getCart() != null) {
                 cartRepository.delete(user.getCart());
             }
-            // Удаляем пользователя
+            // Then we delete the user
             userRepository.deleteById(userId);
         } catch (DataIntegrityViolationException e) {
             throw new UserDeleteException("Cannot delete user with ID " + userId + " due to existing related records", e);
@@ -135,14 +127,14 @@ public class UserService {
         }
     }
 
-    public UserResponseDto getByRefreshToken(String token) {
-        UserEntity usersEntity = userRepository.getByRefreshToken(token).stream().findFirst().orElse(null);
-        return mappers.convertToUserResponseDto(usersEntity);
-    }
     @Transactional(propagation = Propagation.REQUIRED)
     public void updateUserRefreshToken(UserResponseDto user, String refreshToken) {
         UserEntity userEntity = userRepository.findByEmail(user.getEmail());
         userEntity.setRefreshToken(refreshToken);
-        UserEntity refreshUsersEntity =  userRepository.save(userEntity);
+        try {
+            userRepository.save(userEntity);
+        } catch (Exception e) {
+            throw new UserSaveException("Failed to save userUpdate in database", e);
+        }
     }
 }

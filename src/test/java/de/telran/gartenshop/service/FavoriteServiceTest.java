@@ -1,10 +1,10 @@
 package de.telran.gartenshop.service;
 
-import de.telran.gartenshop.dto.requestDto.FavoriteRequestDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
-import de.telran.gartenshop.dto.responseDto.UserResponseDto;
+import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
+import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
+import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
+import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
+import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.entity.ProductEntity;
@@ -54,19 +54,15 @@ class FavoriteServiceTest {
 
     private UserEntity userEntityTest;
     private ProductEntity productEntityTest, productEntityTestInput;
-    private FavoriteEntity favoriteEntityTest, favoriteEntityTestInput;
+    private FavoriteEntity favoriteEntityTest;
 
-    private UserResponseDto userResponseDtoTest;
-    private ProductResponseDto productResponseDtoTest;
     private FavoriteResponseDto favoriteResponseDtoTest;
-
     private FavoriteRequestDto favoriteRequestDtoTest, favoriteRequestDtoTestInput;
 
-    private Set<FavoriteEntity> favoriteEntitySetTest = new HashSet<>();
-    private Set<FavoriteResponseDto> favoriteResponseDtoSetTest = new HashSet<>();
+    private final Set<FavoriteEntity> favoriteEntitySetTest = new HashSet<>();
+    private final Set<FavoriteResponseDto> favoriteResponseDtoSetTest = new HashSet<>();
 
     private UserNotFoundException userNotFoundException;
-    private DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
 
     Timestamp timestamp;
     Long userIdTest = 1L;
@@ -175,7 +171,7 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findById(userIdTestFalse)).thenReturn(Optional.empty());
         userNotFoundException = assertThrows(UserNotFoundException.class,
                 () -> favoriteServiceMock.getFavoritesByUserId(userIdTestFalse));
-        assertEquals("User not found with Id: "+userIdTestFalse, userNotFoundException.getMessage());
+        assertEquals("User not found with Id: " + userIdTestFalse, userNotFoundException.getMessage());
     }
 
     @Test
@@ -200,7 +196,7 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findByEmail(emailTestFalse)).thenReturn(null);
         userNotFoundException = assertThrows(UserNotFoundException.class,
                 () -> favoriteServiceMock.getFavorites(emailTestFalse));
-        assertEquals("User not found with email: "+emailTestFalse, userNotFoundException.getMessage());
+        assertEquals("User not found with email: " + emailTestFalse, userNotFoundException.getMessage());
     }
 
     @Test

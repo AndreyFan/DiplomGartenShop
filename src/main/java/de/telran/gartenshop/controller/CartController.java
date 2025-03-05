@@ -1,7 +1,7 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.dto.requestDto.CartItemRequestDto;
-import de.telran.gartenshop.dto.responseDto.CartItemResponseDto;
+import de.telran.gartenshop.dto.requestdto.CartItemRequestDto;
+import de.telran.gartenshop.dto.responsedto.CartItemResponseDto;
 import de.telran.gartenshop.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,8 +36,7 @@ public class CartController implements CartControllerInterface {
     @Override
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean createCartItem(
-            @RequestBody CartItemRequestDto cartItemRequestDto, @PathVariable Long userId) {
+    public boolean createCartItem(@RequestBody CartItemRequestDto cartItemRequestDto, @PathVariable Long userId) {
         return cartService.createCartItem(cartItemRequestDto, userId);
     }
 

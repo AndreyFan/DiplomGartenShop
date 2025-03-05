@@ -1,8 +1,7 @@
 package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
-import de.telran.gartenshop.dto.responseDto.*;
+import de.telran.gartenshop.dto.requestdto.OrderRequestDto;
 import de.telran.gartenshop.entity.*;
 import de.telran.gartenshop.entity.enums.DeliveryMethod;
 import de.telran.gartenshop.entity.enums.OrderStatus;
@@ -24,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -35,10 +33,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest // запускаем контейнер Spring для тестирования
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
-@ActiveProfiles(profiles = {"dev"})
+@ActiveProfiles(profiles = {"test"})
 @Import(SecurityConfig.class)
 @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
-public class OrderIntegrationTest {
+class OrderIntegrationTest {
     @Autowired
     private MockMvc mockMvc; // для имитации запросов пользователей
 
@@ -87,17 +85,6 @@ public class OrderIntegrationTest {
                 "Berlin",
                 DeliveryMethod.SELF_DELIVERY);
 
-        OrderResponseDto orderResponseDtoTest = new OrderResponseDto(
-                1L,
-                timestamp,
-                "Berlin",
-                "+49049544663",
-                DeliveryMethod.SELF_DELIVERY,
-                OrderStatus.CREATED,
-                timestamp,
-                new HashSet<OrderItemResponseDto>(),
-                new UserResponseDto());
-
         orderEntityTest = new OrderEntity(
                 1L,
                 timestamp,
@@ -121,31 +108,12 @@ public class OrderIntegrationTest {
                 timestamp,
                 categoryEntityTest);
 
-        CategoryResponseDto categoryResponseDtoTest = new CategoryResponseDto(1L, "CategoryName");
-        ProductResponseDto productResponseDtoTest = new ProductResponseDto(
-                1L,
-                "ProductName",
-                "ProductDescription",
-                new BigDecimal("10.25"),
-                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
-                new BigDecimal("8.50"),
-                timestamp,
-                timestamp,
-                categoryResponseDtoTest);
-
         orderItemEntityTest = new OrderItemEntity(
                 1L,
                 100,
                 new BigDecimal("8.50"),
                 productEntityTest,
                 orderEntityTest);
-
-        OrderItemResponseDto orderItemResponseDtoTest = new OrderItemResponseDto(
-                1L,
-                100,
-                new BigDecimal("8.50"),
-                productResponseDtoTest);
-
 
         Set<OrderEntity> orderEntitySet = new HashSet<>();
         orderEntitySet.add(orderEntityTest);
@@ -209,49 +177,6 @@ public class OrderIntegrationTest {
 
 
     @Test
-    void getTop10PaidProductsTest() throws Exception {
-        when(orderRepositoryMock.findTop10PaidOrders()).thenReturn(List.of(productEntityTest));
-        this.mockMvc.perform(get("/orders/top-products"))
-                .andDo(print()) //печать лога вызова
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..productId").exists())
-                .andExpect(jsonPath("$..productId").value(1));
-    }
-
-    @Test
-    void getTopCanceledTest() throws Exception {
-        when(orderRepositoryMock.findTop10CanceledProducts()).thenReturn(List.of(productEntityTest));
-        this.mockMvc.perform(get("/orders/top-canceled"))
-                .andDo(print()) //печать лога вызова
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..productId").exists())
-                .andExpect(jsonPath("$..name").exists())
-                .andExpect(jsonPath("$..productId").value(1));
-    }
-
-    @Test
-    void getAwaitingPaymentProductsTest() throws Exception {
-        when(orderRepositoryMock.findOrdersAwaitingPayment(any(LocalDateTime.class)))
-                .thenReturn(List.of(productEntityTest));
-        this.mockMvc.perform(get("/orders/awaiting-payment-products")
-                        .param("days", "10"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..productId").exists())
-                .andExpect(jsonPath("$..productId").value(1));
-    }
-
-    @Test
-    void getAllOrderItemsTest() throws Exception {
-        when(orderItemRepositoryMock.findAll()).thenReturn(List.of(orderItemEntityTest));
-        this.mockMvc.perform(get("/orders/get/items"))
-                .andDo(print()) //печать лога вызова
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..orderItemId").exists())
-                .andExpect(jsonPath("$..orderItemId").value(1));
-    }
-
-    @Test
     void createOrderTest() throws Exception {
         when(userRepositoryMock.findById(userIdTest)).thenReturn(Optional.of(userEntityTest));
         when(orderRepositoryMock.save(any(OrderEntity.class))).thenReturn(orderEntityTest);
@@ -266,7 +191,7 @@ public class OrderIntegrationTest {
 
     @Test
     void createOrderDiscountPriceNullTest() throws Exception {
-        ProductEntity productEntityTest = new ProductEntity(
+        productEntityTest = new ProductEntity(
                 1L,
                 "ProductName",
                 "ProductDescription",

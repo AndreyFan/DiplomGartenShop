@@ -1,8 +1,7 @@
 package de.telran.gartenshop.security.service;
 
 
-import de.telran.gartenshop.dto.requestDto.UserRequestDto;
-import de.telran.gartenshop.dto.responseDto.UserResponseDto;
+import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import de.telran.gartenshop.entity.UserEntity;
 import de.telran.gartenshop.mapper.Mappers;
 import de.telran.gartenshop.repository.UserRepository;
@@ -15,12 +14,11 @@ import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +27,6 @@ public class AuthService {
     private final UserService usersService;
     private final UserRepository userRepository;
     private final Mappers mappers;
-   //  private final Map<String, String> refreshStorage = new HashMap<>();
-
-     // The JWT provider for generating and validating JWT tokens.
     private final JwtProvider jwtProvider;
 
     private final PasswordEncoder passwordEncoder;
@@ -47,26 +42,22 @@ public class AuthService {
                 final String accessToken = jwtProvider.generateAccessToken(userResponseDto);
                 refreshToken = jwtProvider.generateRefreshToken(userResponseDto);
                 usersService.updateUserRefreshToken(userResponseDto, refreshToken); // сохраняем в БД новый refreshToken
-//                refreshStorage.put(userResponseDto.getEmail(), refreshToken); // нужно хранить в БД????
                 return new JwtResponseDto(accessToken, refreshToken);
             } else {
-                throw new AuthException("Wrong password");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
             }
         } else {
             throw new AuthException("User not found");
         }
     }
 
-    public JwtResponseDto getAccessToken(@NonNull String refreshToken) {
+    public JwtResponseDto getAccessToken(@NonNull String refreshToken) throws AuthException {
         // Validate the provided refresh token
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             // Extract claims from the refresh token
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             // Get the user login from the token claims
             final String login = claims.getSubject();
-            // Retrieve the stored refresh token for the user
- //           final String savedRefreshToken = refreshStorage.get(login);  // потом переделать на БД
-            // ---нужно брать из БД
             UserResponseDto currentUser = usersService.getUserByEmail(login);
             final String savedRefreshToken = currentUser!=null ? currentUser.getRefreshToken() : null;
             //----
@@ -74,7 +65,7 @@ public class AuthService {
             if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
                 // Fetch the user data
                 UserEntity user = userRepository.findByEmail(login);
-                if (user == null) new AuthException("User is not found");
+                if (user == null) throw new AuthException("User is not found");
                 user.setFavorites(null);
                 final UserResponseDto userResponseDto = mappers.convertToUserResponseDto(user);
                 // Generate a new access token
@@ -102,15 +93,13 @@ public class AuthService {
             if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
                 // Fetch the user data
                 UserEntity user = userRepository.findByEmail(login);
-                if (user == null) new AuthException("User is not found");
+                if (user == null) throw new AuthException("User is not found");
                 user.setFavorites(null);
                 final UserResponseDto userResponseDto = mappers.convertToUserResponseDto(user);
-
                 // Generate new access and refresh tokens
                 final String newAccessToken = jwtProvider.generateAccessToken(userResponseDto);
                 final String newRefreshToken = jwtProvider.generateRefreshToken(userResponseDto);
-                // Update the stored refresh token for the user
-              //  refreshStorage.put(userResponseDto.getEmail(), newRefreshToken);
+
                 usersService.updateUserRefreshToken(userResponseDto, refreshToken); // сохраняем в БД новый refreshToken
                 // Return a JwtResponse with the new access and refresh tokens
                 return new JwtResponseDto(newAccessToken, newRefreshToken);

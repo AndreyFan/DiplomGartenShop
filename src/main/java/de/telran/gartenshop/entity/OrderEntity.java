@@ -1,7 +1,6 @@
 package de.telran.gartenshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.telran.gartenshop.entity.enums.DeliveryMethod;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import jakarta.persistence.*;
@@ -17,10 +16,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-
 @ToString(exclude = {"user", "orderItems"})
 @EqualsAndHashCode(exclude = {"user", "orderItems"})
-
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

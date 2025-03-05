@@ -1,12 +1,10 @@
 package de.telran.gartenshop.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
-import de.telran.gartenshop.dto.requestDto.CategoryRequestDto;
-import de.telran.gartenshop.dto.requestDto.ProductRequestDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
-import de.telran.gartenshop.entity.CartItemEntity;
+import de.telran.gartenshop.dto.querydto.ProductAwaitingPaymentDto;
+import de.telran.gartenshop.dto.querydto.ProductProfitDto;
+import de.telran.gartenshop.dto.querydto.ProductTopPaidCanceledDto;
+import de.telran.gartenshop.dto.requestdto.ProductRequestDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.repository.CategoryRepository;
@@ -23,14 +21,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -38,9 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest // запускаем контейнер Spring для тестирования
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
-@ActiveProfiles(profiles = {"dev"})
+@TestPropertySource(locations = "classpath:application-test.properties")
 @Import(SecurityConfig.class)
-public class ProductIntegrationTest {
+class ProductIntegrationTest {
     @Autowired
     private MockMvc mockMvc; // для имитации запросов пользователей
 
@@ -60,10 +58,8 @@ public class ProductIntegrationTest {
     private CategoryEntity categoryEntityTest;
 
     private ProductRequestDto productRequestDtoTest;
-    private CategoryRequestDto categoryRequestDtoTest;
-
-    private ProductResponseDto productResponseDtoTest;
-    private CategoryResponseDto categoryResponseDtoTest;
+    private ProductTopPaidCanceledDto productTopPaidCanceledDtoTest;
+    private ProductAwaitingPaymentDto productAwaitingPaymentDtoTest;
 
     List<ProductEntity> productEntityList = new ArrayList<>();
 
@@ -109,17 +105,19 @@ public class ProductIntegrationTest {
                 "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
                 new BigDecimal("8.50"));
 
-        categoryResponseDtoTest = new CategoryResponseDto(1L, "CategoryName");
-        productResponseDtoTest = new ProductResponseDto(
-                1L,
+        productTopPaidCanceledDtoTest = new ProductTopPaidCanceledDto(
+                1,
                 "ProductName",
-                "ProductDescription",
-                new BigDecimal("10.25"),
-                "https://spec.tass.ru/geroi-multfilmov/images/header/kitten-woof.png",
-                new BigDecimal("8.50"),
-                timestamp,
-                timestamp,
-                categoryResponseDtoTest);
+                5L,
+                new BigDecimal("10.00"),
+                new BigDecimal("100.00"));
+
+        productAwaitingPaymentDtoTest = new ProductAwaitingPaymentDto(
+                1,
+                "ProductName",
+                1,
+                new Timestamp(2024-12-31),
+                5);
     }
 
     @Test
@@ -166,6 +164,7 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void getProductOfDayListTest() throws Exception {
         when(productRepositoryMock.getProductOfDay()).thenReturn(productEntityList);
         this.mockMvc.perform(get("/products/productOfDay"))
@@ -176,6 +175,7 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void deleteProductTest() throws Exception {
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
         doNothing().when(productRepositoryMock).delete(productEntityTest);
@@ -185,6 +185,7 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void deleteProductExceptionByProductTest() throws Exception {
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(delete("/products/{productId}", productIdTest))
@@ -193,6 +194,7 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void createProductTest() throws Exception {
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(productEntityTest);
         when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
@@ -205,6 +207,7 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void createProductReturnFalseTest() throws Exception {
         when(productRepositoryMock.save(any(ProductEntity.class))).thenReturn(new ProductEntity());
         when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
@@ -213,10 +216,10 @@ public class ProductIntegrationTest {
                         .content(objectMapper.writeValueAsString(productRequestDtoTest))) // jackson: object -> json
                 .andDo(print())
                 .andExpect(content().string("false"));
-        ;
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void updateProductTest() throws Exception {
         when(categoryRepositoryMock.findById(1L)).thenReturn(Optional.of(categoryEntityTest));
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.of(productEntityTest));
@@ -233,6 +236,7 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void updateProductExceptionByProductTest() throws Exception {
         when(productRepositoryMock.findById(productIdTest)).thenReturn(Optional.empty());
         this.mockMvc.perform(put("/products/{productId}", productIdTest)
@@ -278,9 +282,6 @@ public class ProductIntegrationTest {
         this.mockMvc.perform(get("/products/filter?category=1&min_price=9.99&max_price=12.99&is_discount=true&sort=price,desc"))
                 .andDo(print())
                 .andExpect(status().isOk());
-//                .andExpect(jsonPath("$..productId").exists())
-//                .andExpect(jsonPath("$..name").exists())
-//                .andExpect(jsonPath("$..productId").value(1));
     }
 
     @Test
@@ -344,6 +345,7 @@ public class ProductIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
     void getProfitByPeriodTest() throws Exception {
         String periodTest = "WEEK";
         Integer valueTest = 5;
@@ -360,4 +362,44 @@ public class ProductIntegrationTest {
                 .andExpect(jsonPath("$..profit").exists())
                 .andExpect(jsonPath("$..profit").value(100.00));
     }
+
+    @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
+    void getTop10PaidProductsTest() throws Exception {
+        when(productRepositoryMock.getTop10PaidProducts()).thenReturn(List.of(productTopPaidCanceledDtoTest));
+        this.mockMvc.perform(get("/products/top10paid"))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productId").value(1))
+                .andExpect(jsonPath("$..productName").value("ProductName"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
+    void getTopCanceledTest() throws Exception {
+        when(productRepositoryMock.getTop10CanceledProducts()).thenReturn(List.of(productTopPaidCanceledDtoTest));
+        this.mockMvc.perform(get("/products/top10canceled"))
+                .andDo(print()) //печать лога вызова
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productName").exists())
+                .andExpect(jsonPath("$..productId").value(1))
+                .andExpect(jsonPath("$..productName").value("ProductName"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMINISTRATOR"})
+    void getAwaitingPaymentProductsTest() throws Exception {
+        when(productRepositoryMock.getAwaitingPaymentProducts(any(LocalDateTime.class)))
+                .thenReturn(List.of(productAwaitingPaymentDtoTest));
+        this.mockMvc.perform(get("/products/awaiting-payment-products")
+                        .param("days", "10"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..productId").exists())
+                .andExpect(jsonPath("$..productId").value(1))
+                .andExpect(jsonPath("$..productName").value("ProductName"));
+    }
+
 }

@@ -1,6 +1,5 @@
 package de.telran.gartenshop.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,10 +11,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
-
 @EqualsAndHashCode(exclude = {"product", "order"})
 @ToString(exclude = {"product", "order"})
-
 public class OrderItemEntity {
     @Id
     @Column(name = "OrderItemID")

@@ -1,8 +1,7 @@
 package de.telran.gartenshop.mapper;
 
-import de.telran.gartenshop.dto.queryDto.ProductProfitDto;
-import de.telran.gartenshop.dto.requestDto.*;
-import de.telran.gartenshop.dto.responseDto.*;
+import de.telran.gartenshop.dto.requestdto.*;
+import de.telran.gartenshop.dto.responsedto.*;
 
 import de.telran.gartenshop.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +24,6 @@ public class Mappers {
 
     public UserEntity convertToUserEntity(UserRequestDto userRequestDto) {
         return modelMapper.map(userRequestDto, UserEntity.class);
-    }
-
-    public CartEntity convertToCartEntity(CartRequestDto cartRequestDto) {
-        return modelMapper.map(cartRequestDto, CartEntity.class);
     }
 
     public CartResponseDto convertToCartResponseDto(CartEntity cartEntity) {
@@ -59,7 +54,6 @@ public class Mappers {
     public CartItemEntity convertToCartItemEntity(CartItemRequestDto cartItemRequestDto) {
         return modelMapper.map(cartItemRequestDto, CartItemEntity.class);
     }
-
     public FavoriteResponseDto convertToFavoriteResponseDto(FavoriteEntity favorite) {
         FavoriteResponseDto favoriteResponseDto = modelMapper.map(favorite, FavoriteResponseDto.class);
         modelMapper.typeMap(FavoriteEntity.class, FavoriteResponseDto.class)
@@ -67,15 +61,8 @@ public class Mappers {
         favoriteResponseDto.setProductResponseDto(convertToProductResponseDto(favorite.getProduct()));
         return favoriteResponseDto;
     }
-
     public UserResponseDto convertToUserResponseDto(UserEntity userEntity) {
         return modelMapper.map(userEntity, UserResponseDto.class);
-    }
-
-    public OrderItemResponseDto convertToOrderItemResponseDto(OrderItemEntity orderItemEntity) {
-        OrderItemResponseDto orderItemResponseDto = modelMapper.map(orderItemEntity, OrderItemResponseDto.class);
-        orderItemResponseDto.setProduct(convertToProductResponseDto(orderItemEntity.getProduct())); //связанный объект
-        return orderItemResponseDto;
     }
 
     public OrderResponseDto convertToOrderResponseDto(OrderEntity orderEntity) {

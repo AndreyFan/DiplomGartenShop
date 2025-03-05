@@ -1,9 +1,7 @@
 package de.telran.gartenshop.controller;
 
-import de.telran.gartenshop.dto.requestDto.OrderRequestDto;
-import de.telran.gartenshop.dto.responseDto.OrderItemResponseDto;
-import de.telran.gartenshop.dto.responseDto.OrderResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
+import de.telran.gartenshop.dto.requestdto.OrderRequestDto;
+import de.telran.gartenshop.dto.responsedto.OrderResponseDto;
 import de.telran.gartenshop.entity.enums.OrderStatus;
 import de.telran.gartenshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/orders")
-public class OrderController implements OrderControllerInterface{
+public class OrderController implements OrderControllerInterface {
 
     private final OrderService orderService;
 
@@ -27,42 +25,12 @@ public class OrderController implements OrderControllerInterface{
         return orderService.getOrderStatus(id);
     }
 
-    @GetMapping("/top-products")
-    public ResponseEntity<List<ProductResponseDto>> getTop10PaidProducts() {
-        List<ProductResponseDto> products = orderService.getTop10PaidProducts();
-        return ResponseEntity.ok(products);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    @GetMapping("/top-canceled")
-    public ResponseEntity<List<ProductResponseDto>> getTopCanceled() {
-        List<ProductResponseDto> products = orderService.getTop10CanceledProducts();
-        return ResponseEntity.ok(products);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    @GetMapping("/awaiting-payment-products")
-    public ResponseEntity<List<ProductResponseDto>> getAwaitingPaymentProducts(@RequestParam(name = "days",
-            defaultValue = "10") int days) {
-        List<ProductResponseDto> products = orderService.getOrdersAwaitingPayment(days);
-        return ResponseEntity.ok(products);
-    }
-
-
     //Просмотр всех заказов //localhost:8088/orders/get
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponseDto> getAllOrders() {
         return orderService.getAllOrders();
-    }
-
-    //Просмотр товаров во всех заказах //localhost:8088/orders/get/items
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    @GetMapping(value = "/get/items")
-    @ResponseStatus(HttpStatus.OK)
-    public List<OrderItemResponseDto> getAllOrderItems() {
-        return orderService.getAllOrderItems();
     }
 
     //Оформление заказа (поиск по userId), все товары из CartItems переходят в OrderItems //localhost:8088/orders/1

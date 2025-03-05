@@ -1,11 +1,11 @@
 package de.telran.gartenshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.telran.gartenshop.dto.requestDto.FavoriteRequestDto;
-import de.telran.gartenshop.dto.responseDto.CategoryResponseDto;
-import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
-import de.telran.gartenshop.dto.responseDto.ProductResponseDto;
-import de.telran.gartenshop.dto.responseDto.UserResponseDto;
+import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
+import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
+import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
+import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
+import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import de.telran.gartenshop.entity.enums.Role;
 import de.telran.gartenshop.security.configure.SecurityConfig;
 import de.telran.gartenshop.security.jwt.JwtProvider;
@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(FavoriteController.class)
 @Import(SecurityConfig.class)
 @WithMockUser(roles = {"CLIENT","ADMINISTRATOR"})
+@TestPropertySource(locations = "classpath:application-test.properties")
 class FavoriteControllerTest {
 
     @Autowired
@@ -42,6 +44,7 @@ class FavoriteControllerTest {
 
     @MockBean
     private FavoriteService favoriteServiceMock;
+
     @MockBean
     private JwtProvider jwtProvider;
 

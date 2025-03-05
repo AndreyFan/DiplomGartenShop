@@ -1,8 +1,8 @@
 package de.telran.gartenshop.service;
 
 import de.telran.gartenshop.configure.MapperUtil;
-import de.telran.gartenshop.dto.requestDto.FavoriteRequestDto;
-import de.telran.gartenshop.dto.responseDto.FavoriteResponseDto;
+import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
+import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
 import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.entity.ProductEntity;
 import de.telran.gartenshop.entity.UserEntity;
@@ -15,6 +15,7 @@ import de.telran.gartenshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -25,12 +26,18 @@ public class FavoriteService {
     private final ProductRepository productRepository;
     private final FavoriteRepository favoriteRepository;
     private final Mappers mappers;
+    public List<FavoriteResponseDto> getAllFavorites(){
+        List<FavoriteEntity> favoriteEntityList=favoriteRepository.findAll();
+       return MapperUtil.convertList(favoriteEntityList,mappers::convertToFavoriteResponseDto);
+    }
+
+    String userNotFoundException = "User not found with Id: ";
 
     public Set<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            throw new UserNotFoundException("User not found with Id: " + userId);
+            throw new UserNotFoundException(userNotFoundException + userId);
         } else {
             Set<FavoriteEntity> favorites = user.getFavorites();
             return MapperUtil.convertSet(favorites, mappers::convertToFavoriteResponseDto);
@@ -56,10 +63,10 @@ public class FavoriteService {
             if (product != null) {
                 Set<FavoriteEntity> favoriteEntitySet = user.getFavorites();
                 for (FavoriteEntity f : favoriteEntitySet) {
-                    if (f.getProduct().getProductId() == favoriteRequestDto.getProductId()) {
+                    if (f.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
                         return true;
-                        // логика такая: если у конкретного юзера этот товар уже есть в избранном -
-                        // просто вернём true без генерации ошибок
+                        // if a specific user already has this product in their favorites -
+                        // just return true without generating errors
                     }
                 }
 
@@ -73,7 +80,7 @@ public class FavoriteService {
                 throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
             }
         } else {
-            throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
+            throw new UserNotFoundException(userNotFoundException + favoriteRequestDto.getUserId());
         }
     }
 
@@ -81,17 +88,17 @@ public class FavoriteService {
 
         UserEntity user = userRepository.findById(favoriteRequestDto.getUserId()).orElse(null);
         if (user != null) {
-             Set<FavoriteEntity> favoriteEntitySet = user.getFavorites();
-                for (FavoriteEntity f : favoriteEntitySet) {
-                    if (f.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
-                        favoriteEntitySet.remove(f);
-                        favoriteRepository.deleteById(f.getFavoriteId());
-                        return true;
-                    }
+            Set<FavoriteEntity> favoriteEntitySet = user.getFavorites();
+            for (FavoriteEntity f : favoriteEntitySet) {
+                if (f.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
+                    favoriteEntitySet.remove(f);
+                    favoriteRepository.deleteById(f.getFavoriteId());
+                    return true;
                 }
-                throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
+            }
+            throw new DataNotFoundInDataBaseException("Product not found with Id: "+ favoriteRequestDto.getProductId());
         } else {
-            throw new UserNotFoundException("User not found with Id: " + favoriteRequestDto.getUserId());
+            throw new UserNotFoundException(userNotFoundException + favoriteRequestDto.getUserId());
         }
     }
 }

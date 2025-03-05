@@ -11,7 +11,7 @@ import static org.mockito.Mockito.times;
 
 
 @ExtendWith(MockitoExtension.class)
-public class schedulerTest {
+class SchedulerTest {
     @Mock
     private OrderService orderService;
 
