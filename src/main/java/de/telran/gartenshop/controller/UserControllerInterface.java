@@ -42,14 +42,16 @@ public interface UserControllerInterface {
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
     @Operation(summary = "Get user details by email", description = "This endpoint allows you to search for a user by" +
-            " their email address and retrieve their details")
+            " their email address and retrieve their details",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public UserResponseDto getUserByEmail(
             @Parameter(description = "The email of the user to retrieve", required = true, example = "charlie.brown@example.com")
             @RequestParam
             @Email(message = "Invalid email format. Please provide a valid email.") String email);
 
     @Operation(summary = "Update user details by user ID", description = "This endpoint allows the updating of a user's " +
-            "details by providing the user ID and the updated user information")
+            "details by providing the user ID and the updated user information",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public Boolean updateUser(
             @Parameter(description = "The details of the user to update", required = true)
             @RequestBody @Valid UserUpdateDto userUpdateDto,

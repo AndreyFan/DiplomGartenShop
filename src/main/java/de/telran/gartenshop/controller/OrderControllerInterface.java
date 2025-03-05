@@ -21,7 +21,8 @@ import java.util.Set;
 @Validated
 public interface OrderControllerInterface {
 
-    @Operation(summary = "Find status of Orders", description = "Allows to view the order status for a user")
+    @Operation(summary = "Find status of Orders", description = "Allows to view the order status for a user",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<OrderStatus> getOrderStatus(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
@@ -32,20 +33,23 @@ public interface OrderControllerInterface {
     public List<OrderResponseDto> getAllOrders();
 
     @Operation(summary = "Create a new Order", description = "Order placement, search by userId, all items from " +
-            "CartItems are moved to OrderItems")
+            "CartItems are moved to OrderItems",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public OrderResponseDto createOrder(
             @RequestBody @Valid OrderRequestDto orderRequestDto,
             @Parameter(description = "Identifier", required = true, example = "3")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
-    @Operation(summary = "User's purchase history", description = "Retrieves a user's purchase history")
+    @Operation(summary = "User's purchase history", description = "Retrieves a user's purchase history",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public Set<OrderResponseDto> getUsersOrders(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
-    @Operation(summary = "Cancel order by orderId", description = "Allows cancelling an order by its orderId")
+    @Operation(summary = "Cancel order by orderId", description = "Allows cancelling an order by its orderId",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public OrderResponseDto cancelOrder(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable

@@ -23,26 +23,30 @@ public interface CartControllerInterface {
     public List<CartItemResponseDto> getAllCartItems();
 
     @Operation(summary = "Find CartItems by UserId", description = "Retrieves all cartItems for a user based on their userId. " +
-            "This operation returns a set of cartItems")
+            "This operation returns a set of cartItems",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public Set<CartItemResponseDto> getAllCartItemsByUserId(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
     @Operation(summary = "Create a new CartItem", description = "Creates a new cartItem for the specified user by adding " +
-            "the provided product details to their cart")
+            "the provided product details to their cart",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public boolean createCartItem(@RequestBody @Valid CartItemRequestDto cartItemRequestDto,
                                   @Parameter(description = "Identifier", required = true, example = "1")
                                   @PathVariable
                                   @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
-    @Operation(summary = "Delete a CartItem", description = "Removes the specified cartItem from the user's cart based on the provided cartItemId")
+    @Operation(summary = "Delete a CartItem", description = "Removes the specified cartItem from the user's cart based on the provided cartItemId",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public void deleteCartItem(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long cartItemId);
 
-    @Operation(summary = "Delete all CartItems", description = "Removes all items from the user's cart based on the provided userId")
+    @Operation(summary = "Delete all CartItems", description = "Removes all items from the user's cart based on the provided userId",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public void deleteAllCartItems(
             @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
