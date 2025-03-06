@@ -132,4 +132,3 @@ public class ProductController implements ProductControllerInterface {
         return productService.getAwaitingPaymentProducts(days);
     }
 }
-

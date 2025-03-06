@@ -2,7 +2,6 @@ package de.telran.gartenshop.controller.advice;
 
 import de.telran.gartenshop.exception.*;
 import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.security.auth.message.AuthException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -167,7 +166,7 @@ public class AdviceController {
     // Handles errors with a status set via ResponseStatusException (e.g., 404, 403, etc.)
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex) {
-        return ResponseEntity.status(ex.getStatusCode()).body(Map.of("error", ex.getReason()));
+        return ResponseEntity.status(ex.getStatusCode()).body(Map.of(errorStr, ex.getReason()));
     }
 
     // Обрабатывает ошибки аутентификации (401 Unauthorized)
@@ -175,7 +174,7 @@ public class AdviceController {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Map<String, String>> handleAuthenticationException(AuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("error", "Authentication required. Please log in."));
+                .body(Map.of(errorStr, "Authentication required. Please log in."));
     }
 
     // Обрабатывает ошибки, связанные с отсутствием доступа (403 Forbidden)
@@ -183,7 +182,7 @@ public class AdviceController {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, String>> handleAccessDeniedException(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(Map.of("error", "You are not allowed to access this resource"));
+                .body(Map.of(errorStr, "You are not allowed to access this resource"));
     }
 
     // Обрабатывает все непредвиденные ошибки (418 I'm a teapot)

@@ -5,8 +5,6 @@ import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
 import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
 import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
-import de.telran.gartenshop.dto.responsedto.UserResponseDto;
-import de.telran.gartenshop.entity.enums.Role;
 import de.telran.gartenshop.security.configure.SecurityConfig;
 import de.telran.gartenshop.security.jwt.JwtProvider;
 import de.telran.gartenshop.service.FavoriteService;
@@ -35,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(FavoriteController.class)
 @Import(SecurityConfig.class)
-@WithMockUser(roles = {"CLIENT","ADMINISTRATOR"})
+@WithMockUser(roles = {"CLIENT", "ADMINISTRATOR"})
 @TestPropertySource(locations = "classpath:application-test.properties")
 class FavoriteControllerTest {
 
@@ -72,16 +70,6 @@ class FavoriteControllerTest {
                 timestamp,
                 timestamp,
                 new CategoryResponseDto(1L, "CategoryName"));
-
-        UserResponseDto userResponseDtoTest = new UserResponseDto(
-                1L,
-                "Tom Smith",
-                "ts@gmail.com",
-                "+4975644333",
-                "hgfgjfdlgjflg",
-                Role.CLIENT,
-                null
-        );
 
         favoriteResponseDtoTest = new FavoriteResponseDto(
                 1L,
