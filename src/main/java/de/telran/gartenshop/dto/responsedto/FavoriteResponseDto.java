@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class FavoriteResponseDto {
     @Schema(description = "Identifier", example = "2")
     private Long favoriteId;
-    private UserResponseDto userResponseDto;
+    private Long userId;
     private ProductResponseDto productResponseDto;
 }

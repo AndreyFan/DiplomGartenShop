@@ -85,7 +85,7 @@ class FavoriteControllerTest {
 
         favoriteResponseDtoTest = new FavoriteResponseDto(
                 1L,
-                userResponseDtoTest,
+                1L,
                 productResponseDtoTest);
 
         favoriteRequestDtoTest = new FavoriteRequestDto(
@@ -97,18 +97,6 @@ class FavoriteControllerTest {
     void getFavoritesByUserIdTest() throws Exception {
         when(favoriteServiceMock.getFavoritesByUserId(userIdTest)).thenReturn(Set.of(favoriteResponseDtoTest));
         this.mockMvc.perform(get("/favorites/{userId}", userIdTest))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..favoriteId").exists())
-                .andExpect(jsonPath("$..favoriteId").value(1))
-                .andExpect(jsonPath("$..productId").value(1))
-                .andExpect(jsonPath("$..userId").value(1));
-    }
-
-    @Test
-    void getFavoritesTest() throws Exception {
-        when(favoriteServiceMock.getFavorites(anyString())).thenReturn(Set.of(favoriteResponseDtoTest));
-        this.mockMvc.perform(get("/favorites/get?email=ts@gmail.com"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..favoriteId").exists())

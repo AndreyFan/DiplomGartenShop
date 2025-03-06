@@ -35,10 +35,7 @@ public interface FavoriteControllerInterface {
 
     @Operation(summary = "Get Favorites", description = "Request a list of favorite products for the user by their email",
             security = @SecurityRequirement(name = "Bearer Authentication"))
-    public Set<FavoriteResponseDto> getFavorites(
-            @Parameter(description = "E-Mail", required = true, example = "charlie.brown@example.com")
-            @RequestParam
-            @Email(message = "Invalid email format. Please provide a valid email.") String email);
+    public Set<FavoriteResponseDto> getFavorites();
 
     @Operation(summary = "Create a new Favorite", description = "Allows the user to add a new item" +
             " to their list of favorites",

@@ -138,7 +138,7 @@ class FavoriteServiceTest {
 
         favoriteResponseDtoTest = new FavoriteResponseDto(
                 1L,
-                userResponseDtoTest,
+                1L,
                 productResponseDtoTest);
 
         favoriteResponseDtoSetTest.add(favoriteResponseDtoTest);
