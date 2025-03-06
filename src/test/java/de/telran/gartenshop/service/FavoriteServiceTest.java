@@ -4,7 +4,6 @@ import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
 import de.telran.gartenshop.dto.responsedto.CategoryResponseDto;
 import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
 import de.telran.gartenshop.dto.responsedto.ProductResponseDto;
-import de.telran.gartenshop.dto.responsedto.UserResponseDto;
 import de.telran.gartenshop.entity.CategoryEntity;
 import de.telran.gartenshop.entity.FavoriteEntity;
 import de.telran.gartenshop.entity.ProductEntity;
@@ -115,15 +114,6 @@ class FavoriteServiceTest {
 
         favoriteEntitySetTest.add(favoriteEntityTest);
         userEntityTest.setFavorites(favoriteEntitySetTest);
-
-        UserResponseDto userResponseDtoTest = new UserResponseDto(
-                1L,
-                "Tom Smith",
-                "ts@gmail.com",
-                "+4975644333",
-                "hgfgjfdlgjflg",
-                Role.CLIENT,
-                "refreshToken");
 
         ProductResponseDto productResponseDtoTest = new ProductResponseDto(
                 1L,
