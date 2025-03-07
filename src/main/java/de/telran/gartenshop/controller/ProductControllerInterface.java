@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Tag(name = "Products", description = "Controller for adding Products")
+@Tag(name = "Products", description = "Controller for managing Products")
 @Validated
 public interface ProductControllerInterface {
 

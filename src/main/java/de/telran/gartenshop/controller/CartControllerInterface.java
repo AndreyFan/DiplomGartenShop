@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.Set;
 
-@Tag(name = "Carts", description = "Controller for adding CartItems")
+@Tag(name = "Carts", description = "Controller for managing CartItems")
 @Validated
 public interface CartControllerInterface {
     @Operation(summary = "All cartItems", description = "Get all the cartItems",
