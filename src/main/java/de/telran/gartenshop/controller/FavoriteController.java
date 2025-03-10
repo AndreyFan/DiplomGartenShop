@@ -2,10 +2,13 @@ package de.telran.gartenshop.controller;
 
 import de.telran.gartenshop.dto.requestdto.FavoriteRequestDto;
 import de.telran.gartenshop.dto.responsedto.FavoriteResponseDto;
+import de.telran.gartenshop.security.jwt.JwtAuthentication;
 import de.telran.gartenshop.service.FavoriteService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,8 +38,11 @@ public class FavoriteController implements FavoriteControllerInterface {
     // request a list of favorite products for a user (by his email)
     // example request: http://localhost:8088/favorites/get?email=henry.lewis@example.com
     @GetMapping(value = "/get")
+    @SecurityRequirement(name = "JWT")
     @ResponseStatus(HttpStatus.OK)
-    public Set<FavoriteResponseDto> getFavorites(@RequestParam String email) {
+    public Set<FavoriteResponseDto> getFavorites() {
+        final JwtAuthentication jwtInfoToken = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        String email = jwtInfoToken.getEmail();  // достаем email из токена
         return favoriteService.getFavorites(email);
     }
 

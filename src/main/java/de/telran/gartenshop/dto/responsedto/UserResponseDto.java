@@ -2,10 +2,7 @@ package de.telran.gartenshop.dto.responsedto;
 
 import de.telran.gartenshop.entity.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -18,9 +15,11 @@ public class UserResponseDto {
     @Schema(description = "Name", example = "Charlie Brown")
     private String name;
 
+    @ToString.Exclude
     @Schema(description = "E-Mail", example = "charlie.brown@example.com")
     private String email;
 
+    @ToString.Exclude
     @Schema(description = "Phone Number", example = "1234567892")
     private String phone;
 

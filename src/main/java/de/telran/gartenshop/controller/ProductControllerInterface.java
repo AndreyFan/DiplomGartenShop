@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Tag(name = "Products", description = "Controller for adding Products")
+@Tag(name = "Products", description = "Controller for managing Products")
 @Validated
 public interface ProductControllerInterface {
 
@@ -56,26 +56,26 @@ public interface ProductControllerInterface {
             @RequestParam(value = "category", required = false)
             @Min(value = 1, message = "Invalid category Id: category Id must be >= 1") Long categoryId,
 
-            @Parameter(description = "The minimum price to filter products by. Optional, default is no minimum price", example = "10.99")
+            @Parameter(description = "The minimum price to filter products by. Optional, default is no minimum price", example = "10.00")
             @RequestParam(value = "min_price", required = false)
             @DecimalMin(value = "0.00", message = "Invalid min_price: Must be > 0.")
             @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits" +
                     " before and 2 after the decimal.") Double minPrice,
 
             @Parameter(description = "The maximum price to filter products by. Optional, default is no maximum " +
-                    "price", example = "199.99")
+                    "price", example = "20.00")
             @RequestParam(value = "max_price", required = false)
             @DecimalMin(value = "0.00", message = "Invalid max_price: Must be > 0.")
             @Digits(integer = 7, fraction = 2, message = "Invalid min_price: Must be a number with up to 7 digits " +
                     "before and 2 after the decimal.") Double maxPrice,
 
-            @Parameter(description = "Filter products by discount status. Optional, default is false (no discount).")
-            @RequestParam(value = "is_discount", required = false, defaultValue = "false")
+            @Parameter(description = "Filter products by discount status. Optional, default is true.",  example = "true" )
+            @RequestParam(value = "is_discount", required = false, defaultValue = "true")
             @NotNull(message = "is_discount can not be null, must be true/false.") Boolean isDiscount,
 
             @Parameter(description = "Sort the products by a specific field (name, price, discountPrice, createdAt," +
                     " updatedAt), followed by the sorting order (asc or desc). Optional, default is no sorting",
-                    example = "discountPrice,asc")
+                    example = "price,asc")
             @RequestParam(value = "sort", required = false)
             @Pattern(regexp = "^(name|price|discountPrice|createdAt|updatedAt)(,(asc|desc))?$",
                     message = "Invalid parameter definition: parameter must be = name|price|discountPrice|createdAt|updatedAt" +
@@ -134,27 +134,27 @@ public interface ProductControllerInterface {
             security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductProfitDto> getProfitByPeriod(
             @Parameter(description = "The period for grouping the profit (e.g., 'day', 'week', 'month')",
-                    required = true, example = "DAY")
+                    required = true, example = "MONTH")
             @RequestParam("period")
             @Pattern(regexp = "^(?i)(DAY|WEEK|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH " +
                     "(case insensitive)") String period,
             @Parameter(description = "The value to define the range for the specified period (e.g., the number " +
-                    "of days, months, or years)", required = true, example = "60")
+                    "of days, months, or years)", required = true, example = "3")
             @RequestParam("value")
             @Positive(message = "Period length must be a positive number") Integer value);
 
     @Operation(summary = "Get top ten products", description = "Allows to retrieve the top 10 most purchased products",
-               security = @SecurityRequirement(name = "Bearer Authentication"))
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductTopPaidCanceledDto> getTop10PaidProducts();
 
     @Operation(summary = "Get top ten canceled products", description = "Allows to retrieve top 10 most" +
             " frequently canceled products",
-               security = @SecurityRequirement(name = "Bearer Authentication"))
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductTopPaidCanceledDto> getTop10CanceledProducts();
 
     @Operation(summary = "Get products in the 'Awaiting payment' status ", description = "Retrieves a list of products that have been in the" +
             " 'Awaiting payment' status for more than N days",
-               security = @SecurityRequirement(name = "Bearer Authentication"))
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductAwaitingPaymentDto> getAwaitingPaymentProducts(
             @RequestParam(name = "days", defaultValue = "10")
             @Positive(message = "Number of days must be > 0") int days);
