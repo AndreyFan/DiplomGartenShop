@@ -134,12 +134,12 @@ public interface ProductControllerInterface {
             security = @SecurityRequirement(name = "Bearer Authentication"))
     public List<ProductProfitDto> getProfitByPeriod(
             @Parameter(description = "The period for grouping the profit (e.g., 'day', 'week', 'month')",
-                    required = true, example = "DAY")
+                    required = true, example = "MONTH")
             @RequestParam("period")
             @Pattern(regexp = "^(?i)(DAY|WEEK|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH " +
                     "(case insensitive)") String period,
             @Parameter(description = "The value to define the range for the specified period (e.g., the number " +
-                    "of days, months, or years)", required = true, example = "60")
+                    "of days, months, or years)", required = true, example = "3")
             @RequestParam("value")
             @Positive(message = "Period length must be a positive number") Integer value);
 
