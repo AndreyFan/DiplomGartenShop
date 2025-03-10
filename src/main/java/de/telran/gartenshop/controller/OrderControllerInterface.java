@@ -37,7 +37,7 @@ public interface OrderControllerInterface {
             security = @SecurityRequirement(name = "Bearer Authentication"))
     public OrderResponseDto createOrder(
             @RequestBody @Valid OrderRequestDto orderRequestDto,
-            @Parameter(description = "Identifier", required = true, example = "3")
+            @Parameter(description = "Identifier", required = true, example = "1")
             @PathVariable
             @Min(value = 1, message = "Invalid Id: Id must be >= 1") Long userId);
 
