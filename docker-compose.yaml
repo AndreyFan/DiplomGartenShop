@@ -23,7 +23,7 @@ services:
     ports:
       - "18088:8088"
     environment:
-      MYSQL_HOST: mysqldb
+      MYSQL_HOST: host.docker.internal
       MYSQL_DB_NAME: gartenshop
       MYSQL_USER: root
       MYSQL_PASSWORD: chemnitz2023
