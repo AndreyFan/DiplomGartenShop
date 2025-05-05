@@ -23,11 +23,11 @@ services:
     ports:
       - "18088:8088"
     environment:
-      MYSQL_HOST: host.docker.internal
-      MYSQL_DB_NAME: gartenshop
-      MYSQL_USER: root
-      MYSQL_PASSWORD: chemnitz2023
-      MYSQL_PORT: 23306    ## we are in same network so_ we connect internally.
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_DB_NAME: ${MYSQL_DB_NAME}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
     depends_on:
       mysqldb:
         condition: service_healthy
